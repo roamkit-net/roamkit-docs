@@ -1,6 +1,6 @@
 # roamkit-docs
 
-Architecture decisions, RFCs, and engineering standards for [RoamKit](https://github.com/roamkit).
+Architecture decisions, RFCs, and engineering standards for [RoamKit](https://github.com/roamkit-net).
 
 This repo is the **source of truth for documentation** — ADRs and standards are not scattered across `roamkit-api`, `roamkit-web`, or `roamkit-infra`.
 
