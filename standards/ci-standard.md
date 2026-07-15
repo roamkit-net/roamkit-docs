@@ -42,7 +42,7 @@ GitHub Actions expectations for RoamKit repos. Workflow templates live in `roamk
 On merge to `develop`:
 
 - Build image tagged with `github.sha`
-- Push to `ghcr.io/roamkit/<repo>:<sha>`
+- Push to `ghcr.io/roamkit-net/<repo>:<sha>`
 - **Trivy** scan — fail on critical vulnerabilities without waiver
 
 ## Deploy staging (`deploy-staging.yml`)

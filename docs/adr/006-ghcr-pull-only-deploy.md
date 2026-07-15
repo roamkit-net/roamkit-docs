@@ -12,7 +12,7 @@ Building Docker images on the Hetzner staging server couples deploy hosts to sou
 
 ## Decision
 
-**CI builds and pushes** images to GitHub Container Registry (`ghcr.io/roamkit/...`).  
+**CI builds and pushes** images to GitHub Container Registry (`ghcr.io/roamkit-net/...`).  
 **Staging server only pulls** pre-built images and runs `docker compose up`.
 
 Deploy flow (`roamkit-infra/scripts/deploy-staging.sh`):
@@ -25,7 +25,7 @@ Deploy flow (`roamkit-infra/scripts/deploy-staging.sh`):
 6. Smoke test script
 7. On failure: rollback to `.previous-tag`
 
-Image tags: commit SHA on `develop` merges (e.g. `ghcr.io/roamkit/roamkit-api:${{ github.sha }}`).
+Image tags: commit SHA on `develop` merges (e.g. `ghcr.io/roamkit-net/roamkit-api:${{ github.sha }}`).
 
 The server **never** runs `docker build` for application images.
 
