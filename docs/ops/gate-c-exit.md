@@ -27,6 +27,8 @@ and [production-readiness-review.md](./production-readiness-review.md) condition
 
 **Verdict:** Engineering GO only when rows above are green and operator host steps checked.
 
+While those host steps run, [Gate C focus](./launch-gates.md#gate-c-focus-before-host-execution) applies (no parallel feature release work).
+
 ## Related
 
 - [Release Manifest draft](./releases/1.0.0/manifest.md)
