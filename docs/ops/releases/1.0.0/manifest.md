@@ -1,12 +1,12 @@
 # Release 1.0.0 (draft)
 
-Draft for Gate C exit — **fill at Gate D cutover**. See [release-manifest.md](../release-manifest.md).
+Draft for Gate C exit — **fill at Gate D cutover**. See [release-manifest.md](../../release-manifest.md).
 
 | Field | Value |
 |-------|-------|
 | Release | 1.0.0 |
-| Git SHA | _pending Gate C API merge + prod deploy_ |
-| Docker image (API) | ghcr.io/roamkit-net/roamkit-api:_pending_ |
+| Git SHA (api `develop` tip after Gate C API) | `caa3f1d0e3e4c53bacf76719a0f18b1473560207` |
+| Docker image (API) | ghcr.io/roamkit-net/roamkit-api:_pending prod tag_ |
 | Docker image (web) | ghcr.io/roamkit-net/roamkit-web:_pending_ |
 | Migration version | _pending showmigrations on prod_ |
 | ADR baseline | 010, 011, 012, 013 Accepted; 007 Superseded |
@@ -18,4 +18,12 @@ Draft for Gate C exit — **fill at Gate D cutover**. See [release-manifest.md](
 | Rollback window | 30 minutes |
 | Hypercare until (UTC) | _deploy + 24h_ |
 
-Status: **DRAFT** — not production-enabled.
+Status: **DRAFT** — Gate C still open (host verification). Not production-enabled.
+
+## Evidence packs
+
+| Gate / milestone | Status | File |
+|------------------|--------|------|
+| Gate C — API slice | recorded | [evidence/gate-c-api.md](./evidence/gate-c-api.md) |
+| Gate C — full GO | pending host checks | — |
+| Gate D | blocked | — |

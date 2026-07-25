@@ -1,7 +1,8 @@
 # Release Manifest
 
 One filled manifest per **production** release. Template below; store completed
-copies under [`releases/`](./releases/) (e.g. `releases/1.0.0.md`).
+copies under [`releases/<version>/manifest.md`](./releases/). Gate close audit packs:
+[`evidence-of-gate.md`](./evidence-of-gate.md).
 
 ## Rules
 
@@ -35,5 +36,6 @@ copies under [`releases/`](./releases/) (e.g. `releases/1.0.0.md`).
 ## Related
 
 - [Launch Gates](./launch-gates.md)
+- [Evidence of Gate](./evidence-of-gate.md)
 - [Gate D cutover](./gate-d-cutover.md)
 - Infra contract: `ROAMKIT_*` env → `GET /version`

@@ -15,6 +15,7 @@ ship safely — Launch Gates, cutover discipline, incidents, and maturity tracki
 | [Go-live checklist](./production-go-live-checklist.md) | Faza 4 cutover checklist / must-haves |
 | [Capability status / Maturity Matrix](./capability-status.md) | Design → Implemented → Production → Observed |
 | [Release Manifest](./release-manifest.md) | Per-release template; filled copies in [`releases/`](./releases/) |
+| [Evidence of Gate](./evidence-of-gate.md) | Audit pack per closed Gate (SHA, CI, GO, PRs) |
 | [Migration Ready](./migration-ready.md) | Pre-migrate gate (duration, locks, backup, rollback) |
 | [Incident runbook](./incident-runbook.md) | First response trees (not only deploy rollback) |
 | [SLO targets](./slo.md) | Lightweight availability / billing targets |
