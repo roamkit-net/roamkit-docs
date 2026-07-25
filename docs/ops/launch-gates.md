@@ -65,6 +65,18 @@ Defaults for the first production release. Override only in the Release Manifest
 
 **Gate D Exit** = traffic stable through Hypercare (no unresolved P0/P1; rollback not required, or rollback succeeded and cutover deferred).
 
+## Gate C focus (before host execution)
+
+While Gate C is **open** (API slice done; host verification in progress):
+
+- **No** parallel work on other release candidates or non-essential features.
+- Release process focus stays on closing Gate C, then Gate D.
+- **Allowed:** critical bugfixes, Gate C evidence packs / host ops, release/hotfix only.
+- **Forbidden:** voucher PRs, refactors, new feature merges that move the goalposts.
+
+This is the early form of [Production Freeze](#production-freeze) — apply it for the
+final host checks, not only on cutover day.
+
 ## Production Freeze
 
 From the start of the Gate D **deployment window** until the end of the **rollback window**:
