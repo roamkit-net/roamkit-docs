@@ -31,4 +31,4 @@ This repo is the **source of truth for documentation** — ADRs and standards ar
 
 ## Status
 
-Architecture Freeze (Faza -1b): ADR 001–009, standards, and Definition of Done are defined here. Faza 3 adds [ADR 010](./docs/adr/010-polygon-usdt-prepaid-credits.md) (Polygon USDT prepaid credits). Post–Faza 3 billing constitution: [ADR 012](./docs/adr/012-billing-extensibility-rules.md) (Draft); first credit-source extension: [ADR 011](./docs/adr/011-credit-vouchers-gift-codes.md) (Draft).
+Architecture Freeze (Faza -1b): ADR 001–009, standards, and Definition of Done are defined here. Faza 3 adds [ADR 010](./docs/adr/010-polygon-usdt-prepaid-credits.md) (Polygon USDT prepaid credits). Billing design freeze: [ADR 012](./docs/adr/012-billing-extensibility-rules.md) (extensibility constitution) + [ADR 011](./docs/adr/011-credit-vouchers-gift-codes.md) (first credit source) — both **Accepted**.

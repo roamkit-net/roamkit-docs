@@ -56,6 +56,17 @@ A work item (issue/PR) is **Done** when all applicable criteria below are met. S
 | Faza 2 | JWT auth + `me/esims`; pytest `test_phase2_dod.py`; staging `scripts/staging-dod-faza2.sh` (+ `CREATE_SANDBOX=1`) |
 | Faza 3 | Polygon USDT prepaid credits (ADR-010); staging env `BILLING_ENABLED` + `POLYGON_*`; `scripts/staging-dod-billing.sh` (deposit → verify → ledger → balance → order) |
 
+## Credit-source gates (post–Faza 3)
+
+New prepaid **credit sources** (vouchers, referral, cashback, …) additionally require [ADR 012](../docs/adr/012-billing-extensibility-rules.md):
+
+- [ ] Credit-source ADR **Accepted** with ADR 012 compliance table (all ✅).
+- [ ] Architecture tests pass (money-path + source bypass guards).
+- [ ] OpenAPI / API docs updated when a public `/api/v1/billing/` endpoint is added.
+- [ ] Metrics for grant / redeem / fail paths.
+- [ ] Audit trail confirmed (issuer / actor / reason / ledger reference).
+- [ ] Docs updated (`ADR_INDEX`, env notes, runbooks as needed).
+
 ## Out of scope for Done
 
 - Production deploy (until [ADR 007](../docs/adr/007-staging-only-until-launch.md) superseded).

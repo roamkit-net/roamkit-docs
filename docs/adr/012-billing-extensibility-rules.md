@@ -2,9 +2,9 @@
 
 | Field | Value |
 |-------|-------|
-| Status | Draft |
+| Status | Accepted |
 | Date | 2026-07 |
-| Deciders | Post–Faza 3 billing constitution (pending review → Accepted) |
+| Deciders | Post–Faza 3 billing constitution (design freeze) |
 
 ## Context
 
@@ -33,6 +33,17 @@ Adopt a **billing extensibility contract**: any new way to grant or adjust prepa
 Allowed extensions (examples): new models, a new `LedgerReferenceType`, new snapshot events, feature flags, admin tools, redeem/verify APIs under `/api/v1/billing/`.
 
 Forbidden changes (examples): alternate balance mutators, mutable ledger rows, `User`-owned money FKs, provider-side balance writes, a second public money API family, dual-entry “shadow” ledgers.
+
+### Extension vs foundation revision
+
+> **If a proposed credit source requires changing ADR 010 financial invariants, do not write a feature ADR — open a revision of ADR 010 first.**
+
+| Intent | Document |
+|--------|----------|
+| **Extension** — new models / `LedgerReferenceType` / events / flags under existing invariants | New credit-source ADR (e.g. 011, 013…) that satisfies this ADR |
+| **Foundation change** — alters `CreditService`, ledger SoT, ownership, precision, or public money API family | Revise / supersede ADR 010 (STOP on feature work until Accepted) |
+
+This keeps “proširenje” and “promjena temelja” mechanically distinct in review.
 
 ## Mandatory invariants
 
@@ -98,8 +109,44 @@ Before implementing a new credit source, the feature ADR (or PR description) mus
 - [ ] Lock order documented when source rows + Account are locked together.
 - [ ] Money fields use `Decimal(20,6)`.
 - [ ] Non-goals state what this source will **not** become (e.g. not a second payment provider).
+- [ ] Ends with an **ADR 012 compliance** table (see below).
 
-If any item fails, **STOP** — open/amend the credit-source ADR before coding.
+If any item fails, **STOP** — open/amend the credit-source ADR before coding. If the change is a foundation revision, amend ADR 010 instead.
+
+### Mandatory section — ADR 012 compliance
+
+Every future billing / credit-source ADR **must** end with a compliance table so review is mechanical. Template:
+
+```markdown
+## ADR 012 compliance
+
+| Rule | Status |
+|------|--------|
+| CreditService only | ✅ / ❌ |
+| Ledger SoT | ✅ / ❌ |
+| Append-only ledger | ✅ / ❌ |
+| Account owner | ✅ / ❌ |
+| Idempotent | ✅ / ❌ |
+| Single DB transaction + lock | ✅ / ❌ |
+| Snapshot event | ✅ / ❌ |
+| `/api/v1/billing/` only | ✅ / ❌ |
+| Feature flag / gate | ✅ / ❌ |
+| Architecture tests | ✅ / ❌ |
+| Does not revise ADR 010 invariants | ✅ / ❌ |
+```
+
+Any ❌ blocks **Accepted** until resolved or escalated to an ADR 010 revision.
+
+## Implementation Definition of Done (credit sources)
+
+In addition to the org [Definition of Done](../../standards/definition-of-done.md), each credit-source delivery is Done only when:
+
+- [ ] Credit-source ADR is **Accepted** (and complies with this ADR).
+- [ ] Architecture tests pass in CI (money-path + source-specific bypass guards).
+- [ ] OpenAPI / API docs updated when a public `/api/v1/billing/` endpoint is added.
+- [ ] Metrics added for grant / redeem / fail paths (at least counters; alert hooks as applicable).
+- [ ] Audit trail confirmed (issuer / actor / reason / ledger reference resolvable).
+- [ ] Docs updated (`ADR_INDEX`, README/env notes, runbooks as needed).
 
 ## Non-goals
 
@@ -115,6 +162,7 @@ If any item fails, **STOP** — open/amend the credit-source ADR before coding.
 - One review checklist for every future credit source.
 - ADR 010 stays the foundation; ADR 011+ stay product decisions, not money-path redesigns.
 - Architecture tests and PR review share a single vocabulary (“satisfies ADR 012”).
+- Compliance tables make Accept/Reject nearly mechanical.
 
 ### Negative
 
@@ -127,4 +175,5 @@ If any item fails, **STOP** — open/amend the credit-source ADR before coding.
 - [ADR 007](./007-staging-only-until-launch.md) — staging-only until production launch
 - [ADR 010](./010-polygon-usdt-prepaid-credits.md) — Polygon USDT prepaid credits (money path foundation)
 - [ADR 011](./011-credit-vouchers-gift-codes.md) — first credit-source extension (must satisfy this ADR)
+- [Definition of Done](../../standards/definition-of-done.md)
 - [ADR_INDEX](../../ADR_INDEX.md)

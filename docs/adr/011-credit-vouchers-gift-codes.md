@@ -2,9 +2,9 @@
 
 | Field | Value |
 |-------|-------|
-| Status | Draft |
+| Status | Accepted |
 | Date | 2026-07 |
-| Deciders | Post–Faza 3 design lock (pending review → Accepted) |
+| Deciders | Post–Faza 3 design lock (billing design freeze) |
 
 ## Context
 
@@ -280,7 +280,7 @@ All ADR 010 invariants apply. Additionally:
 
 Do **not** implement vouchers inside Faza 3. Faza 3 remains Polygon USDT prepaid credits only ([ADR 010](./010-polygon-usdt-prepaid-credits.md)).
 
-**Gate before PR 1:** ADR 012 Accepted (or at least reviewed alongside this ADR) and this ADR → **Accepted**.
+**Gate before PR 1:** ADR 012 and this ADR are **Accepted**. Implementation must still pass the ADR 012 extension checklist and credit-source Definition of Done.
 
 ### Durability priorities (locked)
 
@@ -289,6 +289,22 @@ Do **not** implement vouchers inside Faza 3. Faza 3 remains Polygon USDT prepaid
 3. Lock order `Voucher/Campaign → Account → Ledger`
 4. Architecture test against bypassing `CreditService`
 5. No physical deletes (status-only lifecycle)
+
+## ADR 012 compliance
+
+| Rule | Status |
+|------|--------|
+| CreditService only | ✅ |
+| Ledger SoT | ✅ |
+| Append-only ledger | ✅ |
+| Account owner | ✅ |
+| Idempotent | ✅ |
+| Single DB transaction + lock | ✅ |
+| Snapshot event | ✅ (`VoucherRedeemed`) |
+| `/api/v1/billing/` only | ✅ (`POST …/vouchers/redeem`) |
+| Feature flag / gate | ✅ (`VOUCHERS_ENABLED` — document in PR 1) |
+| Architecture tests | ✅ (required in PR 1) |
+| Does not revise ADR 010 invariants | ✅ |
 
 ## Related
 
