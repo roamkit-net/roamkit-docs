@@ -237,5 +237,7 @@ confirmed. Production remains gated by [ADR 007](./007-staging-only-until-launch
 
 - [ADR 004](./004-provider-interfaces.md) — provider protocols (billing uses `BlockchainProvider`, not Airalo)
 - [ADR 005](./005-domain-events.md) — domain event bus
+- [ADR 012](./012-billing-extensibility-rules.md) — billing extensibility rules (future credit sources)
+- [ADR 011](./011-credit-vouchers-gift-codes.md) — credit vouchers & gift codes (first extension)
 - [Provider abstractions](../architecture/provider-abstractions.md)
 - RFC [001-self-service-esim-flow](../rfcs/001-self-service-esim-flow.md)
