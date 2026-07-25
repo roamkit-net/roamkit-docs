@@ -1,6 +1,6 @@
 # Architecture Decision Records — Index
 
-All ADRs live in [docs/adr/](./docs/adr/). Status values: **Accepted**, **Superseded**, **Deprecated**.
+All ADRs live in [docs/adr/](./docs/adr/). Status values: **Draft**, **Accepted**, **Superseded**, **Deprecated**.
 
 | ADR | Title | Status | Date |
 |-----|-------|--------|------|
@@ -14,6 +14,16 @@ All ADRs live in [docs/adr/](./docs/adr/). Status values: **Accepted**, **Supers
 | [008](./docs/adr/008-bootstrap-iac-gh-cli.md) | Bootstrap IaC via `gh` CLI | Accepted | 2026-07 |
 | [009](./docs/adr/009-shared-traefik-edge.md) | Shared Traefik edge routing (proxy network) | Accepted | 2026-07 |
 | [010](./docs/adr/010-polygon-usdt-prepaid-credits.md) | Polygon USDT prepaid credits | Accepted | 2026-07 |
+| [011](./docs/adr/011-credit-vouchers-gift-codes.md) | Credit vouchers & gift codes | Draft | 2026-07 |
+| [012](./docs/adr/012-billing-extensibility-rules.md) | Billing extensibility rules | Draft | 2026-07 |
+
+## Billing ADR hierarchy
+
+| Layer | ADR | Role |
+|-------|-----|------|
+| Foundation | [010](./docs/adr/010-polygon-usdt-prepaid-credits.md) | Money path (`CreditService`, ledger, Account ownership) |
+| Constitution | [012](./docs/adr/012-billing-extensibility-rules.md) | Rules every future credit source must obey |
+| First extension | [011](./docs/adr/011-credit-vouchers-gift-codes.md) | Vouchers / gift codes (must satisfy 012) |
 
 ## RFCs (proposals)
 
