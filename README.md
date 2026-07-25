@@ -10,7 +10,7 @@ This repo is the **source of truth for documentation** — ADRs and standards ar
 |------|---------|
 | [ADR_INDEX.md](./ADR_INDEX.md) | Index of all Architecture Decision Records |
 | [docs/architecture/](./docs/architecture/) | System overview, directory layout, provider patterns |
-| [docs/adr/](./docs/adr/) | ADR 001–008 (accepted decisions) |
+| [docs/adr/](./docs/adr/) | ADR 001–010 (accepted decisions) |
 | [docs/rfcs/](./docs/rfcs/) | Request for Comments — proposed features before implementation |
 | [standards/](./standards/) | Branching, coding, Docker, CI, API versioning, DoD |
 
@@ -31,4 +31,4 @@ This repo is the **source of truth for documentation** — ADRs and standards ar
 
 ## Status
 
-Architecture Freeze (Faza -1b): ADR 001–008, standards, and Definition of Done are defined here. Application repos (`roamkit-api`, `roamkit-web`) start in Faza 0 after bootstrap.
+Architecture Freeze (Faza -1b): ADR 001–009, standards, and Definition of Done are defined here. Faza 3 adds [ADR 010](./docs/adr/010-polygon-usdt-prepaid-credits.md) (Polygon USDT prepaid credits).
