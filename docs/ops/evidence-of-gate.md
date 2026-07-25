@@ -54,9 +54,29 @@ One file per closed Gate (or milestone). Keep each file short.
 - Prefer squash-merge commit on the target branch (`develop` / `main`) as the SHA.
 - Link the CI run that was green on the merge PR (or promotion PR).
 - Full Gate C GO still requires host checks in [gate-c-exit.md](./gate-c-exit.md); an API-slice evidence pack does **not** close Gate C by itself.
+- For **Gate C full GO**, use an **evidence index** table (do not paste logs). Example layout: [releases/1.0.0/evidence/gate-c.md](./releases/1.0.0/evidence/gate-c.md). Record the verdict in the [Release Decision Log](./release-decision-log.md).
+
+### Gate C full GO — evidence index (required)
+
+```markdown
+## GO checklist (evidence index)
+
+| Check | Status | Evidence |
+|-------|:------:|----------|
+| API readiness | ✅ | gate-c-api.md |
+| Production host | ✅ | host-check.md |
+| Billing E2E | ✅ | billing-e2e.md |
+| Observability | ✅ | observability.md |
+| Smoke | ✅ | smoke.md |
+| Verdict | **GO** | Release Decision Log |
+```
+
+Supporting milestone files (`host-check.md`, `billing-e2e.md`, …) hold the raw proof;
+`gate-c.md` only indexes them.
 
 ## Related
 
 - [Launch Gates](./launch-gates.md)
 - [Release Manifest](./release-manifest.md)
+- [Release Decision Log](./release-decision-log.md)
 - [releases/](./releases/)

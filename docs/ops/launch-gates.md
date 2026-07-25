@@ -24,7 +24,7 @@ Map to Faza 4 PRs: A ≈ PR0/PR0.5 · B ≈ PR1 · C ≈ app readiness + E2E + o
 | D | Gate C = GO; Production Freeze active | Traffic stable through **Hypercare** (24h); Release Manifest filled; freeze closed |
 
 Do not declare a Gate closed on subjective “we feel ready.” Use the table.
-When a Gate (or named milestone) closes, file an [Evidence of Gate](./evidence-of-gate.md) pack under `releases/<version>/evidence/`.
+When a Gate (or named milestone) closes, file an [Evidence of Gate](./evidence-of-gate.md) pack under `releases/<version>/evidence/` and append a row to the [Release Decision Log](./release-decision-log.md).
 
 ## Gate details
 

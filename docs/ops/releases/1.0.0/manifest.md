@@ -25,5 +25,5 @@ Status: **DRAFT** — Gate C still open (host verification). Not production-enab
 | Gate / milestone | Status | File |
 |------------------|--------|------|
 | Gate C — API slice | recorded | [evidence/gate-c-api.md](./evidence/gate-c-api.md) |
-| Gate C — full GO | pending host checks | — |
+| Gate C — full GO | pending host checks | [evidence/gate-c.md](./evidence/gate-c.md) (index stub) |
 | Gate D | blocked | — |
