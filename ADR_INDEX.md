@@ -33,6 +33,7 @@ All ADRs live in [docs/adr/](./docs/adr/). Status values: **Draft**, **Accepted*
 | Historical gate | [007](./docs/adr/007-staging-only-until-launch.md) | Staging-only until launch (**Superseded**) |
 | Current | [013](./docs/adr/013-production-launch.md) | `main` → production; staging from `develop` |
 | Ops | [Go-Live checklist](./docs/ops/production-go-live-checklist.md) | Cutover / must-haves / flags |
+| Ops | [Production readiness review](./docs/ops/production-readiness-review.md) | PR0.5 go/no-go (GO WITH CONDITIONS) |
 
 ## RFCs (proposals)
 

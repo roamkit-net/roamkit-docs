@@ -112,5 +112,6 @@ Do **not** implement vouchers or enable subscriptions as part of production laun
 - [ADR 009](./009-shared-traefik-edge.md) — shared Traefik edge
 - [ADR 010](./010-polygon-usdt-prepaid-credits.md) — Polygon USDT prepaid credits
 - [Production go-live checklist](../ops/production-go-live-checklist.md)
+- [Production readiness review](../ops/production-readiness-review.md)
 - [Branching standard](../../standards/branching.md)
 - [ADR_INDEX](../../ADR_INDEX.md)
