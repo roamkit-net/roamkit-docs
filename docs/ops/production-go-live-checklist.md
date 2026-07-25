@@ -38,14 +38,20 @@ Full scorecard and conditions: [production-readiness-review.md](./production-rea
 
 ## PR1 — Production infrastructure
 
-- [ ] `/opt/stacks/roamkit-production/` initialized
-- [ ] `docker-compose.production.yml` present (api, celery, beat, web; `profiles: [app]`)
-- [ ] Traefik labels for `roamkit.net` \|\| `www.roamkit.net` and `api.roamkit.net`
-- [ ] Separate PostGIS database + separate Redis DB index documented
-- [ ] No shared volumes with staging
-- [ ] `.env.production.example` committed; real `.env` on host only
-- [ ] Secrets: `PRODUCTION_HOST`, `PRODUCTION_SSH_KEY`, GHCR pull documented
-- [ ] Cutover note: staging Host rules drop apex/www **only at cutover**
+Infra only (`roamkit-infra`). No `roamkit-api` / `roamkit-web` code in this PR.
+
+- [x] `/opt/stacks/roamkit-production/` init script (`init-production-stack.sh`)
+- [x] `docker-compose.production.yml` (api, celery, beat, web; `profiles: [app]`)
+- [x] Traefik labels for `roamkit.net` \|\| `www.roamkit.net` and `api.roamkit.net`
+- [x] Separate PostGIS database name + Redis DB index documented (`roamkit_production` / `/5`)
+- [x] No shared volumes with staging (stack isolation)
+- [x] `.env.production.example` committed; real `.env` on host only
+- [x] Secrets: `PRODUCTION_HOST`, `PRODUCTION_SSH_KEY`, GHCR + lifecycle in PRODUCTION_PLAN
+- [x] Cutover note: staging Host rules drop apex/www **only at cutover**
+- [x] Deploy / rollback / smoke scripts + health policy + startup order
+- [x] Capability matrix: [capability-status.md](./capability-status.md)
+
+Operator still must run bootstrap on the host and complete the merge checklist in `PRODUCTION_PLAN.md` before treating the platform as live.
 
 ## PR2 — Deploy path + must-haves
 

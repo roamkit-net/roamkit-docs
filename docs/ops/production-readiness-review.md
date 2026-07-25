@@ -31,7 +31,7 @@ until the conditions below are closed (mostly PR2–PR4 must-haves).
 | # | Condition | Owner PR |
 |---|-----------|----------|
 | C1 | Real `config.settings.production` (not staging stub); strict hosts/CSRF/HSTS | PR2 |
-| C2 | `/opt/stacks/roamkit-production/` compose + separate DB/Redis + secrets | PR1 |
+| C2 | `/opt/stacks/roamkit-production/` compose + separate DB/Redis + secrets | PR1 — **platform files landed**; host bootstrap + first deploy still operator |
 | C3 | `deploy-production.sh` + `main` deploy CI + `.previous-tag` rollback | PR2 |
 | C4 | Secret scanning required on `main` PRs (Gitleaks / org scanning) | PR2 |
 | C5 | `GET /version` live + smoke assertion | PR2 |
