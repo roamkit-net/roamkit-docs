@@ -12,8 +12,8 @@ Non-normative ops view of capability lifecycle. Architecture stays in ADRs.
 | Credit vouchers (ADR 011) | ✅ | ❌ | ❌ | ❌ | Blocked: [voucher-pr1-kickoff.md](./voucher-pr1-kickoff.md) |
 | Billing extensibility (ADR 012) | ✅ | ✅ (docs) | n/a | n/a | Constitution, not a runtime feature |
 | Production platform (ADR 013 PR1) | ✅ | ✅ | ⏳ | ⏳ | Compose ready; not cut over |
-| `GET /version` | ✅ | ❌ | ❌ | ❌ | api Gate C PR |
-| Sentry / uptime | ✅ | ❌ | ❌ | ❌ | Gate C exit |
+| `GET /version` | ✅ | ✅ | ⏳ | ⏳ | Merged Gate C api; Production after deploy |
+| Sentry / uptime | ✅ | ✅ | ⏳ | ⏳ | Sentry SDK + `SENTRY_DSN`; uptime still operator |
 | Billing dashboard | ✅ | ❌ | ❌ | ❌ | [billing-dashboard.md](./billing-dashboard.md) |
 
 **Column definitions**

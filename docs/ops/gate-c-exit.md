@@ -5,12 +5,12 @@ and [production-readiness-review.md](./production-readiness-review.md) condition
 
 | ID | Condition | Status | Evidence |
 |----|-----------|--------|----------|
-| C1 | Production settings | ⏳ api PR | `config.settings.production` fail-fast + HSTS |
-| C3 | Deploy path + rollback | ⏳ | `deploy-production.sh` + `deploy-production.yml` on `main` |
-| C4 | Secret scanning on `main` PRs | ⏳ | `secret-scan.yml` (Gitleaks) in api CI |
-| C5 | `GET /version` | ⏳ api PR | non-empty `git_sha` in smoke |
-| C6 | Billing E2E | ⏳ | `roamkit-infra/scripts/production-dod-billing.sh` |
-| C7 | Sentry + uptime + reconcile alert | ⏳ | Sentry via `SENTRY_DSN`; uptime on health+/version; reconcile alert channel TBD |
+| C1 | Production settings | ✅ api merged | `config.settings.production` fail-fast + HSTS |
+| C3 | Deploy path + rollback | ✅ scripts + workflow | `deploy-production.sh` + `deploy-production.yml` on `main` |
+| C4 | Secret scanning on PRs | ✅ | Gitleaks CLI in api CI |
+| C5 | `GET /version` | ✅ api merged | non-empty `git_sha` required in smoke |
+| C6 | Billing E2E | ✅ script | `roamkit-infra/scripts/production-dod-billing.sh` (run on host) |
+| C7 | Sentry + uptime + reconcile alert | ⏳ partial | Sentry via `SENTRY_DSN` merged; uptime + reconcile channel operator |
 | C8 | Backup + restore procedure | ⏳ | [migration-ready.md](./migration-ready.md); Disaster Day post-stable |
 | C9 | Incident runbook | ✅ | [incident-runbook.md](./incident-runbook.md) |
 | C10 | OpenAPI | N/A | deferred |
