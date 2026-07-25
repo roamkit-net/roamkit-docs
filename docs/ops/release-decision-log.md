@@ -7,7 +7,7 @@ the decision index.
 | Date (UTC) | Release | Gate / milestone | Verdict | Evidence | GO by |
 |------------|---------|------------------|---------|----------|-------|
 | 2026-07-25 | 1.0.0 | Gate C — API slice | GO WITH CONDITIONS | [gate-c-api.md](./releases/1.0.0/evidence/gate-c-api.md) | Engineering |
-| _pending_ | 1.0.0 | Gate C — full | | [gate-c.md](./releases/1.0.0/evidence/gate-c.md) | Engineering |
+| 2026-07-25T21:52:00Z | 1.0.0 | Gate C — full | **GO** | [gate-c.md](./releases/1.0.0/evidence/gate-c.md) | Engineering (solo operator) |
 | _pending_ | 1.0.0 | Gate D | | `releases/1.0.0/evidence/gate-d.md` | Operations / Release |
 
 ## Related

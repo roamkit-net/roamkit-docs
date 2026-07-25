@@ -25,7 +25,7 @@ Dress-rehearsal production stack bootstrap on shared HEL1 host.
 | `CREATE DATABASE roamkit_production` | ✅ (as `postgres` superuser; `roamkit` lacked CREATEDB) |
 | Real `.env` (no `change-me`) | ✅ new `DJANGO_SECRET_KEY`; staging PG/email/Airalo/wallet reused |
 | Wallet key in `.secrets/` | ✅ copied from staging |
-| `SENTRY_DSN` | ⏳ not set — blocks Observability evidence |
+| `SENTRY_DSN` | ✅ set 2026-07-25 (see [observability.md](./observability.md)) |
 | `deploy-production.sh` | ✅ migrate + health + dress-rehearsal smoke |
 | Staging apex/www undisturbed | ✅ production `traefik.enable=false` |
 
