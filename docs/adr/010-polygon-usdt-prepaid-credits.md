@@ -67,9 +67,9 @@ class LedgerReferenceType(models.TextChoices):
 REFERENCE_MODELS = {
     LedgerReferenceType.DEPOSIT: DepositRequest,
     LedgerReferenceType.ORDER: Order,
-    LedgerReferenceType.TOPUP: ...,  # top-up record or order id convention — document when implemented
+    LedgerReferenceType.TOPUP: Topup,  # apps.esims.Topup (account-owned spend record)
     LedgerReferenceType.SUBSCRIPTION: Subscription,
-    # REFUND / ADMIN_ADJUSTMENT: reference_id may point at order/deposit/ticket; registry optional
+    # REFUND / ADMIN_ADJUSTMENT: reference_id may point at order/topup/deposit/ticket; registry optional
 }
 ```
 
