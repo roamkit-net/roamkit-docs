@@ -21,6 +21,7 @@ ship safely — Launch Gates, cutover discipline, incidents, and maturity tracki
 | [Production retrospective](./production-retrospective.md) | Post-hypercare lessons learned template |
 | [Billing dashboard](./billing-dashboard.md) | Operator metrics after cutover |
 | [Disaster Day](./disaster-day.md) | Annual failure simulation |
+| [Gate C exit](./gate-c-exit.md) | Engineering tracker for C* before GO |
 | [Gate D cutover](./gate-d-cutover.md) | Time-boxed cutover runbook |
 | [Voucher PR1 kickoff](./voucher-pr1-kickoff.md) | Blocked until Gate D + retrospective |
 
