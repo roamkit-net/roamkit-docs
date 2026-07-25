@@ -29,5 +29,7 @@ and [production-readiness-review.md](./production-readiness-review.md) condition
 
 ## Related
 
-- [Release Manifest draft](./releases/1.0.0.md)
+- [Release Manifest draft](./releases/1.0.0/manifest.md)
+- [Gate C evidence index](./releases/1.0.0/evidence/gate-c.md)
+- [Release Decision Log](./release-decision-log.md)
 - [Gate D cutover](./gate-d-cutover.md)
