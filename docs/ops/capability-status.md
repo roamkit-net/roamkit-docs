@@ -1,30 +1,34 @@
-# Capability status (Implemented vs Production Enabled)
+# Capability status (Billing Maturity Matrix)
 
-Non-normative ops view of what exists in code versus what is live for customers.
-Architecture decisions remain in ADRs; this table tracks **delivery state**.
+Non-normative ops view of capability lifecycle. Architecture stays in ADRs.
 
-| Capability | Implemented | Production Enabled | Notes |
-|------------|:-----------:|:------------------:|-------|
-| Polygon USDT prepaid billing (ADR 010) | ✅ | ❌ | Staging validated; waiting Faza 4 PR2 cutover |
-| Billing HTTP `/api/v1/billing/` | ✅ | ❌ | Enabled on staging; prod after cutover |
-| WalletConnect deposit UX | ✅ | ❌ | Flag OFF at first cutover (ADR 013) |
-| Subscriptions service | ✅ | ❌ | Code present; `SUBSCRIPTIONS_ENABLED=false` |
-| Credit vouchers (ADR 011) | ❌ | ❌ | ADR Accepted; voucher PR 1–3 not started |
-| Billing extensibility rules (ADR 012) | ✅ (docs) | n/a | Normative constitution; not a runtime feature |
-| Production platform stack (ADR 013 PR1) | ✅ | ❌ | Compose/bootstrap ready; stack not cut over |
-| `GET /version` | ❌ | ❌ | Contract documented in PRODUCTION_PLAN; api PR2 |
-| Sentry / uptime alerts | ❌ | ❌ | Faza 4 PR3 |
+| Capability | Design | Implemented | Production | Observed | Notes |
+|------------|:------:|:-----------:|:----------:|:--------:|-------|
+| Ledger / CreditService (ADR 010) | ✅ | ✅ | ⏳ | ⏳ | Staging validated; prod after Gate D |
+| Deposits / Polygon verify | ✅ | ✅ | ⏳ | ⏳ | |
+| Billing HTTP `/api/v1/billing/` | ✅ | ✅ | ⏳ | ⏳ | |
+| WalletConnect deposit UX | ✅ | ✅ | ⏳ | ⏳ | Flag OFF at first cutover |
+| Subscriptions service | ✅ | ✅ | ❌ | ❌ | `SUBSCRIPTIONS_ENABLED=false` |
+| Credit vouchers (ADR 011) | ✅ | ❌ | ❌ | ❌ | Blocked: [voucher-pr1-kickoff.md](./voucher-pr1-kickoff.md) |
+| Billing extensibility (ADR 012) | ✅ | ✅ (docs) | n/a | n/a | Constitution, not a runtime feature |
+| Production platform (ADR 013 PR1) | ✅ | ✅ | ⏳ | ⏳ | Compose ready; not cut over |
+| `GET /version` | ✅ | ❌ | ❌ | ❌ | api Gate C PR |
+| Sentry / uptime | ✅ | ❌ | ❌ | ❌ | Gate C exit |
+| Billing dashboard | ✅ | ❌ | ❌ | ❌ | [billing-dashboard.md](./billing-dashboard.md) |
 
-**Definitions**
+**Column definitions**
 
-- **Implemented** — merged to `develop` (and/or documented ADR) and usable in staging or as design.
-- **Production Enabled** — running on `/opt/stacks/roamkit-production/` with customer traffic (or intentional prod flag ON).
+- **Design** — ADR Accepted (or explicit N/A design note).
+- **Implemented** — merged to `develop`, usable on staging (or docs-only constitution).
+- **Production** — running on `/opt/stacks/roamkit-production/` with intended flags (or customer traffic).
+- **Observed** — confirmed via metrics / [billing dashboard](./billing-dashboard.md) in production (not only flag ON).
 
-Update this table at each Faza 4 milestone and when vouchers ship.
+Update at each Launch Gate milestone and when vouchers ship.
 
 ## Related
 
+- [Operations Handbook](./README.md)
+- [Launch Gates](./launch-gates.md)
 - [ADR 013](../adr/013-production-launch.md)
 - [Production readiness review](./production-readiness-review.md)
 - [Go-live checklist](./production-go-live-checklist.md)
-- Infra runbook: `roamkit-infra/bootstrap/hetzner/PRODUCTION_PLAN.md`

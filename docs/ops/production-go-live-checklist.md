@@ -1,6 +1,7 @@
 # Production go-live checklist
 
 Operational gate for Faza 4 cutover. Architecture: [ADR 013](../adr/013-production-launch.md).  
+Release language: [Launch Gates](./launch-gates.md) (Gate C → Gate D). Handbook: [ops README](./README.md).  
 Do **not** declare go-live until every applicable box is checked.
 
 ## Feature flag matrix
@@ -96,7 +97,7 @@ Create account → Deposit/credit → Verify → Balance +N
 
 - [ ] Rate limits on auth + billing verify; security headers
 - [ ] Backup **restore** test recorded (not only backup job exists)
-- [ ] **Disaster Day** notes filed (Postgres / Redis / API / web / Traefik restart; recovery time; rollback path)
+- [ ] Backup restore procedure documented + backup-before-migrate ([migration-ready.md](./migration-ready.md)); full [Disaster Day](./disaster-day.md) after stable prod (annual; not Gate D hard blocker)
 - [ ] Lean load test recorded (deposit verify / order / balance); no 5xx storms
 - [ ] Dependency audit in deploy CI (`pip-audit`, `npm audit --omit=dev`); critical fails job
 - [ ] Release notes on prod deploy (version, commits, migrations, rollback SHA)

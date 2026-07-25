@@ -37,8 +37,8 @@ until the conditions below are closed (mostly PR2–PR4 must-haves).
 | C5 | `GET /version` live + smoke assertion | PR2 |
 | C6 | Production billing E2E smoke green (`production-dod-billing.sh`) | PR2 |
 | C7 | Sentry + uptime + reconcile-drift alerting | PR3 |
-| C8 | Backup restore test + Disaster Day notes | PR4 |
-| C9 | Incident runbooks under `docs/ops/` | PR3 |
+| C8 | Backup-before-migrate + documented restore ([migration-ready.md](./migration-ready.md)); full Disaster Day after stable prod | Gate C / post-D |
+| C9 | Incident runbooks under `docs/ops/` ([incident-runbook.md](./incident-runbook.md)) | Gate C |
 | C10 | OpenAPI: either ship schema export in CI **or** keep explicit N/A until first public contract freeze | PR2 / deferred |
 
 **None of C1–C10 are reasons to delay PR1.** They are reasons to delay **cutover**.
@@ -211,6 +211,8 @@ When conditions clear, re-run this scorecard and upgrade verdict to **GO**, then
 
 ## Related
 
+- [Launch Gates](./launch-gates.md)
+- [Operations Handbook](./README.md)
 - [ADR 013](../adr/013-production-launch.md)
 - [Go-live checklist](./production-go-live-checklist.md)
 - [ADR 010](../adr/010-polygon-usdt-prepaid-credits.md)

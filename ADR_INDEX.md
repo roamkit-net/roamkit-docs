@@ -1,6 +1,13 @@
 # Architecture Decision Records — Index
 
-All ADRs live in [docs/adr/](./docs/adr/). Status values: **Draft**, **Accepted**, **Superseded**, **Deprecated**.
+All ADRs live in [docs/adr/](./docs/adr/).
+
+**Normative ADR status:** **Draft**, **Accepted**, **Superseded**, **Deprecated**.
+
+**Delivery overlay** (ops / maturity — not a substitute for ADR status):
+**Accepted → Implemented → Operational**. Track runtime maturity in the
+[Operations Handbook](./docs/ops/README.md) Maturity Matrix. Revisit Accepted ADRs
+every **6 months** (Architecture Decision Review: still valid?).
 
 | ADR | Title | Status | Date |
 |-----|-------|--------|------|
@@ -32,9 +39,11 @@ All ADRs live in [docs/adr/](./docs/adr/). Status values: **Draft**, **Accepted*
 |-------|-----|------|
 | Historical gate | [007](./docs/adr/007-staging-only-until-launch.md) | Staging-only until launch (**Superseded**) |
 | Current | [013](./docs/adr/013-production-launch.md) | `main` → production; staging from `develop` |
+| Ops | [Operations Handbook](./docs/ops/README.md) | Release Engineering index (`docs/ops/`) |
+| Ops | [Launch Gates](./docs/ops/launch-gates.md) | Gate A–D entry/exit, freeze, time-boxes |
 | Ops | [Go-Live checklist](./docs/ops/production-go-live-checklist.md) | Cutover / must-haves / flags |
 | Ops | [Production readiness review](./docs/ops/production-readiness-review.md) | PR0.5 go/no-go (GO WITH CONDITIONS) |
-| Ops | [Capability status](./docs/ops/capability-status.md) | Implemented vs Production Enabled |
+| Ops | [Capability / Maturity Matrix](./docs/ops/capability-status.md) | Design → Implemented → Production → Observed |
 
 ## RFCs (proposals)
 
