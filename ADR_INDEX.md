@@ -14,8 +14,8 @@ All ADRs live in [docs/adr/](./docs/adr/). Status values: **Draft**, **Accepted*
 | [008](./docs/adr/008-bootstrap-iac-gh-cli.md) | Bootstrap IaC via `gh` CLI | Accepted | 2026-07 |
 | [009](./docs/adr/009-shared-traefik-edge.md) | Shared Traefik edge routing (proxy network) | Accepted | 2026-07 |
 | [010](./docs/adr/010-polygon-usdt-prepaid-credits.md) | Polygon USDT prepaid credits | Accepted | 2026-07 |
-| [011](./docs/adr/011-credit-vouchers-gift-codes.md) | Credit vouchers & gift codes | Draft | 2026-07 |
-| [012](./docs/adr/012-billing-extensibility-rules.md) | Billing extensibility rules | Draft | 2026-07 |
+| [011](./docs/adr/011-credit-vouchers-gift-codes.md) | Credit vouchers & gift codes | Accepted | 2026-07 |
+| [012](./docs/adr/012-billing-extensibility-rules.md) | Billing extensibility rules | Accepted | 2026-07 |
 
 ## Billing ADR hierarchy
 
