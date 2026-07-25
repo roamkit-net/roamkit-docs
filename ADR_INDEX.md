@@ -10,12 +10,13 @@ All ADRs live in [docs/adr/](./docs/adr/). Status values: **Draft**, **Accepted*
 | [004](./docs/adr/004-provider-interfaces.md) | Provider interfaces for eSIM integrations | Accepted | 2026-07 |
 | [005](./docs/adr/005-domain-events.md) | In-process domain event bus | Accepted | 2026-07 |
 | [006](./docs/adr/006-ghcr-pull-only-deploy.md) | GHCR pull-only deploy (no server builds) | Accepted | 2026-07 |
-| [007](./docs/adr/007-staging-only-until-launch.md) | Staging-only deploy until production launch | Accepted | 2026-07 |
+| [007](./docs/adr/007-staging-only-until-launch.md) | Staging-only deploy until production launch | Superseded | 2026-07 |
 | [008](./docs/adr/008-bootstrap-iac-gh-cli.md) | Bootstrap IaC via `gh` CLI | Accepted | 2026-07 |
 | [009](./docs/adr/009-shared-traefik-edge.md) | Shared Traefik edge routing (proxy network) | Accepted | 2026-07 |
 | [010](./docs/adr/010-polygon-usdt-prepaid-credits.md) | Polygon USDT prepaid credits | Accepted | 2026-07 |
 | [011](./docs/adr/011-credit-vouchers-gift-codes.md) | Credit vouchers & gift codes | Accepted | 2026-07 |
 | [012](./docs/adr/012-billing-extensibility-rules.md) | Billing extensibility rules | Accepted | 2026-07 |
+| [013](./docs/adr/013-production-launch.md) | Production launch | Accepted | 2026-07 |
 
 ## Billing ADR hierarchy
 
@@ -24,6 +25,14 @@ All ADRs live in [docs/adr/](./docs/adr/). Status values: **Draft**, **Accepted*
 | Foundation | [010](./docs/adr/010-polygon-usdt-prepaid-credits.md) | Money path (`CreditService`, ledger, Account ownership) |
 | Constitution | [012](./docs/adr/012-billing-extensibility-rules.md) | Rules every future credit source must obey |
 | First extension | [011](./docs/adr/011-credit-vouchers-gift-codes.md) | Vouchers / gift codes (must satisfy 012) |
+
+## Deploy ADR hierarchy
+
+| Layer | ADR | Role |
+|-------|-----|------|
+| Historical gate | [007](./docs/adr/007-staging-only-until-launch.md) | Staging-only until launch (**Superseded**) |
+| Current | [013](./docs/adr/013-production-launch.md) | `main` → production; staging from `develop` |
+| Ops | [Go-Live checklist](./docs/ops/production-go-live-checklist.md) | Cutover / must-haves / flags |
 
 ## RFCs (proposals)
 
