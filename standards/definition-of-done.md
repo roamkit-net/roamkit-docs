@@ -55,6 +55,7 @@ A work item (issue/PR) is **Done** when all applicable criteria below are met. S
 | Faza 1 | Packages visible on `/plans` from real sync |
 | Faza 2 | JWT auth + `me/esims`; pytest `test_phase2_dod.py`; staging `scripts/staging-dod-faza2.sh` (+ `CREATE_SANDBOX=1`) |
 | Faza 3 | Polygon USDT prepaid credits (ADR-010); staging env `BILLING_ENABLED` + `POLYGON_*`; `scripts/staging-dod-billing.sh` (deposit → verify → ledger → balance → order) |
+| Faza 4 | Production launch (ADR-013); go-live checklist; `main` → `/opt/stacks/roamkit-production/`; four must-haves green |
 
 ## Credit-source gates (post–Faza 3)
 
@@ -69,7 +70,7 @@ New prepaid **credit sources** (vouchers, referral, cashback, …) additionally 
 
 ## Out of scope for Done
 
-- Production deploy (until [ADR 007](../docs/adr/007-staging-only-until-launch.md) superseded).
+- Production deploy (gated by [ADR 013](../docs/adr/013-production-launch.md) + [go-live checklist](../docs/ops/production-go-live-checklist.md); ADR 007 superseded).
 - Flutter app deliverables (repo not created).
 - Perfect UI polish unless specified in the issue.
 
@@ -78,3 +79,4 @@ New prepaid **credit sources** (vouchers, referral, cashback, …) additionally 
 - [CI standard](./ci-standard.md)
 - [Branching standard](./branching.md)
 - [ADR index](../ADR_INDEX.md)
+- [Production go-live checklist](../docs/ops/production-go-live-checklist.md)

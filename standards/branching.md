@@ -6,7 +6,7 @@ Git workflow for all RoamKit repositories.
 
 | Branch | Purpose | Deploy |
 |--------|---------|--------|
-| `main` | Stable, release-ready code | CI only — no auto-deploy until production launch |
+| `main` | Production release line | Auto-deploy to production when stack + CI exist ([ADR 013](../docs/adr/013-production-launch.md)) |
 | `develop` | Integration branch for staging | Auto-deploy to staging on merge |
 | `feature/<name>` | Short-lived work branches | None |
 
@@ -16,14 +16,15 @@ Git workflow for all RoamKit repositories.
 2. Branch from `develop` for features; hotfixes from `main` only when explicitly agreed.
 3. Delete `feature/*` branches after merge.
 4. Keep PRs small and focused; one logical change per PR when possible.
+5. Promote releases with PR `develop` → `main` after staging verification.
 
 ## PR flow
 
 ```
-feature/add-package-sync
+feature/<name>
     → PR → develop   (CI: lint, test, security, build)
     → merge          (deploy staging)
-    → later: PR develop → main (release)
+    → later: PR develop → main (release → deploy production)
 ```
 
 ## Commit messages
@@ -52,5 +53,7 @@ When API and web change together:
 
 ## Related
 
-- [ADR 007](../docs/adr/007-staging-only-until-launch.md)
+- [ADR 013](../docs/adr/013-production-launch.md) — production launch (current deploy matrix)
+- [ADR 007](../docs/adr/007-staging-only-until-launch.md) — superseded staging-only gate
+- [Production go-live checklist](../docs/ops/production-go-live-checklist.md)
 - [CI standard](./ci-standard.md)
