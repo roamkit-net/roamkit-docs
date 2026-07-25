@@ -24,13 +24,17 @@ Record actual prod `.env` values at cutover in the sign-off section below.
 
 ## PR0.5 — Production readiness review
 
-- [ ] All ADRs in [ADR_INDEX](../../ADR_INDEX.md) are Accepted or explicitly Superseded
-- [ ] No `TODO`/`FIXME` in money-path / auth / deposit code (scoped grep)
-- [ ] Production settings: no debug noise defaults; no hardcoded development API keys
-- [ ] Feature flags documented (matrix above + settings names)
-- [ ] OpenAPI / schema export checked against backend (or documented N/A)
-- [ ] ADR 010 architecture tests green and **blocking** on CI for `develop` and `main`
-- [ ] **Signed off by:** _____________ **Date:** _____________
+- [x] Go/no-go review published: [production-readiness-review.md](./production-readiness-review.md)
+- [x] Verdict: **GO WITH CONDITIONS** (PR1 infra authorized; cutover blocked on C1–C9)
+- [x] All ADRs in [ADR_INDEX](../../ADR_INDEX.md) are Accepted or explicitly Superseded
+- [x] No `TODO`/`FIXME` in money-path / auth / deposit code (api arch CI guard)
+- [ ] Production settings: no debug noise defaults; no hardcoded development API keys (**C1** — PR2)
+- [x] Feature flags documented (matrix above + readiness review)
+- [x] OpenAPI: documented N/A / deferred (**C10**)
+- [x] ADR 010 architecture tests green and **blocking** on CI for `develop` (extend on `main` when prod CI exists)
+- [x] **Signed off by:** Engineering/Operator — **GO WITH CONDITIONS** — **Date:** 2026-07-25
+
+Full scorecard and conditions: [production-readiness-review.md](./production-readiness-review.md).
 
 ## PR1 — Production infrastructure
 
