@@ -41,9 +41,12 @@ Domain apps **must not** import `integrations.airalo.client`.
 
 1. New partner → new `integrations/<vendor>/` package.
 2. Celery tasks call services; services call providers.
-3. Payment providers follow the same pattern in Faza 3 (`PaymentProvider`).
+3. External payment / chain integrations follow the same pattern
+   (`BlockchainProvider` for Faza 3 prepaid deposits — see [ADR 010](./010-polygon-usdt-prepaid-credits.md);
+   there is no Stripe `PaymentProvider` in v1).
 
 ## Related
 
 - [Provider abstractions](../architecture/provider-abstractions.md)
 - [ADR 005](./005-domain-events.md)
+- [ADR 010](./010-polygon-usdt-prepaid-credits.md)

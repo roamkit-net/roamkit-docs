@@ -45,15 +45,18 @@ class TopupProvider(Protocol):
 **Consumer:** `esims/services/TopupService`  
 **Implementation:** Airalo (same module as order provider or split by concern).
 
-## Payment (later)
+## Blockchain deposits (Faza 3 / ADR 010)
+
+Prepaid credits use **Polygon USDT** deposits — not Stripe / card checkout.
 
 ```python
-class PaymentProvider(Protocol):
-    def create_checkout_session(self, order_id: str, amount: Money) -> CheckoutSession: ...
-    def handle_webhook(self, payload: bytes, signature: str) -> WebhookResult: ...
+class BlockchainProvider(Protocol):
+    def fetch_usdt_transfer(self, tx_hash: str) -> TransferResult: ...
 ```
 
-**Implementation:** `integrations/stripe/` — not used until Faza 3.
+**Consumer:** `billing/services/DepositVerificationService`  
+**Implementation:** `integrations/polygon/providers.py` → `PolygonProvider`  
+**Money path:** only `CreditService` mutates balances (ledger = source of truth). See [ADR 010](../adr/010-polygon-usdt-prepaid-credits.md).
 
 ## Wiring (dependency injection)
 

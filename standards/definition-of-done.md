@@ -54,7 +54,7 @@ A work item (issue/PR) is **Done** when all applicable criteria below are met. S
 | Faza 0 | Skeleton deploy shows "staging OK"; health endpoints live |
 | Faza 1 | Packages visible on `/plans` from real sync |
 | Faza 2 | JWT auth + `me/esims`; pytest `test_phase2_dod.py`; staging `scripts/staging-dod-faza2.sh` (+ `CREATE_SANDBOX=1`) |
-| Faza 3 | Stripe test checkout + Airalo fulfillment end-to-end |
+| Faza 3 | Polygon USDT prepaid credits (ADR-010); staging env `BILLING_ENABLED` + `POLYGON_*`; `scripts/staging-dod-billing.sh` (deposit → verify → ledger → balance → order) |
 
 ## Out of scope for Done
 
