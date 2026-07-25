@@ -114,6 +114,8 @@ DepositVerified(
     balance_after=...,
     tx_hash=...,
     payment_method=...,
+    ledger_entry_id=...,
+    verified_at=...,
 )
 
 CreditGranted(
@@ -124,6 +126,7 @@ CreditGranted(
     reference_type=...,
     reference_id=...,
     ledger_entry_id=...,
+    created_at=...,
 )
 ```
 
