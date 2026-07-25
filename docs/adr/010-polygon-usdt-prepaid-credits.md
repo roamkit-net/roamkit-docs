@@ -217,6 +217,22 @@ Architecture tests enforce that no module outside `apps.billing` imports billing
 3. Add nullable `Order.account`, populate from `order.user.billing_account`, then make non-null and drop `Order.user` (or keep `user` only if a non-billing display path still needs it — prefer drop for a single ownership rule).
 4. Update list/auth queries to filter by `account`.
 
+## Production Readiness
+
+Status of the prepaid-credits delivery as of staging validation
+(`roamkit-infra` `scripts/staging-dod-billing.sh`):
+
+| Area | Status |
+|------|--------|
+| Billing backend | ✅ complete |
+| Web Deposit UX | ✅ complete |
+| Spend flow | ✅ complete |
+| Staging validation | ✅ complete |
+| Production rollout | ⏳ pending |
+
+Known staging limitation: `WALLETCONNECT_ENABLED=false` until Reown AppKit is
+confirmed. Production remains gated by [ADR 007](./007-staging-only-until-launch.md).
+
 ## Related
 
 - [ADR 004](./004-provider-interfaces.md) — provider protocols (billing uses `BlockchainProvider`, not Airalo)
