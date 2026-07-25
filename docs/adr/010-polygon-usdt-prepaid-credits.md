@@ -19,7 +19,7 @@ Adopt **Polygon-only USDT prepaid credits** owned by `billing.Account`, with an 
 ### Network and precision
 
 - **Network:** Polygon only (`chain_id = 137`). No TRC-20, ERC-20, or BSC in v1. No `network` column on deposit/ledger models.
-- **Precision:** `Decimal(max_digits=20, decimal_places=6)` on all money fields. UI may display fewer places (e.g. `15.50`).
+- **Precision:** `Decimal(max_digits=20, decimal_places=6)` on all money fields (`token_decimals = 6`). UI formatting precision is independent (`display_decimals`, initial value `2`) and comes from the billing display config resource — e.g. `15.50 USDT`, never `$…` or `… USD`.
 
 ### Ownership
 
@@ -94,8 +94,34 @@ Admin uses `REFERENCE_MODELS` to deep-link related objects when resolvable.
 
 ### API and flags
 
-- Public billing HTTP surface: **only** `/api/v1/billing/` (balance, deposit-info, verify-wallet, verify-cex).
+- Public billing HTTP surface: **only** `/api/v1/billing/` (balance, deposit-info, verify-wallet, verify-cex, **config**).
 - Feature flags: `BILLING_ENABLED`, `SUBSCRIPTIONS_ENABLED`, `WALLETCONNECT_ENABLED`.
+
+#### `GET /api/v1/billing/config/`
+
+Read-only **display configuration** resource for catalog, landing, checkout copy, and future clients.
+
+| Rule | Detail |
+|------|--------|
+| Auth | `AllowAny` (no JWT) |
+| Scope | Currency / presentation fields only — not a dumping ground for unrelated settings |
+| Secrets | Never expose wallet, contract, EIP-681 URI, RPC, or deposit addresses (those stay on authenticated `deposit-info`) |
+| When `BILLING_ENABLED=false` | Still **200** with `billing_enabled: false` plus display fields (money endpoints keep existing 404 behavior) |
+
+Payload fields (snake_case):
+
+| Field | Role |
+|-------|------|
+| `config_version` | Integer for client cache / schema evolution |
+| `token_symbol` | Display symbol (e.g. `USDT`). Empty → client fallback `"credits"` (never a bare amount) |
+| `token_name` | Human-readable name (e.g. `USDT Credits`) |
+| `token_decimals` | Ledger / token precision (`6`, matching `Decimal(20,6)`) |
+| `display_decimals` | UI formatting precision (independent of ledger; initial value `2`) |
+| `billing_enabled` | Mirrors the feature flag for clients |
+
+Catalog list prices remain sourced as `price_usd` / `min_price_usd` in APIs; the UI presents prepaid credits **1:1** using this config (e.g. `12.50 USDT` / `from 12.50 USDT`).
+
+If broader public product config is needed later, prefer a dedicated `/api/v1/config/…` family — **not** introduced by this ADR amendment and out of scope for the prepaid-credits billing surface.
 
 ### Domain events (snapshots)
 
