@@ -34,6 +34,7 @@ All ADRs live in [docs/adr/](./docs/adr/). Status values: **Draft**, **Accepted*
 | Current | [013](./docs/adr/013-production-launch.md) | `main` → production; staging from `develop` |
 | Ops | [Go-Live checklist](./docs/ops/production-go-live-checklist.md) | Cutover / must-haves / flags |
 | Ops | [Production readiness review](./docs/ops/production-readiness-review.md) | PR0.5 go/no-go (GO WITH CONDITIONS) |
+| Ops | [Capability status](./docs/ops/capability-status.md) | Implemented vs Production Enabled |
 
 ## RFCs (proposals)
 
