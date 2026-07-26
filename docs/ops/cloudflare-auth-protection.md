@@ -44,12 +44,16 @@ Public **sitekeys** only — never commit secrets. Secrets live in stack `.env` 
 | Env | Widget name | Sitekey | Domains | Notes |
 |-----|-------------|---------|---------|-------|
 | Staging | `roamkit-staging-auth` | `0x4AAAAAAD-YN3lSkfPOTGKE` | `staging.roamkit.net` | Account `34684c48969ce0a4dbab07e5d2a5c8f6`; managed mode; created 2026-07-26 via CF API |
-| Production | `roamkit-production-auth` | *(TBD)* | `roamkit.net`, `www.roamkit.net` | Create before prod enable; separate widget from staging |
+| Production | `roamkit-production-auth` | `0x4AAAAAAD-ZjsP2mKFXIrsY` | `roamkit.net`, `www.roamkit.net` | Same account; managed mode; created 2026-07-26 via CF API. Never reuse staging sitekey |
 
-Rotate secret (server):  
-`POST /accounts/{id}/challenges/widgets/{sitekey}/rotate_secret` then update `TURNSTILE_SECRET_KEY` and recreate API.
+### Key rotation
 
-Web bake: sitekey must be passed as Docker build-arg `NEXT_PUBLIC_TURNSTILE_SITE_KEY` (repo Actions variable for CI). Runtime `.env` alone is not enough for the client bundle.
+1. Create a new widget **or** `POST /accounts/{id}/challenges/widgets/{sitekey}/rotate_secret` on the existing widget.
+2. Update host stack `.env` (`TURNSTILE_SECRET_KEY`, `TURNSTILE_SITE_KEY`, `NEXT_PUBLIC_TURNSTILE_SITE_KEY`) and the matching GitHub Actions bake variable (`NEXT_PUBLIC_TURNSTILE_SITE_KEY` for staging / `NEXT_PUBLIC_TURNSTILE_SITE_KEY_PRODUCTION` for production).
+3. Rebuild/push the web image so the new sitekey is baked; recreate API + web.
+4. Retire the old secret (and delete the old widget if replaced). Confirm `/health/turnstile` and login smoke before discarding the previous pins.
+
+Web bake: sitekey must be passed as Docker build-arg `NEXT_PUBLIC_TURNSTILE_SITE_KEY` from the env-specific Actions variable. Runtime `.env` alone is not enough for the client bundle. CI fails if `main` bakes the staging sitekey or `develop` bakes the production sitekey.
 
 ## Provision keys on the dedicated server (CF API)
 
