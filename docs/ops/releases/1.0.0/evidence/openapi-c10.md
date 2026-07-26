@@ -22,4 +22,5 @@
 
 - Gate C already GO with C10 deferred; this evidence closes the deferred item without re-running Gate C.
 - Production publish of docs UI follows freeze / Hypercare policy (staging-first).
-- Frontend typegen remains Wave 2 backlog — see [api-versioning.md](../../../standards/api-versioning.md).
+- Frontend typegen remains Wave 2 backlog — see [api-versioning.md](../../../../../standards/api-versioning.md).
+- Sole-source typegen, contract owner/consumer, artifact ownership, and Wave 2 policies are locked in [api-versioning.md](../../../../../standards/api-versioning.md) (documentation only; does not reopen C10).
