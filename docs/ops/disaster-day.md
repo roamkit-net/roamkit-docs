@@ -19,7 +19,7 @@ Annual failure simulation **after** stable production. Not a Gate D hard blocker
 | Facilitator | Engineering (solo operator / agent execution) |
 | Scenarios run | Deploy rollback drill — **aborted twice before mutate** |
 | Recovery time (per scenario) | n/a |
-| Gaps / actions | (1) no distinct API N−1 + live Traefik vs dress-rehearsal — [rollback-drill.md](./releases/1.0.0/evidence/rollback-drill.md) via #31. (2) N−1 `86ab449` lacks `GET /version` required by smoke — [rollback-drill-retry.md](./releases/1.0.0/evidence/rollback-drill-retry.md). Next: N−1 must include `/version`; use newer same-mig SHA as drill N. |
+| Gaps / actions | (1) no distinct API N−1 + live Traefik vs dress-rehearsal — [rollback-drill.md](./releases/1.0.0/evidence/rollback-drill.md). (2) N−1 `86ab449` lacks `GET /version` — [rollback-drill-retry.md](./releases/1.0.0/evidence/rollback-drill-retry.md). Next: N−1 must include `/version`; use newer same-mig SHA as drill N. |
 
 Store notes under `releases/` or a dated file in this folder (e.g. `disaster-day-YYYY.md`).
 
