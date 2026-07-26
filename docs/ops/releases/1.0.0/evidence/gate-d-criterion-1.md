@@ -6,8 +6,9 @@
 | Inventory | [gate-d-criterion-1-inventory.md](./gate-d-criterion-1-inventory.md) (merged #39) |
 | Execute GO | **Conditional** (2026-07-26) — Closure plan 1–7 under STOP rules |
 | Execution recorded (UTC) | 2026-07-26T12:05:00Z |
-| Verdict (this pack) | **EXECUTE PASS** (steps 1–6) · Hypercare **in progress** (step 7) |
-| Criterion #1 status | 🟡 **YELLOW** until Hypercare 24h closes without P0/P1 |
+| Verdict (this pack) | **EXECUTE PASS** (steps 1–7) · Hypercare **COMPLETE** |
+| Criterion #1 status | 🟢 **GREEN** — Hypercare closed 2026-07-26T22:38:24Z without unresolved P0/P1 |
+| Gate D close-out | **GO** — [gate-d.md](./gate-d.md) |
 | Gate C | **GO** (unchanged) |
 
 ## STOP checks (all clear)
@@ -73,17 +74,15 @@ Host `smoke-test-production.sh` remains dress-rehearsal compose-exec (backlog to
 - Capability + go-live checklist catalog/bake boxes updated
 - Release Decision Log: Gate D **GO WITH CONDITIONS** (hypercare clock)
 
-### 7. Hypercare (open)
+### 7. Hypercare (closed)
 
 | Field | Value |
 |-------|-------|
 | Started | `2026-07-25T22:38:24Z` |
-| Ends (24h) | `2026-07-26T22:38:24Z` |
-| At execution record | ~13.4 h elapsed · ~10.6 h remaining |
-| Samples | live/ready/version/web=200 · `drift_hits=0` |
-| Rollback window | Already **COMPLETE** `2026-07-25T22:37:56Z` |
-
-**Close Criterion #1 → GREEN** and **Gate D → unconditional GO** only after Hypercare end with no unresolved P0/P1 (append close-out note / decision log update).
+| Ended (24h) | `2026-07-26T22:38:24Z` |
+| Samples | 96 · `HYPERCARE_COMPLETE` · 2 transient ALERTs (recovered) · no unresolved P0/P1 |
+| Rollback window | **COMPLETE** `2026-07-25T22:37:56Z` |
+| Close-out | [gate-d.md](./gate-d.md) Success Snapshot + Decision Log **GO** |
 
 ## Post-execution inventory
 
@@ -92,16 +91,16 @@ Host `smoke-test-production.sh` remains dress-rehearsal compose-exec (backlog to
 | 1 | Public DNS | 🟢 |
 | 2 | Traefik Hosts | 🟢 |
 | 3 | Cutover + rollback window | 🟢 |
-| 4 | Hypercare ≥24h | 🟡 in progress |
+| 4 | Hypercare ≥24h | 🟢 |
 | 5 | Production web bake | 🟢 |
 | 6 | Web `main` promotion path | 🟢 (`roamkit-api` `main` deferred — see STOP) |
 | 7 | `/global-esim` real prices | 🟢 |
 | 8 | Public smoke (curls + Playwright) | 🟢 |
 | 9 | Flags / migrations | 🟢 |
 | 10 | Manifest filled | 🟢 (this PR) |
-| 11 | Decision log Gate D | 🟡 GO WITH CONDITIONS |
-| 12 | Capability / checklist | 🟢 (this PR) |
-| 13 | Gate D unconditional exit | 🟡 awaits hypercare |
+| 11 | Decision log Gate D | 🟢 **GO** |
+| 12 | Capability / checklist | 🟢 |
+| 13 | Gate D unconditional exit | 🟢 [gate-d.md](./gate-d.md) |
 
 ## Out of scope / backlog
 

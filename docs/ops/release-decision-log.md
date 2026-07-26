@@ -9,6 +9,7 @@ the decision index.
 | 2026-07-25 | 1.0.0 | Gate C — API slice | GO WITH CONDITIONS | [gate-c-api.md](./releases/1.0.0/evidence/gate-c-api.md) | Engineering |
 | 2026-07-25T21:52:00Z | 1.0.0 | Gate C — full | **GO** | [gate-c.md](./releases/1.0.0/evidence/gate-c.md) | Engineering (solo operator) |
 | 2026-07-26T12:05:00Z | 1.0.0 | Gate D | **GO WITH CONDITIONS** | [gate-d-criterion-1.md](./releases/1.0.0/evidence/gate-d-criterion-1.md) | Operations / Release (solo) |
+| 2026-07-26T22:38:24Z | 1.0.0 | Gate D — Hypercare exit | **GO** | [gate-d.md](./releases/1.0.0/evidence/gate-d.md) | Operations / Release (solo) |
 
 ## Related
 
