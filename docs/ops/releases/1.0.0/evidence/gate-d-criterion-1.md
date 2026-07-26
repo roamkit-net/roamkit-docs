@@ -104,11 +104,12 @@ Host `smoke-test-production.sh` remains dress-rehearsal compose-exec (backlog to
 
 ## Out of scope / backlog
 
-- Create `roamkit-api` `main` only after fixing cross-repo image pairing in `deploy-production.yml`
-- Promote/deploy web `8afd726…` (wizard) when API N includes lifecycle contract
 - Restore host `smoke-test-production.sh` to public HTTPS
 - Traefik SNI / Kuma public HTTPS retarget
-- Airalo / Phase 5
+- `/version` env SHA drift (web SHA in API env) — see retrospective
+- Phase 5 — Airalo Go-Live Readiness (next program focus)
+
+> Note: `roamkit-api` `main` and later web promotes landed after this execution window; final running SHAs are in [gate-d.md](./gate-d.md) / [phase-4-complete.md](./phase-4-complete.md).
 
 ## Related
 

@@ -31,4 +31,5 @@ Status: **Gate D = GO** — Hypercare closed; Production Freeze lifted for norma
 | Gate D — inventory | recorded | [evidence/gate-d-criterion-1-inventory.md](./evidence/gate-d-criterion-1-inventory.md) |
 | Gate D — execution | EXECUTE PASS; hypercare closed | [evidence/gate-d-criterion-1.md](./evidence/gate-d-criterion-1.md) |
 | Gate D — close-out | **GO** | [evidence/gate-d.md](./evidence/gate-d.md) |
+| Phase 4 Complete | **GREEN** | [evidence/phase-4-complete.md](./evidence/phase-4-complete.md) |
 | Retrospective | filled | [1.0.0-retro.md](../1.0.0-retro.md) |
