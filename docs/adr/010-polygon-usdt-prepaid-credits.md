@@ -121,6 +121,22 @@ Payload fields (snake_case):
 
 Catalog list prices remain sourced as `price_usd` / `min_price_usd` in APIs; the UI presents prepaid credits **1:1** using this config (e.g. `12.50 USDT` / `from 12.50 USDT`).
 
+#### Graceful degradation (catalog display)
+
+`GET /api/v1/billing/config/` is a **best-effort** dependency for catalog price presentation — not a hard dependency for rendering package rows.
+
+| Rule | Detail |
+|------|--------|
+| Non-blocking | Catalog UI must never wait forever on currency config |
+| Loading | Skeleton is allowed only while the first fetch is in flight and no usable cache exists |
+| Failure | On error / missing provider, show amount with fallback symbol `"credits"` (degraded), never an infinite skeleton |
+| Cache | Clients may cache the payload keyed by `config_version`; a new version replaces the cache |
+| Circuit | After repeated failures, clients should back off before probing again |
+
+Blocking catalog prices on a failed or missing `billing/config` response is a **defect**.
+
+Shared JSON Schema: [`docs/contracts/billing-config.response.schema.json`](../contracts/billing-config.response.schema.json) (mirrored in api/web CI).
+
 If broader public product config is needed later, prefer a dedicated `/api/v1/config/…` family — **not** introduced by this ADR amendment and out of scope for the prepaid-credits billing surface.
 
 ### Domain events (snapshots)
