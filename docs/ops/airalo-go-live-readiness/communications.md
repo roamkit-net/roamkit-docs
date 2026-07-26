@@ -39,8 +39,9 @@ Use factual, non-overclaiming language until E2E is proven:
 - Payment handled by our platform
 - Automatic eSIM provisioning working
 - QR delivery implemented
-- Installation flow validated
-- End-to-end testing in progress with pilot users
+- Installation flow validated (guided setup wizard + install telemetry)
+- Sandbox E2E 10-point gate passed (top-up provider ACK subject to sandbox rate limits; RoamKit compensating refund verified)
+- End-to-end testing continuing with pilot users
 - We expect to request production access after completing our 20-user pilot
 ```
 

@@ -27,6 +27,17 @@ Goal: support can resolve the full customer journey without engineering for rout
 
 Pilot KPI: first meaningful support response **&lt; 24 h**.
 
+## Staging sandbox re-run
+
+On the staging host:
+
+```bash
+cd /opt/stacks/roamkit-net
+EVIDENCE_DIR=/tmp/phase5-evidence ./scripts/staging-dod-airalo-phase5.sh
+```
+
+Script lives in `roamkit-infra/scripts/staging-dod-airalo-phase5.sh`.
+
 ## Escalation
 
 - Billing / ledger mismatch → engineering (do not hand-edit ledger).
