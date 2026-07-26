@@ -10,7 +10,7 @@ ADRs; this document defines **when** we may advance and **who** says GO.
 | A | Architecture Ready | Architecture | ✅ closed |
 | B | Infrastructure Ready | Infrastructure | ✅ closed (PR1) |
 | C | Production Ready | Engineering | ✅ closed (2026-07-25) |
-| D | Customer Traffic | Operations / Release | 🟡 **GO WITH CONDITIONS** (hypercare → `2026-07-26T22:38:24Z`) |
+| D | Customer Traffic | Operations / Release | ✅ **GO** (2026-07-26T22:38:24Z) |
 
 Map to Faza 4 PRs: A ≈ PR0/PR0.5 · B ≈ PR1 · C ≈ app readiness + E2E + observability · D ≈ cutover.
 

@@ -1,26 +1,26 @@
 # Release 1.0.0
 
-Filled at Gate D execution (Phase 4 Exit Criterion #1). See [release-manifest.md](../../release-manifest.md).
+Filled at Gate D cutover; updated at Hypercare exit. See [release-manifest.md](../../release-manifest.md).
 
 | Field | Value |
 |-------|-------|
 | Release | 1.0.0 |
-| Git SHA (API running) | `9989fe559107af3caa5d9b96d73c7dfb95cbfe68` |
-| Git SHA (web running) | `7064a9b953ad167e7a23dca6f454ca66b09482de` |
-| Docker image (API) | `ghcr.io/roamkit-net/roamkit-api:9989fe559107af3caa5d9b96d73c7dfb95cbfe68` |
-| Docker image (web) | `ghcr.io/roamkit-net/roamkit-web:7064a9b953ad167e7a23dca6f454ca66b09482de` (`sha256:732856f00bb3bafe00f03e0bfead5892081759d5d226871665c2ae3fc3eeaa09`, production bake) |
-| Web `main` tip (baked, not yet running) | `8afd7268f55ecc63b1684010582521da036be4fd` |
-| Migration version | `billing.0001_billing_schema` applied (+ catalog/orders/esims heads present on prod) |
+| Git SHA (API OCI revision) | `631e79b9b9009f952984f5791bf7e5d919631b60` |
+| Git SHA (web running) | `e91664d67fcbf67f613af0b67eedda1072cfc3ef` |
+| Docker image (API) | `ghcr.io/roamkit-net/roamkit-api:main` (`sha256:0be6dfe1a60240c761d3488e6aba4cac920ee5119b85f2213ebf95b9f42bd3ac`, OCI rev `631e79b…`) |
+| Docker image (web) | `ghcr.io/roamkit-net/roamkit-web:e91664d67fcbf67f613af0b67eedda1072cfc3ef` |
+| `/version` note | Env `ROAMKIT_GIT_SHA` currently mirrors web SHA — fix tracked in retrospective |
+| Migration version | billing + catalog/orders/esims heads applied (`esims.0003_esim_lifecycle_wave1` present) |
 | ADR baseline | 010, 011, 012, 013 Accepted; 007 Superseded |
 | Feature flags | BILLING_ENABLED=true · WALLETCONNECT_ENABLED=false · SUBSCRIPTIONS_ENABLED=false · VOUCHERS_ENABLED=false |
-| Rollback version (`.previous-tag`) | API `caa3f1d0e3e4c53bacf76719a0f18b1473560207` · WEB `7546edb2f732a5e2de46cb35b0dab3bc66993f6c` |
-| Deploy date (UTC) | Cutover `2026-07-25T22:05:27Z`; production web bake redeploy `2026-07-26T12:00:00Z` (approx) |
-| Operator | Engineering (solo operator) |
+| Rollback version (`.previous-tag`) | API `631e79b9b9009f952984f5791bf7e5d919631b60` · WEB `51fae91d0e7c51211301f6b3a1db17cf9b840429` _(file at close-out; earlier cutover N was `caa3f1d…` / `7546edb…`)_ |
+| Deploy date (UTC) | Cutover `2026-07-25T22:05:27Z` |
+| Operator | Engineering / Operations (solo operator) |
 | Deployment window | Cutover outside default 09:00–11:00 UTC weekday window (recorded) |
 | Rollback window | 30 minutes — **COMPLETE** `2026-07-25T22:37:56Z` |
-| Hypercare until (UTC) | `2026-07-26T22:38:24Z` |
+| Hypercare until (UTC) | `2026-07-26T22:38:24Z` — **COMPLETE** |
 
-Status: **Gate D GO WITH CONDITIONS** — technical cutover + catalog bake PASS; Hypercare clock open until row above.
+Status: **Gate D = GO** — Hypercare closed; Production Freeze lifted for normal merge discipline.
 
 ## Evidence packs
 
@@ -29,5 +29,6 @@ Status: **Gate D GO WITH CONDITIONS** — technical cutover + catalog bake PASS;
 | Gate C — API slice | recorded | [evidence/gate-c-api.md](./evidence/gate-c-api.md) |
 | Gate C — full GO | **GO** | [evidence/gate-c.md](./evidence/gate-c.md) |
 | Gate D — inventory | recorded | [evidence/gate-d-criterion-1-inventory.md](./evidence/gate-d-criterion-1-inventory.md) |
-| Gate D — execution | EXECUTE PASS; hypercare open | [evidence/gate-d-criterion-1.md](./evidence/gate-d-criterion-1.md) |
-| Gate D — close-out | pending hypercare end | — |
+| Gate D — execution | EXECUTE PASS; hypercare closed | [evidence/gate-d-criterion-1.md](./evidence/gate-d-criterion-1.md) |
+| Gate D — close-out | **GO** | [evidence/gate-d.md](./evidence/gate-d.md) |
+| Retrospective | filled | [1.0.0-retro.md](../1.0.0-retro.md) |
