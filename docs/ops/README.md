@@ -27,6 +27,8 @@ ship safely — Launch Gates, cutover discipline, incidents, and maturity tracki
 | [Gate C exit](./gate-c-exit.md) | Engineering tracker for C* before GO |
 | [Gate D cutover](./gate-d-cutover.md) | Time-boxed cutover runbook |
 | [Airalo Go-Live Readiness](./airalo-go-live-readiness/README.md) | Partner Evidence Pack (Phase 5–7); Production Freeze |
+| [Airalo removable eUICC (future)](./airalo-removable-euicc.md) | Partner status: on hold; what we asked / what to ask later |
+| [Cloudflare auth protection](./cloudflare-auth-protection.md) | Turnstile provisioning, soak, Managed Challenge, metrics |
 | [Voucher PR1 kickoff](./voucher-pr1-kickoff.md) | Blocked until after Phase 7 Airalo production switch |
 
 ## Related

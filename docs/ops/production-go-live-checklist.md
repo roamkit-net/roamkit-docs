@@ -11,6 +11,7 @@ Do **not** declare go-live until every applicable box is checked.
 | Billing | `BILLING_ENABLED` | ON | ON |
 | WalletConnect | `WALLETCONNECT_ENABLED` | ON after AppKit smoke | **OFF** (re-enable after WC smoke on prod) |
 | Subscriptions | `SUBSCRIPTIONS_ENABLED` | OFF | OFF |
+| Turnstile | `TURNSTILE_ENABLED` | OFF until soak + keys; then ON | ON after staging soak + CF widget |
 | Vouchers | `VOUCHERS_ENABLED` | OFF until voucher ship | OFF until voucher ship |
 | Business / Team | — | not built | not built |
 
@@ -107,6 +108,7 @@ Evidence: [observability-criterion-2.md](./releases/1.0.0/evidence/observability
 ## PR4 — Hardening + exercises
 
 - [ ] Rate limits on auth + billing verify; security headers
+- [ ] Cloudflare Turnstile on login/register/forgot + Managed Challenge — see [cloudflare-auth-protection.md](./cloudflare-auth-protection.md) (staging soak → keys via CF API → enable)
 - [ ] Backup **restore** test recorded (not only backup job exists)
 - [ ] Backup restore procedure documented + backup-before-migrate ([migration-ready.md](./migration-ready.md)); full [Disaster Day](./disaster-day.md) after stable prod (annual; not Gate D hard blocker)
 - [ ] Lean load test recorded (deposit verify / order / balance); no 5xx storms
