@@ -30,6 +30,7 @@ ship safely — Launch Gates, cutover discipline, incidents, and maturity tracki
 | [Airalo removable eUICC (future)](./airalo-removable-euicc.md) | Partner status: on hold; what we asked / what to ask later |
 | [Cloudflare auth protection](./cloudflare-auth-protection.md) | Turnstile provisioning, soak, Managed Challenge, metrics |
 | [Google OAuth](./google-oauth.md) | GIS ID-token clients, enable order, support, metrics |
+| [Android LPA deep link spike](./android-lpa-deep-link-spike.md) | Matrix + Decision Log for Android `LPA:` install CTA |
 | [Voucher PR1 kickoff](./voucher-pr1-kickoff.md) | Blocked until after Phase 7 Airalo production switch |
 
 ## Related
