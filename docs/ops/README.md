@@ -25,7 +25,8 @@ ship safely — Launch Gates, cutover discipline, incidents, and maturity tracki
 | [Disaster Day](./disaster-day.md) | Annual failure simulation |
 | [Gate C exit](./gate-c-exit.md) | Engineering tracker for C* before GO |
 | [Gate D cutover](./gate-d-cutover.md) | Time-boxed cutover runbook |
-| [Voucher PR1 kickoff](./voucher-pr1-kickoff.md) | Blocked until Gate D + retrospective |
+| [Airalo Go-Live Readiness](./airalo-go-live-readiness/README.md) | Partner Evidence Pack (Phase 5–7); Production Freeze |
+| [Voucher PR1 kickoff](./voucher-pr1-kickoff.md) | Blocked until after Phase 7 Airalo production switch |
 
 ## Related
 

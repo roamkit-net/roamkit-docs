@@ -45,6 +45,7 @@ every **6 months** (Architecture Decision Review: still valid?).
 | Ops | [Go-Live checklist](./docs/ops/production-go-live-checklist.md) | Cutover / must-haves / flags |
 | Ops | [Production readiness review](./docs/ops/production-readiness-review.md) | PR0.5 go/no-go (GO WITH CONDITIONS) |
 | Ops | [Capability / Maturity Matrix](./docs/ops/capability-status.md) | Design → Implemented → Production → Observed |
+| Ops | [Airalo Go-Live Readiness](./docs/ops/airalo-go-live-readiness/README.md) | Partner Evidence Pack; Phase 5–7; Production Freeze |
 
 ## RFCs (proposals)
 
