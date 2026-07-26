@@ -1,0 +1,66 @@
+{
+  "operator_window_utc": "2026-07-26T23:10Z/23:30Z",
+  "environment": "staging",
+  "airalo_sandbox": true,
+  "primary_esim_id": 6,
+  "primary_order_id": 44,
+  "external_order_id": "82359",
+  "pass": 10,
+  "fail": 0,
+  "conditions": [
+    "#9 provider ACK rate-limited; RoamKit compensate path verified"
+  ],
+  "results": [
+    {
+      "n": 1,
+      "name": "Catalog browse",
+      "ok": "PASS"
+    },
+    {
+      "n": 2,
+      "name": "Package purchase",
+      "ok": "PASS"
+    },
+    {
+      "n": 3,
+      "name": "Charge via RoamKit billing",
+      "ok": "PASS"
+    },
+    {
+      "n": 4,
+      "name": "Airalo API provisioning",
+      "ok": "PASS"
+    },
+    {
+      "n": 5,
+      "name": "QR generated",
+      "ok": "PASS"
+    },
+    {
+      "n": 6,
+      "name": "eSIM installation",
+      "ok": "PASS"
+    },
+    {
+      "n": 7,
+      "name": "Activation",
+      "ok": "PASS"
+    },
+    {
+      "n": 8,
+      "name": "Data traffic confirmed",
+      "ok": "PASS"
+    },
+    {
+      "n": 9,
+      "name": "Top-up works",
+      "ok": "PASS",
+      "note": "list+debit+submit+refund; Airalo 429 ACK"
+    },
+    {
+      "n": 10,
+      "name": "Lifecycle + support finds order",
+      "ok": "PASS"
+    }
+  ]
+}

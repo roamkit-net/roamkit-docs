@@ -1,0 +1,33 @@
+{
+  "results": [
+    {
+      "id": "discover-in-30days-3gb-px-topup",
+      "title": "3 GB - 30 days",
+      "data_allowance": "3 GB",
+      "validity_days": 30,
+      "price_usd": "24.00",
+      "is_unlimited": false,
+      "plan_type": "topup"
+    },
+    {
+      "id": "discover-in-30days-5gb-px-topup",
+      "title": "5 GB - 30 days",
+      "data_allowance": "5 GB",
+      "validity_days": 30,
+      "price_usd": "34.00",
+      "is_unlimited": false,
+      "plan_type": "topup"
+    },
+    {
+      "id": "discover-in-30days-10gb-px-topup",
+      "title": "10 GB - 30 days",
+      "data_allowance": "10 GB",
+      "validity_days": 30,
+      "price_usd": "57.00",
+      "is_unlimited": false,
+      "plan_type": "topup"
+    }
+  ],
+  "count": 12,
+  "note": "Truncated sample; full list observed count=12 on staging"
+}

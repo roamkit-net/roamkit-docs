@@ -1,0 +1,7 @@
+{
+  "status": "ACTIVE",
+  "remaining_mb": 1024,
+  "total_mb": 1024,
+  "is_unlimited": false,
+  "note": "Observed 2026-07-26T23:10:52Z on staging esim_id=6 after provision; sandbox allocated quota without radio consume."
+}

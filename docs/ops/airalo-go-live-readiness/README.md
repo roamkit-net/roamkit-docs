@@ -34,7 +34,7 @@ Architecture stays in ADRs; this pack is operational proof.
 | Phase | Name | Entry (summary) | Exit (summary) |
 |-------|------|-----------------|----------------|
 | 4 | Production Infrastructure Readiness | ADR 013 Accepted | Stack, observability, billing E2E, rollback verified |
-| 5 | Airalo Go-Live Readiness | Phase 4 GREEN or parallel waiver; sandbox creds | Wave 1 + sandbox E2E + this pack filled |
+| 5 | Airalo Go-Live Readiness | Phase 4 GREEN or parallel waiver; sandbox creds | Wave 1 + sandbox E2E + this pack filled — **GREEN** ([phase-5-complete](../releases/1.0.0/evidence/phase-5-complete.md)) |
 | 6 | Pilot Validation (20 → 100) | Phase 5 GREEN; no P0/P1; pack exists | 20 + 100 pilots + KPI met |
 | 7 | Airalo Production Switch | Production Request DoD green | Prod credentials + validation smoke |
 | 8 | Customer Experience Enhancements | Phase 7 done; freeze ended | Scope reopened |

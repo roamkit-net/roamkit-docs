@@ -9,7 +9,11 @@ Documentation-only schema edits may appear here without an API version bump.
 - `drf-spectacular` infrastructure: `/api/schema/`, `/api/docs/`, `/api/redoc/`.
 - Explicit `operationId`s, tags, JWT `bearerAuth`, CI validate + Spectral + path/security architecture tests.
 
-## Unreleased (Faza 5 Wave 1)
+## Unreleased
+
+_(none)_
+
+## Faza 5 Wave 1 (2026-07-26)
 
 - Additive: `GET|POST /api/v1/me/esims/{id}/events/` (install telemetry; JWT + ownership).
 - Additive eSIM fields: `activation_policy`, `setup_*`.
