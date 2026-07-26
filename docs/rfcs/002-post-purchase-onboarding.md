@@ -25,6 +25,10 @@ Guided post-purchase setup so users install, enable, and confirm an eSIM without
 - Live connectivity test or “Generate support report” UI.
 - Smart destination recommendations.
 - Native home-screen widget (requires mobile app).
+- Detecting Android manufacturer from User-Agent.
+- Per-model install guides (manufacturer-level guides only).
+- Persisting manufacturer choice in URL or localStorage.
+- Backend-hosted Android guide content (Wave 1 uses a frontend TypeScript registry).
 
 ## User flow
 
@@ -32,10 +36,24 @@ Route: `/me/esims/[id]/setup`
 
 Steps:
 
-1. **Install eSIM** — device-aware (Desktop: QR + “Open Camera on your phone”; iPhone: Apple direct link; Android: QR / manual).
+1. **Install eSIM** — device-aware:
+   - **Desktop:** QR primary (“Open Camera on your phone”); optional **Phone instructions** opens the same Android manufacturer picker.
+   - **iPhone:** Apple direct install link when available; QR / manual codes as fallback.
+   - **Android:** manufacturer picker (stable slug ids: `samsung`, `pixel`, `other`, …) then registry guide steps, plus QR / LPA / SM-DP+ codes.
 2. **Enable eSIM** — static checklist.
 3. **Turn on Data Roaming** — static network helper (no live probe).
 4. **Confirm everything works** — activation-policy banner from `esim.activation_policy`.
+
+### Android install guides (registry)
+
+Guide **registry** is the single source of truth for Android installation instructions. UI components render registry content and must not contain manufacturer-specific installation logic.
+
+- Stable slug `id`s (immutable; not derived from display title).
+- UI talks to a **GuideService** boundary (list / get / resolve); components do not import raw registry data.
+- Wave 1 storage: TypeScript content module in the web app.
+- Later (optional): move stabilized guides to an API content registry (YAML/JSON + REST), then Admin/DB only if ops need non-engineer editing.
+
+Manufacturer selection is session-local in the wizard React state. ADR 014 event allowlist is unchanged; selected manufacturer may appear only in event `payload` (e.g. `{ "manufacturer": "samsung" }`).
 
 Post-purchase redirect from buy success → setup. Detail page shows **Continue setup** when `setup_completed_at` is null and status is before `activated`.
 
@@ -93,7 +111,7 @@ See measurable criteria in [ADR 014](../adr/014-esim-lifecycle-install-telemetry
 - Architecture test: only `LifecycleService` writes `Esim.status`.
 - Idempotent events + ownership tests.
 - Migration `unused` → `purchased`.
-- Wizard iOS / Android / Desktop paths.
+- Wizard iOS / Android / Desktop paths (Android: manufacturer picker + registry guides).
 - OpenAPI coverage for events + new fields.
 
 ## Related
