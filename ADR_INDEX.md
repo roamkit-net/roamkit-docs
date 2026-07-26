@@ -25,6 +25,7 @@ every **6 months** (Architecture Decision Review: still valid?).
 | [012](./docs/adr/012-billing-extensibility-rules.md) | Billing extensibility rules | Accepted | 2026-07 |
 | [013](./docs/adr/013-production-launch.md) | Production launch | Accepted | 2026-07 |
 | [014](./docs/adr/014-esim-lifecycle-install-telemetry.md) | eSIM lifecycle and install telemetry | Accepted | 2026-07 |
+| [015](./docs/adr/015-google-oauth-gis.md) | Google OAuth via GIS ID token | Accepted | 2026-07 |
 
 ## Billing ADR hierarchy
 

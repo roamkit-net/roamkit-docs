@@ -29,6 +29,7 @@ ship safely — Launch Gates, cutover discipline, incidents, and maturity tracki
 | [Airalo Go-Live Readiness](./airalo-go-live-readiness/README.md) | Partner Evidence Pack (Phase 5–7); Production Freeze |
 | [Airalo removable eUICC (future)](./airalo-removable-euicc.md) | Partner status: on hold; what we asked / what to ask later |
 | [Cloudflare auth protection](./cloudflare-auth-protection.md) | Turnstile provisioning, soak, Managed Challenge, metrics |
+| [Google OAuth](./google-oauth.md) | GIS ID-token clients, enable order, support, metrics |
 | [Voucher PR1 kickoff](./voucher-pr1-kickoff.md) | Blocked until after Phase 7 Airalo production switch |
 
 ## Related
