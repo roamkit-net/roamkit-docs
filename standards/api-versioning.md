@@ -25,6 +25,21 @@ All public REST endpoints use versioned paths:
 
 Document breaking changes in `roamkit-docs` and changelog; coordinate `roamkit-web` deploy.
 
+**Patch release policy:** a patch release must not change the existing API contract except documentation-only fixes (OpenAPI descriptions, examples, tags).
+
+### Breaking-change checklist (PR review)
+
+If any item is checked, treat as an API breaking change → major version / `/api/v2/` per rules above:
+
+```text
+□ removed endpoint
+□ renamed endpoint
+□ removed field
+□ changed required field
+□ changed enum value
+□ changed status code
+```
+
 ## Response format
 
 ### Success (DRF default)
@@ -69,12 +84,35 @@ GET /health/live
 GET /health/ready
 ```
 
-Not under `/api/v1/` — used by infrastructure probes.
+Not under `/api/v1/` — used by infrastructure probes. Excluded from the public OpenAPI contract.
 
 ## OpenAPI
 
-- Generate schema with drf-spectacular or equivalent when API stabilizes.
-- Publish schema URL on staging for web client type generation (optional).
+Schema is generated with **drf-spectacular** (pinned in `roamkit-api` `requirements/base.txt`).
+
+| Item | Location |
+|------|----------|
+| Committed artifact | `roamkit-api/openapi/openapi.yaml` |
+| Generate (only supported path) | `./scripts/generate_openapi.sh` |
+| Staging schema | `https://api.staging.roamkit.net/api/schema/` |
+| Staging Swagger UI | `https://api.staging.roamkit.net/api/docs/` |
+| Staging ReDoc | `https://api.staging.roamkit.net/api/redoc/` |
+| Changelog | [openapi-changelog.md](../docs/api/openapi-changelog.md) |
+
+### Conventions
+
+- **operationId:** explicit snake_case `{domain}_{action}` (e.g. `billing_balance`, `orders_create`). Never rely on spectacular auto-suffixes (`list_1`).
+- **Tags (order):** Authentication, Billing, Orders, Catalog, eSIM, Users.
+- **Security:** HTTP Bearer JWT (`bearerAuth`) on authenticated operations; public ops clear security.
+- **CI:** generate + validate + drift check; Spectral errors fail, warnings report-only; architecture tests require 100% `/api/v1/` path coverage.
+
+### Wave 2 (frontend) — backlog
+
+Not part of C10. When ready:
+
+- Generate TypeScript types with `openapi-typescript` from the committed `openapi.yaml`.
+- Output under `roamkit-web/src/api/generated/` must be **read-only** (no hand edits; regenerate only from YAML).
+- Frontend CI should fail if generated clients drift from the schema.
 
 ## CORS
 
@@ -91,3 +129,4 @@ Not under `/api/v1/` — used by infrastructure probes.
 
 - [Architecture overview](../docs/architecture/overview.md)
 - [Python coding standard](./coding-standard-python.md)
+- [OpenAPI changelog](../docs/api/openapi-changelog.md)

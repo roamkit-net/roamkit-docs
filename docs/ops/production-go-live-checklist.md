@@ -31,7 +31,7 @@ Record actual prod `.env` values at cutover in the sign-off section below.
 - [x] No `TODO`/`FIXME` in money-path / auth / deposit code (api arch CI guard)
 - [ ] Production settings: no debug noise defaults; no hardcoded development API keys (**C1** — PR2)
 - [x] Feature flags documented (matrix above + readiness review)
-- [x] OpenAPI: documented N/A / deferred (**C10**)
+- [x] OpenAPI: schema + CI + staging docs (**C10** closed) — [openapi-c10.md](./releases/1.0.0/evidence/openapi-c10.md)
 - [x] ADR 010 architecture tests green and **blocking** on CI for `develop` (extend on `main` when prod CI exists)
 - [x] **Signed off by:** Engineering/Operator — **GO WITH CONDITIONS** — **Date:** 2026-07-25
 
