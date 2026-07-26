@@ -4,9 +4,9 @@ Non-normative ops view of capability lifecycle. Architecture stays in ADRs.
 
 | Capability | Design | Implemented | Production | Observed | Notes |
 |------------|:------:|:-----------:|:----------:|:--------:|-------|
-| Ledger / CreditService (ADR 010) | ✅ | ✅ | ⏳ | ⏳ | Staging validated; prod after Gate D |
-| Deposits / Polygon verify | ✅ | ✅ | ⏳ | ⏳ | |
-| Billing HTTP `/api/v1/billing/` | ✅ | ✅ | ⏳ | ⏳ | |
+| Ledger / CreditService (ADR 010) | ✅ | ✅ | ✅ | ✅ | Public Billing DoD PASS — Criterion #3 |
+| Deposits / Polygon verify | ✅ | ✅ | ✅ | ⏳ | Env+negative path OK; live TX verify optional backlog |
+| Billing HTTP `/api/v1/billing/` | ✅ | ✅ | ✅ | ✅ | Criterion #3 public DoD |
 | WalletConnect deposit UX | ✅ | ✅ | ⏳ | ⏳ | Flag OFF at first cutover |
 | Subscriptions service | ✅ | ✅ | ❌ | ❌ | `SUBSCRIPTIONS_ENABLED=false` |
 | Credit vouchers (ADR 011) | ✅ | ❌ | ❌ | ❌ | Blocked until **after Phase 7**: [voucher-pr1-kickoff.md](./voucher-pr1-kickoff.md); [Airalo freeze](./airalo-go-live-readiness/README.md) |
