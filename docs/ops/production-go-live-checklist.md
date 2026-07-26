@@ -68,12 +68,12 @@ Operator still must run bootstrap on the host and complete the merge checklist i
 - [ ] `deploy-production.sh` (pull → up → migrate → health → smoke; rollback via `.previous-tag`)
 - [ ] CI `deploy-production.yml` on `main` only
 - [ ] Real `config.settings.production` (`DEBUG=False`, strict hosts/CSRF/cookies/HSTS)
-- [ ] Web build: `NEXT_PUBLIC_API_URL=https://api.roamkit.net`
-- [ ] Web + API `GET /version` return non-empty `git_sha`
-- [ ] DNS: `api.roamkit.net` → origin; apex/www cutover planned
-- [ ] Traefik LE certs via `certresolver=cloudflare`
-- [ ] HTTP smoke + billing DoD after cutover (`ENFORCE_WEB_BAKE=1` on production smoke after apex cutover)
-- [ ] Staging remains on `staging.*` only after apex/www move
+- [x] Web build: `NEXT_PUBLIC_API_URL=https://api.roamkit.net` — Criterion #1 (`7064a9b…` main rebuild digest `732856f0…`)
+- [x] Web + API `GET /version` return non-empty `git_sha` — API public `/version`; web via bake/deploy evidence
+- [x] DNS: `api.roamkit.net` → origin; apex/www on production
+- [x] Traefik LE certs via `certresolver=cloudflare` — production Hosts live
+- [x] HTTP smoke + billing DoD after cutover — public curls + Playwright catalog; Billing DoD Criterion #3
+- [x] Staging remains on `staging.*` only after apex/www move
 
 ### Billing E2E smoke (minimum)
 
@@ -91,7 +91,7 @@ Open /global-esim → catalog-price-skeleton gone → prices visible
 ```
 
 - [x] Script path: `roamkit-infra/scripts/production-dod-billing.sh` (or documented equivalent)
-- [ ] `/global-esim` prices visible (no sticky skeleton); config host is production API — **blocked on production web bake** (`api.roamkit.net`); deferred to Criterion #1 (see [billing-e2e-criterion-3.md](./releases/1.0.0/evidence/billing-e2e-criterion-3.md))
+- [x] `/global-esim` prices visible (no sticky skeleton); config host is production API — Playwright PASS 2026-07-26 ([gate-d-criterion-1.md](./releases/1.0.0/evidence/gate-d-criterion-1.md))
 - [x] Last green run: **SHA** `9989fe559107af3caa5d9b96d73c7dfb95cbfe68` **Date** `2026-07-26T11:46:20Z` (public `https://api.roamkit.net`)
 
 ## PR3 — Observability
