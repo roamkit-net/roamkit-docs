@@ -24,6 +24,7 @@ every **6 months** (Architecture Decision Review: still valid?).
 | [011](./docs/adr/011-credit-vouchers-gift-codes.md) | Credit vouchers & gift codes | Accepted | 2026-07 |
 | [012](./docs/adr/012-billing-extensibility-rules.md) | Billing extensibility rules | Accepted | 2026-07 |
 | [013](./docs/adr/013-production-launch.md) | Production launch | Accepted | 2026-07 |
+| [014](./docs/adr/014-esim-lifecycle-install-telemetry.md) | eSIM lifecycle and install telemetry | Accepted | 2026-07 |
 
 ## Billing ADR hierarchy
 
@@ -50,6 +51,7 @@ every **6 months** (Architecture Decision Review: still valid?).
 | RFC | Title | Status |
 |-----|-------|--------|
 | [001](./docs/rfcs/001-self-service-esim-flow.md) | Self-service eSIM purchase and top-up flow | Draft |
+| [002](./docs/rfcs/002-post-purchase-onboarding.md) | Post-purchase eSIM onboarding | Accepted |
 
 ## Architecture reference
 
