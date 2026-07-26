@@ -68,9 +68,28 @@ Run billing_reconcile_balances (report only — no auto balance fix)
 
 Solo operator: document timeline in ops notes; after Hypercare run [production-retrospective.md](./production-retrospective.md) if cutover-related.
 
+## Observability monitors (production)
+
+Uptime Kuma (`/opt/stacks/kuma`, container `kuma` on `proxy` network):
+
+| Id | Check | Probe URL |
+|----|-------|-----------|
+| 13 | API live | `http://roamkit-api-production:8000/health/live` |
+| 14 | API ready | `http://roamkit-api-production:8000/health/ready` |
+| 15 | API version | `http://roamkit-api-production:8000/version` |
+| 16 | Web origin | `https://roamkit.net/` |
+| 17 | Billing config | `http://roamkit-api-production:8000/api/v1/billing/config/` |
+
+Also verify public paths with curl when diagnosing edge/TLS: `https://api.roamkit.net/...` (see Criterion #2 evidence — Kuma→origin SNI/default-cert caveat).
+
+**Sentry:** production DSN in stack `.env`; check project for new release / spike (see tree above).
+
+**Reconcile drift:** Celery beat + ERROR logs + Sentry — no auto balance correction.
+
 ## Related
 
 - [Launch Gates](./launch-gates.md)
 - [Gate D cutover](./gate-d-cutover.md)
 - [Billing dashboard](./billing-dashboard.md)
 - [SLO targets](./slo.md)
+- [Observability Criterion #2 PASS](./releases/1.0.0/evidence/observability-criterion-2.md)

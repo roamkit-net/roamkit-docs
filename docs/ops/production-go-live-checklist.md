@@ -96,11 +96,13 @@ Open /global-esim → catalog-price-skeleton gone → prices visible
 
 ## PR3 — Observability
 
-- [ ] Structured logs (API/Celery/web) with request/correlation id where feasible
-- [ ] Sentry for api + web (DSN only in prod `.env`)
-- [ ] Uptime on `/health/live`, `/health/ready`, web origin, `/version`, **`/api/v1/billing/config/`**
-- [ ] Alerting: uptime + Sentry + **billing reconcile drift** (no auto balance correction)
-- [ ] Incident runbooks under `docs/ops/`
+- [ ] Structured logs (API/Celery/web) with request/correlation id where feasible *(backlog; not Criterion #2 hard DoD)*
+- [x] Sentry for api + web (DSN only in prod `.env`) — Criterion #2 PASS 2026-07-26
+- [x] Uptime on `/health/live`, `/health/ready`, web origin, `/version`, **`/api/v1/billing/config/`** — Kuma 13–17
+- [x] Alerting: uptime + Sentry + **billing reconcile drift** (no auto balance correction) — Sentry event + drift channel; Kuma UI
+- [x] Incident runbooks under `docs/ops/` — includes Observability monitors section
+
+Evidence: [observability-criterion-2.md](./releases/1.0.0/evidence/observability-criterion-2.md).
 
 ## PR4 — Hardening + exercises
 
