@@ -14,6 +14,7 @@ Non-normative ops view of capability lifecycle. Architecture stays in ADRs.
 | Production platform (ADR 013 PR1) | ✅ | ✅ | ⏳ | ⏳ | Compose ready; not cut over |
 | `GET /version` | ✅ | ✅ | ⏳ | ⏳ | Merged Gate C api; Production after deploy |
 | Sentry / uptime | ✅ | ✅ | ⏳ | ⏳ | Sentry SDK + `SENTRY_DSN`; uptime still operator |
+| OpenAPI / schema (C10) | ✅ | ✅ | ⏳ | n/a | Staging schema/docs; prod after freeze policy |
 | Billing dashboard | ✅ | ❌ | ❌ | ❌ | [billing-dashboard.md](./billing-dashboard.md) |
 
 **Column definitions**

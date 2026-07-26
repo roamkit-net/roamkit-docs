@@ -13,7 +13,7 @@ and [production-readiness-review.md](./production-readiness-review.md) condition
 | C7 | Sentry + uptime + reconcile alert | ✅ | [observability.md](./releases/1.0.0/evidence/observability.md) |
 | C8 | Backup + restore procedure | ✅ signed | [migration-ready.md](./migration-ready.md); Disaster Day post-stable |
 | C9 | Incident runbook | ✅ | [incident-runbook.md](./incident-runbook.md) |
-| C10 | OpenAPI | N/A | deferred |
+| C10 | OpenAPI | ✅ closed | [openapi-c10.md](./releases/1.0.0/evidence/openapi-c10.md) |
 
 ## Operator host steps (not closed by merge alone)
 

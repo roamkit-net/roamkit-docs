@@ -39,7 +39,7 @@ until the conditions below are closed (mostly PR2–PR4 must-haves).
 | C7 | Sentry + uptime + reconcile-drift alerting | PR3 |
 | C8 | Backup-before-migrate + documented restore ([migration-ready.md](./migration-ready.md)); full Disaster Day after stable prod | Gate C / post-D |
 | C9 | Incident runbooks under `docs/ops/` ([incident-runbook.md](./incident-runbook.md)) | Gate C |
-| C10 | OpenAPI: either ship schema export in CI **or** keep explicit N/A until first public contract freeze | PR2 / deferred |
+| C10 | OpenAPI: schema export in CI + staging `/api/schema/` | ✅ closed — [openapi-c10.md](./releases/1.0.0/evidence/openapi-c10.md) |
 
 **None of C1–C10 are reasons to delay PR1.** They are reasons to delay **cutover**.
 
@@ -60,7 +60,7 @@ until the conditions below are closed (mostly PR2–PR4 must-haves).
 | Security | ⚠️ | Bandit in CI; staging hardened (`DEBUG=False`); **no secret-scan on main**; prod settings stub |
 | Documentation | ✅ | ADR 013, go-live checklist, billing DoD, staging billing README |
 | Operations | ⚠️ | Staging smoke/DoD OK; **no prod ownership runbook / on-call notes** (PR3) |
-| OpenAPI | ⚠️ | **No DRF spectacular/schema CI today** — documented gap (C10) |
+| OpenAPI | ✅ | drf-spectacular + CI generate/drift/Spectral (C10 closed) |
 | TODO / FIXME money path | ✅ | Scoped grep clean; CI arch guard added in api PR0.5 |
 
 ---
@@ -193,8 +193,10 @@ Canonical cutover matrix ([ADR 013](../adr/013-production-launch.md)):
 
 | Check | Status | Note |
 |-------|--------|------|
-| Generated OpenAPI in CI | ⚠️ | **Not implemented** (no spectacular / schema job) |
-| Decision | Documented N/A for PR0.5 | Add schema export when freezing public billing contract for external clients; internal Next.js types already consume REST. Revisit in PR2 if partner/OpenAPI consumers appear |
+| Generated OpenAPI in CI | ✅ | `openapi` job: generate, validate, drift, Spectral, artifact |
+| Committed artifact | ✅ | `roamkit-api/openapi/openapi.yaml` |
+| Staging URLs | ✅ | `/api/schema/`, `/api/docs/`, `/api/redoc/` (after develop deploy) |
+| Decision | **C10 closed** | Evidence: [openapi-c10.md](./releases/1.0.0/evidence/openapi-c10.md). Frontend typegen is Wave 2 backlog. |
 
 ---
 
