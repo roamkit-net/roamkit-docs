@@ -18,15 +18,15 @@ Annual failure simulation **after** stable production. Not a Gate D hard blocker
 | Date (UTC) | 2026-07-26T11:32:20Z (rollback start) |
 | Facilitator | Engineering (solo operator / agent execution) |
 | Scenarios run | Deploy rollback drill (GO #2) — **PASS** |
-| Recovery time (per scenario) | **13s** (rollback start→finish); target &lt;10 min |
+| Recovery time (per scenario) | **13s** (rollback start→finish); target <10 min |
 | Gaps / actions | Optional: sync `ROAMKIT_*` in deploy/rollback so `/version` matches image without manual `.env` align. Full Disaster Day scenarios still open. |
 
 ### Prior attempts (audit)
 
-1. STOP Go/No-Go — [rollback-drill-retry.md](./releases/1.0.0/evidence/rollback-drill-retry.md) / PR trail #31–#33
-2. Prereqs + qualification — #32 / #34
-3. GO #1 establish N — [rollback-n-established.md](./releases/1.0.0/evidence/rollback-n-established.md) (#35)
-4. **GO #2 PASS** — [rollback-drill.md](./releases/1.0.0/evidence/rollback-drill.md)
+1. STOP Go/No-Go — [rollback-drill.md](./releases/1.0.0/evidence/rollback-drill.md) history / [rollback-drill-retry.md](./releases/1.0.0/evidence/rollback-drill-retry.md)
+2. Prereqs + qualification — [rollback-retry-prerequisites.md](./releases/1.0.0/evidence/rollback-retry-prerequisites.md) / [rollback-candidate-qualification.md](./rollback-candidate-qualification.md)
+3. GO #1 establish N — [rollback-n-established.md](./releases/1.0.0/evidence/rollback-n-established.md)
+4. **GO #2 PASS** — [rollback-drill.md](./releases/1.0.0/evidence/rollback-drill.md) / [rollback-drill-pass.md](./releases/1.0.0/evidence/rollback-drill-pass.md)
 
 Store notes under `releases/` or a dated file in this folder (e.g. `disaster-day-YYYY.md`).
 

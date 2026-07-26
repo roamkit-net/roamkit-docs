@@ -23,6 +23,7 @@ ship safely — Launch Gates, cutover discipline, incidents, and maturity tracki
 | [Production retrospective](./production-retrospective.md) | Post-hypercare lessons learned template |
 | [Billing dashboard](./billing-dashboard.md) | Operator metrics after cutover |
 | [Disaster Day](./disaster-day.md) | Annual failure simulation |
+| [Rollback candidate qualification](./rollback-candidate-qualification.md) | N/N−1 must share migration **and** smoke/health contract |
 | [Gate C exit](./gate-c-exit.md) | Engineering tracker for C* before GO |
 | [Gate D cutover](./gate-d-cutover.md) | Time-boxed cutover runbook |
 | [Airalo Go-Live Readiness](./airalo-go-live-readiness/README.md) | Partner Evidence Pack (Phase 5–7); Production Freeze |
