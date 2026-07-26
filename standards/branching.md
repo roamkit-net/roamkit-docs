@@ -47,8 +47,8 @@ Same branch strategy applies to:
 
 When API and web change together:
 
-1. Merge API change to `develop` first (or ensure backward-compatible API).
-2. Merge web change that consumes the new contract.
+1. Merge API change to `develop` first (or ensure backward-compatible API), including the committed `openapi/openapi.yaml`.
+2. Merge web change that consumes the new contract: vendor that YAML and regenerate `src/api/generated/*` (Wave 2; see [api-versioning.md](./api-versioning.md)).
 3. Verify on staging before promoting `main`.
 
 ## Related
