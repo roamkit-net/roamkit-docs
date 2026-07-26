@@ -60,7 +60,7 @@ Operator still must run bootstrap on the host and complete the merge checklist i
 
 - [ ] (1) Architecture tests blocking in CI
 - [ ] (2) Secret scanning (GitHub + Gitleaks/TruffleHog) required on `main` PRs
-- [ ] (3) Billing E2E smoke script green on production (or staging dress-rehearsal then prod)
+- [x] (3) Billing E2E smoke script green on production (or staging dress-rehearsal then prod) — public PASS 2026-07-26 [billing-e2e-criterion-3.md](./releases/1.0.0/evidence/billing-e2e-criterion-3.md)
 - [ ] (4) `GET /version` returns 200 with non-empty `git_sha`
 
 ### Deploy
@@ -90,9 +90,9 @@ Open /global-esim → catalog-price-skeleton gone → prices visible
 → Network GET /api/v1/billing/config/ 200 on api.roamkit.net
 ```
 
-- [ ] Script path: `roamkit-infra/scripts/production-dod-billing.sh` (or documented equivalent)
-- [ ] `/global-esim` prices visible (no sticky skeleton); config host is production API
-- [ ] Last green run: **SHA** _____________ **Date** _____________
+- [x] Script path: `roamkit-infra/scripts/production-dod-billing.sh` (or documented equivalent)
+- [ ] `/global-esim` prices visible (no sticky skeleton); config host is production API — **blocked on production web bake** (`api.roamkit.net`); deferred to Criterion #1 (see [billing-e2e-criterion-3.md](./releases/1.0.0/evidence/billing-e2e-criterion-3.md))
+- [x] Last green run: **SHA** `9989fe559107af3caa5d9b96d73c7dfb95cbfe68` **Date** `2026-07-26T11:46:20Z` (public `https://api.roamkit.net`)
 
 ## PR3 — Observability
 
