@@ -37,6 +37,20 @@ After deploying API with `TURNSTILE_ENABLED=false`:
 
 Diagnostic (not a probe): `GET /health/turnstile` — config + DNS only, no siteverify.
 
+## Widget inventory (ops)
+
+Public **sitekeys** only — never commit secrets. Secrets live in stack `.env` on the host.
+
+| Env | Widget name | Sitekey | Domains | Notes |
+|-----|-------------|---------|---------|-------|
+| Staging | `roamkit-staging-auth` | `0x4AAAAAAD-YN3lSkfPOTGKE` | `staging.roamkit.net` | Account `34684c48969ce0a4dbab07e5d2a5c8f6`; managed mode; created 2026-07-26 via CF API |
+| Production | `roamkit-production-auth` | *(TBD)* | `roamkit.net`, `www.roamkit.net` | Create before prod enable; separate widget from staging |
+
+Rotate secret (server):  
+`POST /accounts/{id}/challenges/widgets/{sitekey}/rotate_secret` then update `TURNSTILE_SECRET_KEY` and recreate API.
+
+Web bake: sitekey must be passed as Docker build-arg `NEXT_PUBLIC_TURNSTILE_SITE_KEY` (repo Actions variable for CI). Runtime `.env` alone is not enough for the client bundle.
+
 ## Provision keys on the dedicated server (CF API)
 
 Do **not** copy keys from the dashboard into git. On the Hetzner host, Traefik already
