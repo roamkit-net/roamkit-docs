@@ -31,7 +31,9 @@ Exit Criterion #1 closes only when Gate D DoD below is **GREEN** with merged evi
 | 12 | Capability-status / go-live checklist | 🟡 YELLOW | Platform Observed ⏳; catalog checklist item still blocked on prod bake |
 | 13 | Gate D exit = Hypercare 24h + no open P0/P1 | 🟡 YELLOW | Clock running; catalog/#5 gap means cutover acceptance incomplete until bake fix verified |
 
-**Criterion #1 overall (inventory):** 🟡 **YELLOW / ACTIVE** — infrastructure cutover largely done; **production web bake + catalog acceptance + manifest/decision** block GREEN.
+**Criterion #1 overall (inventory):** 🟡 **YELLOW / ACTIVE** at inventory time.
+
+**Post-execution (2026-07-26):** see [gate-d-criterion-1.md](./gate-d-criterion-1.md) — bake/catalog/smoke/manifest **PASS**; Hypercare open → Criterion #1 still **YELLOW** until `2026-07-26T22:38:24Z`.
 
 ## Already true (do not re-cutover blindly)
 

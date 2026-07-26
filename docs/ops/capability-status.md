@@ -11,7 +11,7 @@ Non-normative ops view of capability lifecycle. Architecture stays in ADRs.
 | Subscriptions service | ✅ | ✅ | ❌ | ❌ | `SUBSCRIPTIONS_ENABLED=false` |
 | Credit vouchers (ADR 011) | ✅ | ❌ | ❌ | ❌ | Blocked until **after Phase 7**: [voucher-pr1-kickoff.md](./voucher-pr1-kickoff.md); [Airalo freeze](./airalo-go-live-readiness/README.md) |
 | Billing extensibility (ADR 012) | ✅ | ✅ (docs) | n/a | n/a | Constitution, not a runtime feature |
-| Production platform (ADR 013 PR1) | ✅ | ✅ | ✅ | ⏳ | Stack live + Traefik; Observed still thin |
+| Production platform (ADR 013 PR1) | ✅ | ✅ | ✅ | 🟡 | Live + Traefik + prod web bake; Hypercare open until 2026-07-26T22:38:24Z |
 | `GET /version` | ✅ | ✅ | ✅ | ✅ | Verified on prod (Criteria #4 / #2) |
 | Sentry / uptime | ✅ | ✅ | ✅ | ✅ | Criterion #2 PASS — [observability-criterion-2.md](./releases/1.0.0/evidence/observability-criterion-2.md); Kuma 13–17 |
 | OpenAPI / schema (C10) | ✅ | ✅ | ⏳ | n/a | Staging schema/docs; prod after freeze policy |
