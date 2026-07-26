@@ -17,8 +17,8 @@ Record only: device, browser, OS, scheme (`lpa` / `intent`), pass/fail, notes.
 
 | Device | Browser | OS / build | Scheme | Result (pass / fail / acceptable) | Notes |
 |--------|---------|------------|--------|-----------------------------------|-------|
-| Samsung One UI 6 | Chrome | | `lpa` | | |
-| Samsung One UI 6 | Samsung Internet | | `lpa` | | |
+| Samsung Z Fold 6 (One UI) | Chrome | Android (staging 2026-07-27) | `lpa` | **fail** | CTA visible; `window.location` to `LPA:1$…` — no visibility change ≤2.5s; fallback message + QR OK |
+| Samsung One UI 6 | Samsung Internet | | `lpa` | | next probe |
 | Samsung One UI 7 | Chrome | | `lpa` | | |
 | Samsung One UI 7 | Samsung Internet | | `lpa` | | |
 | Pixel Android 15 | Chrome | | `lpa` | | |
@@ -28,7 +28,8 @@ Optional follow-up rows if `lpa` fails on Chrome:
 
 | Device | Browser | Scheme | Result | Notes |
 |--------|---------|--------|--------|-------|
-| … | Chrome | `intent` | | Only if `lpa` blocked |
+| Samsung Z Fold 6 | Chrome | `intent` | | pending — only if product wants Chrome path |
+| Samsung Z Fold 6 | Samsung Internet | `lpa` | | pending |
 
 ### Pass criteria
 
@@ -42,7 +43,7 @@ Optional follow-up rows if `lpa` fails on Chrome:
 
 ## How to probe (flag on)
 
-1. Build web with `NEXT_PUBLIC_ANDROID_LPA_DEEP_LINK=1`.
+1. Build web with `NEXT_PUBLIC_ANDROID_LPA_DEEP_LINK=1` (staging bake via repo var).
 2. Open setup for an owned eSIM on the device browser.
 3. Pick manufacturer → **Install eSIM** (when registry allows `deep-link`).
 4. Fill matrix row; never commit secrets.
@@ -54,11 +55,14 @@ Spike Result
 
 Decision:
 □ Ship B2
-□ Extend spike
+☑ Extend spike
 □ Cancel feature
 
 Reason:
-
+2026-07-27 — Samsung Z Fold 6 + Chrome + LPA: fail (installer did not open;
+RoamKit fallback UX worked). Do not enable production flag. Keep staging flag
+for further probes (Samsung Internet, then optional intent://). Ship B2 only
+after Samsung pass rate >95% on matrix.
 
 Enable production flag only if (when shipping B2 / later prod):
 - Samsung pass rate >95% on matrix sample
@@ -70,6 +74,5 @@ Fill this section after matrix runs. B1 is incomplete without a Decision.
 
 ## Kill switch
 
-`NEXT_PUBLIC_ANDROID_LPA_DEEP_LINK` — leave unset/`0` in staging and production
-until Decision = Ship B2 **and** enable criteria above are met. Disable immediately
-if One UI / browser regresses.
+`NEXT_PUBLIC_ANDROID_LPA_DEEP_LINK` — leave unset/`0` in production; staging may
+stay `1` while Extending spike. Disable immediately if One UI / browser regresses.
