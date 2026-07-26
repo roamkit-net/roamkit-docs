@@ -35,3 +35,7 @@ While those host steps run, [Gate C focus](./launch-gates.md#gate-c-focus-before
 - [Gate C evidence index](./releases/1.0.0/evidence/gate-c.md)
 - [Release Decision Log](./release-decision-log.md)
 - [Gate D cutover](./gate-d-cutover.md)
+
+## Criterion #4 verification (post Gate C)
+
+- [x] Production rollback drill PASS — [rollback-drill.md](./releases/1.0.0/evidence/rollback-drill.md) (2026-07-26). Does **not** reopen Gate C.
