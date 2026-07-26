@@ -20,6 +20,7 @@
 | Uptime: `/health/ready` | ✅ | Kuma id **14** — heartbeat 200 |
 | Uptime: `/version` | ✅ | Kuma id **15** — heartbeat 200 |
 | Web origin | ✅ | Kuma id **16** — `http://roamkit-web-production:3000/` heartbeat 200 |
+| Uptime: `GET /api/v1/billing/config/` | ⏳ | **Add at Gate D** — public JSON must stay 200 (catalog price dependency). Staging: `https://api.staging.roamkit.net/api/v1/billing/config/`; production (after cutover): `https://api.roamkit.net/api/v1/billing/config/`. Expect body with `token_symbol` + `display_decimals`. |
 | Reconcile-drift notification channel | ✅ | Celery beat `billing-reconcile-balances-daily` (86400s); `billing_reconcile_balances` → `Checked 1 account(s); found 0 drift(s)`; `BalanceDriftDetected` → ERROR logs (`json-file`); ops visibility also via Sentry production project |
 
 ## Notes
@@ -28,4 +29,5 @@
 - SDK already in image (`config.sentry.init_sentry`); `send_default_pii=False` (stricter than wizard default).
 - Dress-rehearsal: Kuma reaches stack on Docker network `proxy`. `DJANGO_ALLOWED_HOSTS` includes `roamkit-api-production` for hostname probes.
 - At Gate D: retarget Kuma monitors to `https://api.roamkit.net` / `https://roamkit.net` after Traefik/DNS cutover.
+- Catalog prices depend on `billing/config` (ADR-010 graceful degradation). Monitor that endpoint separately from `/health/ready` so a config outage is visible without removing the node from the LB.
 - Custom in-house Observability module remains **backlog after Gate D** (not required for this GO).

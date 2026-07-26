@@ -69,9 +69,10 @@ Operator still must run bootstrap on the host and complete the merge checklist i
 - [ ] CI `deploy-production.yml` on `main` only
 - [ ] Real `config.settings.production` (`DEBUG=False`, strict hosts/CSRF/cookies/HSTS)
 - [ ] Web build: `NEXT_PUBLIC_API_URL=https://api.roamkit.net`
+- [ ] Web + API `GET /version` return non-empty `git_sha`
 - [ ] DNS: `api.roamkit.net` → origin; apex/www cutover planned
 - [ ] Traefik LE certs via `certresolver=cloudflare`
-- [ ] HTTP smoke + billing DoD after cutover
+- [ ] HTTP smoke + billing DoD after cutover (`ENFORCE_WEB_BAKE=1` on production smoke after apex cutover)
 - [ ] Staging remains on `staging.*` only after apex/www move
 
 ### Billing E2E smoke (minimum)
@@ -82,14 +83,22 @@ Create account → Deposit/credit → Verify → Balance +N
 → Refund/compensating path → Balance restored
 ```
 
+Catalog price acceptance (same cutover window):
+
+```text
+Open /global-esim → catalog-price-skeleton gone → prices visible
+→ Network GET /api/v1/billing/config/ 200 on api.roamkit.net
+```
+
 - [ ] Script path: `roamkit-infra/scripts/production-dod-billing.sh` (or documented equivalent)
+- [ ] `/global-esim` prices visible (no sticky skeleton); config host is production API
 - [ ] Last green run: **SHA** _____________ **Date** _____________
 
 ## PR3 — Observability
 
 - [ ] Structured logs (API/Celery/web) with request/correlation id where feasible
 - [ ] Sentry for api + web (DSN only in prod `.env`)
-- [ ] Uptime on `/health/live`, `/health/ready`, web origin, `/version`
+- [ ] Uptime on `/health/live`, `/health/ready`, web origin, `/version`, **`/api/v1/billing/config/`**
 - [ ] Alerting: uptime + Sentry + **billing reconcile drift** (no auto balance correction)
 - [ ] Incident runbooks under `docs/ops/`
 
@@ -109,6 +118,7 @@ Create account → Deposit/credit → Verify → Balance +N
 - [ ] Feature flag matrix matches running prod `.env` (paste values below)
 - [ ] Admin account accessible
 - [ ] Deposit + buy manually verified once
+- [ ] `/global-esim`: prices visible; no `catalog-price-skeleton`; config requests hit `api.roamkit.net`
 - [ ] Log rotation / disk monitoring OK
 - [ ] Rollback owner + command documented for the window
 
