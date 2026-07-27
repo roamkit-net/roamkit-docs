@@ -17,6 +17,7 @@ Architecture stays in ADRs; this pack is operational proof.
 | [release-decision.md](./release-decision.md) | GO / NO-GO before Airalo production request |
 | [rollback.md](./rollback.md) | Feature-flag / deploy rollback + verification |
 | [communications.md](./communications.md) | Internal weekly → Guy → production request |
+| [production-switch.md](./production-switch.md) | Phase 7 Partner Platform switch + live smoke |
 | `screenshots/` | UI / QR / install proof |
 | `api-logs/` | Redacted Airalo / API traces |
 | `telemetry/` | Install / lifecycle event samples |
@@ -37,7 +38,7 @@ Architecture stays in ADRs; this pack is operational proof.
 | 4 | Production Infrastructure Readiness | ADR 013 Accepted | Stack, observability, billing E2E, rollback verified |
 | 5 | Airalo Go-Live Readiness | Phase 4 GREEN or parallel waiver; sandbox creds | Wave 1 + sandbox E2E + this pack filled — **GREEN** ([phase-5-complete](../releases/1.0.0/evidence/phase-5-complete.md)) |
 | 6 | Pilot Validation (20 → 100) | Phase 5 GREEN; no P0/P1; pack exists | 20 + 100 pilots + KPI met — **GREEN** ([phase-6-complete](../releases/1.0.0/evidence/phase-6-complete.md)) |
-| 7 | Airalo Production Switch | Production Request DoD green | Prod credentials + validation smoke |
+| 7 | Airalo Production Switch | Production Request DoD green | Prod credentials + validation smoke — see [production-switch.md](./production-switch.md) |
 | 8 | Customer Experience Enhancements | Phase 7 done; freeze ended | Scope reopened |
 
 ## Guy gate (sandbox E2E — 10 points)
