@@ -30,28 +30,35 @@ Fill during Phase 5 (sandbox) and Phase 6 (pilot). Attach artifacts under `scree
 
 ## Pilot KPI results (Phase 6)
 
+**Environment:** staging + Airalo sandbox  
+**Method:** controlled cohort via `staging-dod-airalo-phase6-pilot.sh` ([pilot-runbook.md](./pilot-runbook.md))  
+**Connectivity definition:** provider usage DTO / `ACTIVE` (sandbox proxy; physical radio optional follow-up)  
+**Support response:** timed operator lookup samples (`User→Account→Order→Esim→events+ledger`)
+
 | KPI | Target | 20-user | 100-user |
 |-----|--------|---------|----------|
-| Purchase success | ≥98% | | |
-| Provision success | ≥99% | | |
-| QR delivery | 100% | | |
-| Successful installation | ≥95% | | |
-| Connectivity | ≥95% | | |
-| Support response | <24 h | | |
-| Critical bugs (P0/P1) | 0 | | |
+| Purchase success | ≥98% | 100% (20/20) | 100% (100/100) |
+| Provision success | ≥99% | 100% (20/20) | 100% (100/100) |
+| QR delivery | 100% | 100% (20/20) | 100% (100/100) |
+| Successful installation | ≥95% | 100% (20/20) | 100% (100/100) |
+| Connectivity | ≥95% | 100% (20/20) | 100% (100/100) |
+| Support response | <24 h | max 1 s (5/5 samples) | max 1 s (21/21 samples) |
+| Critical bugs (P0/P1) | 0 | 0 | 0 |
 
-**Pilot 20 verdict:** PENDING  
-**Pilot 100 verdict:** PENDING
+**Pilot 20 verdict:** **PASSED** (2026-07-26T23:54:00Z) — [api-logs/pilot-20/](./api-logs/pilot-20/)  
+**Pilot 100 verdict:** **PASSED** (2026-07-27T00:24:00Z) — [api-logs/pilot-100/](./api-logs/pilot-100/)
 
 ## Notes
 
 - Billing remains RoamKit (ADR 010); Airalo is connectivity / fulfillment only.
 - Prefer redacted logs; never commit live secrets or full PII.
 - Auth DoD uses host-minted JWT (Turnstile blocks public `/auth/token/` without widget).
-- Known bugfix (allowed under Production Freeze): map provider fulfillment failures to HTTP 502 instead of uncaught 500 on top-up (API follow-up PR).
+- Known bugfix (allowed under Production Freeze): map provider fulfillment failures to HTTP 502 instead of uncaught 500 on top-up (API follow-up PR) — merged [roamkit-api#33](https://github.com/roamkit-net/roamkit-api/pull/33).
+- First pilot-20 attempt (RUN_ID `20260726T234410Z`) failed KPI after one transient `docker compose exec` flap (`service api is not running` on user #9 → 95%). Script gained auth/credit retries; clean re-run PASSED.
 
 ## Related
 
 - [acceptance.md](./acceptance.md)
+- [pilot-runbook.md](./pilot-runbook.md)
 - [support-runbook.md](./support-runbook.md)
 - [release-decision.md](./release-decision.md)

@@ -1,0 +1,71 @@
+Phase 6 pilot cohort against https://api.staging.roamkit.net
+COHORT_SIZE=20 RUN_ID=20260726T235029Z USER_DELAY_SEC=10
+
+catalog OK count=1983
+PACKAGE_ID=discover-in-3days-300mb
+  [#1] purchase=1 provision=1 qr=1 install=1 connectivity=1 support=1 order=65 esim=27
+  [#2] purchase=1 provision=1 qr=1 install=1 connectivity=1 support=-1 order=66 esim=28
+  [#3] purchase=1 provision=1 qr=1 install=1 connectivity=1 support=-1 order=67 esim=29
+  [#4] purchase=1 provision=1 qr=1 install=1 connectivity=1 support=-1 order=68 esim=30
+  [#5] purchase=1 provision=1 qr=1 install=1 connectivity=1 support=1 order=69 esim=31
+  [#6] purchase=1 provision=1 qr=1 install=1 connectivity=1 support=-1 order=70 esim=32
+  [#7] purchase=1 provision=1 qr=1 install=1 connectivity=1 support=-1 order=71 esim=33
+  [#8] purchase=1 provision=1 qr=1 install=1 connectivity=1 support=-1 order=72 esim=34
+  [#9] purchase=1 provision=1 qr=1 install=1 connectivity=1 support=-1 order=73 esim=35
+  [#10] purchase=1 provision=1 qr=1 install=1 connectivity=1 support=1 order=74 esim=36
+  [#11] purchase=1 provision=1 qr=1 install=1 connectivity=1 support=-1 order=75 esim=37
+  [#12] purchase=1 provision=1 qr=1 install=1 connectivity=1 support=-1 order=76 esim=38
+  [#13] purchase=1 provision=1 qr=1 install=1 connectivity=1 support=-1 order=77 esim=39
+  [#14] purchase=1 provision=1 qr=1 install=1 connectivity=1 support=-1 order=78 esim=40
+  [#15] purchase=1 provision=1 qr=1 install=1 connectivity=1 support=1 order=79 esim=41
+  [#16] purchase=1 provision=1 qr=1 install=1 connectivity=1 support=-1 order=80 esim=42
+  [#17] purchase=1 provision=1 qr=1 install=1 connectivity=1 support=-1 order=81 esim=43
+  [#18] purchase=1 provision=1 qr=1 install=1 connectivity=1 support=-1 order=82 esim=44
+  [#19] purchase=1 provision=1 qr=1 install=1 connectivity=1 support=-1 order=83 esim=45
+  [#20] purchase=1 provision=1 qr=1 install=1 connectivity=1 support=1 order=84 esim=46
+
+===== Phase 6 pilot KPI summary =====
+{
+  "cohort_size": 20,
+  "completed_rows": 20,
+  "counts": {
+    "purchase": 20,
+    "provision": 20,
+    "qr": 20,
+    "install": 20,
+    "connectivity": 20,
+    "support_ok": 5,
+    "support_total": 5
+  },
+  "metrics_pct": {
+    "purchase_success": 100.0,
+    "provision_success": 100.0,
+    "qr_delivery": 100.0,
+    "successful_installation": 100.0,
+    "connectivity": 100.0,
+    "support_samples_ok": 5,
+    "support_samples_total": 5
+  },
+  "targets": {
+    "purchase_success": 98.0,
+    "provision_success": 99.0,
+    "qr_delivery": 100.0,
+    "successful_installation": 95.0,
+    "connectivity": 95.0
+  },
+  "met": {
+    "purchase_success": true,
+    "provision_success": true,
+    "qr_delivery": true,
+    "successful_installation": true,
+    "connectivity": true,
+    "support_response": true,
+    "critical_bugs": true
+  },
+  "all_kpi_met": true,
+  "support_response_max_ms": 1000,
+  "support_response_target": "<24h",
+  "critical_bugs_p0_p1": 0
+}
+Evidence written to /tmp/phase6-pilot-20
+PHASE6 PILOT COHORT 20 PASSED

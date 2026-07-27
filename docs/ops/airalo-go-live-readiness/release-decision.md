@@ -6,12 +6,12 @@ Complete **before** asking Guy for Airalo production credentials.
 
 - [x] Wave 1 Acceptance passed ([acceptance.md](./acceptance.md))
 - [x] Airalo Sandbox E2E passed ([e2e-evidence.md](./e2e-evidence.md)) — GREEN WITH CONDITIONS on #9 provider ACK
-- [x] Evidence Pack complete (this directory filled for readiness slice; pilot sections remain for Phase 6)
+- [x] Evidence Pack complete (readiness + Phase 6 pilot sections filled)
 - [x] Production infrastructure ready ([ADR 013](../../adr/013-production-launch.md) / [go-live checklist](../production-go-live-checklist.md)) — Phase 4 GREEN 2026-07-26
-- [ ] Pilot with 20 users successful (KPI in [e2e-evidence.md](./e2e-evidence.md))
-- [x] No critical (P0/P1) bugs open *(top-up HTTP 500 on provider error tracked as freeze-allowed bugfix → 502)*
+- [x] Pilot with 20 users successful (KPI in [e2e-evidence.md](./e2e-evidence.md)) — also Pilot 100 PASSED
+- [x] No critical (P0/P1) bugs open *(top-up HTTP 500→502 freeze-allowed fix merged; sandbox top-up provider ACK still rate-limit conditioned from Phase 5)*
 - [x] Operational / support runbook verified ([support-runbook.md](./support-runbook.md))
-- [ ] Support can complete the full user journey *(pilot)*
+- [x] Support can complete the full user journey *(pilot support samples 5/5 + 21/21; max lookup 1 s)*
 - [x] Rollback procedure reviewed ([rollback.md](./rollback.md))
 
 ## Parallel waiver (optional)
@@ -24,16 +24,16 @@ If Phase 5 Wave 1 / sandbox work ran in parallel with unfinished Phase 4 PR2:
 | Scope | Staging Wave 1 + sandbox E2E |
 | Granted by | Program plan (parallel waiver clause) |
 | Date (UTC) | 2026-07-26 |
-| Notes | Phase 4 close-out [phase-4-complete.md](../releases/1.0.0/evidence/phase-4-complete.md); Phase 5 [phase-5-complete.md](../releases/1.0.0/evidence/phase-5-complete.md) |
+| Notes | Phase 4 close-out [phase-4-complete.md](../releases/1.0.0/evidence/phase-4-complete.md); Phase 5 [phase-5-complete.md](../releases/1.0.0/evidence/phase-5-complete.md); Phase 6 [phase-6-complete.md](../releases/1.0.0/evidence/phase-6-complete.md) |
 
 ## Decision
 
 | Field | Value |
 |-------|-------|
-| Verdict | **NO-GO** — awaiting Phase 6 pilot-20 KPI |
-| Date (UTC) | 2026-07-26T23:30:00Z |
-| Approved by | — |
-| Next action | Run Phase 6 pilot 20 → re-open this decision for GO |
+| Verdict | **GO** — Pilot 20 + Pilot 100 KPI met; Production Request DoD green |
+| Date (UTC) | 2026-07-27T00:24:00Z |
+| Approved by | RoamKit ops (Phase 6 close-out) |
+| Next action | Phase 7 — send production request per [communications.md](./communications.md) |
 
 Only on **GO**: proceed to production request per [communications.md](./communications.md).
 
