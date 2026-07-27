@@ -21,7 +21,8 @@ Record only: device, browser, OS, scheme (`lpa` / `intent` / probe id), pass/fai
 | Samsung Z Fold 6 | Samsung Internet | staging 2026-07-27 | `lpa` | **fail** | Same as Chrome |
 | Samsung Z Fold 6 | Chrome / SI | staging 2026-07-27 | `intent`, `intent:`, `intent %24`, `lpa:` | **fail** | Couldn't open |
 | Samsung Z Fold 6 | Chrome / SI | staging 2026-07-27 | `intent-phone` (`com.android.phone`) | **fail** | Leaves browser → Play Store “Item not found” (false positive for visibility heuristic) |
-| Samsung Z Fold 6 | … | | `intent-samsung` / `intent-euicc` / activate / manage-sims | | round 2 probes |
+| Samsung Z Fold 6 | … | | `intent-samsung` / `intent-euicc` / activate / manage-sims | **fail** | Play Store / no installer |
+| Samsung Z Fold 6 | Chrome / SI | | `android-universal` / Settings bridges | | round 3 probes |
 | Pixel Android 15 | Chrome | | `lpa` | | |
 | Xiaomi HyperOS | Chrome | | `lpa` | | |
 
@@ -54,10 +55,9 @@ Decision:
 □ Cancel feature
 
 Reason:
-2026-07-27 — Z Fold 6: LPA: and bare intent:// fail on Chrome + Samsung Internet.
-intent+phone backgrounds browser but opens Play Store “item not found” — not an
-eSIM installer (fail). Round 2: OEM packages (Samsung telephonyui, Google eUICC)
-and SIM settings actions. Production flag stays off.
+2026-07-27 — Z Fold 6: LPA:/intent fail; intent+phone and Google eUICC open Play
+Store (SIM Manager listing / item not found) — not eSIM installer. Round 3:
+esimsetup.android.com universal link + Settings bridges. Production flag off.
 
 Enable production flag only if (when shipping B2 / later prod):
 - Samsung pass rate >95% on matrix sample (real eSIM UI, not Play Store)
