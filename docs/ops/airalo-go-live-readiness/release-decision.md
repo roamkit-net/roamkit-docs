@@ -33,7 +33,7 @@ If Phase 5 Wave 1 / sandbox work ran in parallel with unfinished Phase 4 PR2:
 | Verdict | **GO** — Pilot 20 + Pilot 100 KPI met; Production Request DoD green |
 | Date (UTC) | 2026-07-27T00:24:00Z |
 | Approved by | RoamKit ops (Phase 6 close-out) |
-| Next action | Phase 7 — send production request per [communications.md](./communications.md) |
+| Next action | Phase 7 — production request sent; await Guy switch per [production-switch.md](./production-switch.md) |
 
 Only on **GO**: proceed to production request per [communications.md](./communications.md).
 

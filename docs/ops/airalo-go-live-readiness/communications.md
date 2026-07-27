@@ -56,15 +56,67 @@ Adjust bullets to match actual evidence before send.
 
 Only after [release-decision.md](./release-decision.md) = **GO**. Attach or link this Evidence Pack summary (10-point E2E + pilot-20 KPI).
 
+| Field | Value |
+|-------|-------|
+| Status | **SENT** |
+| Sent at (UTC) | 2026-07-27T00:41:29Z |
+| From | `info@roamkit.net` (RoamKit ops) |
+| To | `guy.dor@airalo.com` |
+| CC | `avrcan@finestar.hr` |
+| Subject | RoamKit / Fine Star — request Airalo Partner API Production switch |
+| Message-ID | `<178511288945.1251.6796807227239248739@roamkit.net>` |
+| Runbook | [production-switch.md](./production-switch.md) |
+
+### Body (sent)
+
+```text
+Hi Guy,
+
+We are ready to request Production (Live) mode for Fine Star d.o.o. / RoamKit
+(Partner Application Id 17558).
+
+Readiness summary:
+- Sandbox API v2 integrated (catalog sync, orders, top-ups, usage)
+- Purchase + payment handled on our platform (Polygon USDT prepaid credits)
+- Automatic eSIM provisioning + QR delivery working
+- Guided install / lifecycle telemetry validated
+- Sandbox E2E 10-point gate passed
+- Controlled pilot completed: 20 + 100 users — all locked Pilot KPIs met
+- Production platform live at https://roamkit.net and https://api.roamkit.net
+
+Evidence Pack (internal): airalo-go-live-readiness / release-decision = GO
+
+Please:
+1) Switch our Partner API account to Production mode
+2) Issue a separate Sandbox credential pair for our staging environment
+   (staging currently shares the same client_id as production; we need sandbox
+   isolation after the switch)
+3) Confirm when Production mode is active so we can run one live validation order
+
+Happy to complete any remaining Go Live checklist items in the Partner Platform.
+
+Best regards,
+Ante Vrcan
+Fine Star d.o.o. / RoamKit
+avrcan@finestar.hr · https://roamkit.net
+```
+
 ## Production confirmation
 
-After credentials + smoke:
+After credentials + smoke ([production-switch.md](./production-switch.md)):
 
-- Confirm `AIRALO_SANDBOX=false` (or equivalent) only on production with live partner keys
-- Record smoke result in [e2e-evidence.md](./e2e-evidence.md) (production validation section / note)
+- Confirm `AIRALO_SANDBOX=false` only on production; staging uses dedicated sandbox keys
+- Record smoke result in [e2e-evidence.md](./e2e-evidence.md) (production validation section)
 - End Production Freeze; Phase 8 may open under normal PR discipline
+
+| Field | Value |
+|-------|-------|
+| Status | PENDING Guy confirmation + live smoke |
+| Production env | `AIRALO_SANDBOX` still `true` until switch confirmed |
+| Smoke | Not run (awaits Production mode) |
 
 ## Related
 
 - [README.md](./README.md)
 - [release-decision.md](./release-decision.md)
+- [production-switch.md](./production-switch.md)

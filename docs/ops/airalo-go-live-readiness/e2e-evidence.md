@@ -56,9 +56,39 @@ Fill during Phase 5 (sandbox) and Phase 6 (pilot). Attach artifacts under `scree
 - Known bugfix (allowed under Production Freeze): map provider fulfillment failures to HTTP 502 instead of uncaught 500 on top-up (API follow-up PR) — merged [roamkit-api#33](https://github.com/roamkit-net/roamkit-api/pull/33).
 - First pilot-20 attempt (RUN_ID `20260726T234410Z`) failed KPI after one transient `docker compose exec` flap (`service api is not running` on user #9 → 95%). Script gained auth/credit retries; clean re-run PASSED.
 
+## Production validation (Phase 7)
+
+**Environment:** production (`https://api.roamkit.net`, `AIRALO_SANDBOX=false`)  
+**Runbook:** [production-switch.md](./production-switch.md)  
+**Script:** `roamkit-infra/scripts/production-dod-airalo-phase7.sh`  
+**Guy request:** SENT 2026-07-27 — [communications.md](./communications.md)
+
+| Field | Value |
+|-------|-------|
+| Partner Production mode | PENDING Guy / Partner Platform |
+| Staging sandbox isolation | PENDING separate sandbox credentials |
+| Live smoke | PENDING (blocked on Production mode) |
+| Verdict | **IN PROGRESS** |
+
+When GREEN, attach redacted artifacts under `api-logs/phase7/` and fill the 10-point table below.
+
+| # | Criterion | Pass? | Evidence |
+|---|-----------|:-----:|----------|
+| 1 | Catalog browse | | |
+| 2 | Package purchase (LIVE) | | |
+| 3 | Charge via RoamKit billing | | |
+| 4 | Airalo API provisioning | | |
+| 5 | QR generated | | |
+| 6 | eSIM installation | | |
+| 7 | Activation | | |
+| 8 | Data traffic confirmed | | |
+| 9 | Top-up works | | |
+| 10 | Lifecycle + support finds order | | |
+
 ## Related
 
 - [acceptance.md](./acceptance.md)
 - [pilot-runbook.md](./pilot-runbook.md)
 - [support-runbook.md](./support-runbook.md)
 - [release-decision.md](./release-decision.md)
+- [production-switch.md](./production-switch.md)
