@@ -23,10 +23,15 @@ Production confirmation
 
 ## Pilot report
 
-- Counts (20 / 100)
-- KPI table from [e2e-evidence.md](./e2e-evidence.md)
-- Support load / response times
-- Go / no-go recommendation for Phase 7
+| Field | Value |
+|-------|-------|
+| Date (UTC) | 2026-07-27T00:24:00Z |
+| Pilot 20 | **PASSED** — 100% on all journey KPIs; support max 1 s |
+| Pilot 100 | **PASSED** — 100% on all journey KPIs; support max 1 s (21 samples) |
+| Support load | Operator lookup drills only (scripted cohort); no P0/P1 |
+| Recommendation | **GO** for Phase 7 Production Request |
+
+KPI detail: [e2e-evidence.md](./e2e-evidence.md) · Close-out: [phase-6-complete.md](../releases/1.0.0/evidence/phase-6-complete.md)
 
 ## Guy update (draft ~ early contact)
 
@@ -41,8 +46,8 @@ Use factual, non-overclaiming language until E2E is proven:
 - QR delivery implemented
 - Installation flow validated (guided setup wizard + install telemetry)
 - Sandbox E2E 10-point gate passed (top-up provider ACK subject to sandbox rate limits; RoamKit compensating refund verified)
-- End-to-end testing continuing with pilot users
-- We expect to request production access after completing our 20-user pilot
+- Controlled pilot completed: 20 users + 100 users — all locked Pilot KPIs met
+- We are ready to request production access
 ```
 
 Adjust bullets to match actual evidence before send.

@@ -27,16 +27,21 @@ Goal: support can resolve the full customer journey without engineering for rout
 
 Pilot KPI: first meaningful support response **&lt; 24 h**.
 
-## Staging sandbox re-run
+## Staging sandbox / pilot re-run
 
 On the staging host:
 
 ```bash
 cd /opt/stacks/roamkit-net
+
+# Phase 5 Guy 10-point gate
 EVIDENCE_DIR=/tmp/phase5-evidence ./scripts/staging-dod-airalo-phase5.sh
+
+# Phase 6 pilot cohort (see pilot-runbook.md)
+COHORT_SIZE=20 EVIDENCE_DIR=/tmp/phase6-pilot-20 ./scripts/staging-dod-airalo-phase6-pilot.sh
 ```
 
-Script lives in `roamkit-infra/scripts/staging-dod-airalo-phase5.sh`.
+Scripts live in `roamkit-infra/scripts/`.
 
 ## Escalation
 

@@ -1,0 +1,42 @@
+{
+  "cohort_size": 100,
+  "completed_rows": 100,
+  "counts": {
+    "purchase": 100,
+    "provision": 100,
+    "qr": 100,
+    "install": 100,
+    "connectivity": 100,
+    "support_ok": 21,
+    "support_total": 21
+  },
+  "metrics_pct": {
+    "purchase_success": 100.0,
+    "provision_success": 100.0,
+    "qr_delivery": 100.0,
+    "successful_installation": 100.0,
+    "connectivity": 100.0,
+    "support_samples_ok": 21,
+    "support_samples_total": 21
+  },
+  "targets": {
+    "purchase_success": 98.0,
+    "provision_success": 99.0,
+    "qr_delivery": 100.0,
+    "successful_installation": 95.0,
+    "connectivity": 95.0
+  },
+  "met": {
+    "purchase_success": true,
+    "provision_success": true,
+    "qr_delivery": true,
+    "successful_installation": true,
+    "connectivity": true,
+    "support_response": true,
+    "critical_bugs": true
+  },
+  "all_kpi_met": true,
+  "support_response_max_ms": 1000,
+  "support_response_target": "<24h",
+  "critical_bugs_p0_p1": 0
+}
