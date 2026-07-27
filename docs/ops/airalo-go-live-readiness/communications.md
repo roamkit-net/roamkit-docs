@@ -120,6 +120,28 @@ Password was sent by email only — **never** commit it.
 | Credits | `100.000000` via `CreditService.admin_adjust` (`phase7-guy-demo-credit-100`) |
 | Caveat | Staging remains Airalo **sandbox** (test eSIMs) |
 
+## Guy checklist confirmation
+
+Threaded reply to Guy’s Production checklist (honesty lock — no overclaim; v1 webhooks not enabled).
+Phase 7 remains **blocked** until Guy confirms Production switch + live smoke.
+
+| Field | Value |
+|-------|-------|
+| Status | **SENT** |
+| Sent at (UTC) | 2026-07-27T13:26:33Z |
+| From | `info@roamkit.net` |
+| To | `guy.dor@airalo.com` |
+| CC | `avrcan@finestar.hr` |
+| Subject | `Re: RoamKit staging demo access — Fine Star / Application 17558` |
+| Message-ID | `<178515879474.10513.11020445882123476370@roamkit.net>` |
+| In-Reply-To | `<CAAqmYC5i5JeJ5=6nr2FJF5w6RSWT79OfmEyT00jM0vwJyf20yQ@mail.gmail.com>` |
+| OpenAPI | `https://api.staging.roamkit.net/api/docs/` · `/api/redoc/` · `/api/schema/` |
+| Live-order ack | Explicit: after 17558 Production switch, orders/top-ups are real |
+| Switch notify | Asked Guy to ping when switch is done → then run production validation smoke |
+| Sandbox app (planned) | Email `staging@roamkit.net` · Company `Roamkit-Sandbox` · keep **permanently** in Sandbox |
+| Sandbox registration | Pending human Partner Platform signup; will notify Guy when submitted |
+| Honesty notes | Edge cases = go-live scope only; Airalo Partner webhooks **not** enabled for v1 |
+
 ## Production confirmation
 
 After credentials + smoke ([production-switch.md](./production-switch.md)):
