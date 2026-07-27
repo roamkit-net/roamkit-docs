@@ -101,6 +101,25 @@ Fine Star d.o.o. / RoamKit
 avrcan@finestar.hr · https://roamkit.net
 ```
 
+## Guy staging demo
+
+Temporary staging walkthrough account for Guy while Production mode is pending.
+Password was sent by email only — **never** commit it.
+
+| Field | Value |
+|-------|-------|
+| Status | **SENT** |
+| Sent at (UTC) | 2026-07-27T07:24:53Z |
+| From | `info@roamkit.net` |
+| To | `guy.dor@airalo.com` |
+| CC | `avrcan@finestar.hr` |
+| Subject | RoamKit staging demo access — Fine Star / Application 17558 |
+| Message-ID | `<178513709373.6177.9142966495017160542@roamkit.net>` |
+| Staging URL | `https://staging.roamkit.net/login` |
+| Login email | `guy.dor@airalo.com` |
+| Credits | `100.000000` via `CreditService.admin_adjust` (`phase7-guy-demo-credit-100`) |
+| Caveat | Staging remains Airalo **sandbox** (test eSIMs) |
+
 ## Production confirmation
 
 After credentials + smoke ([production-switch.md](./production-switch.md)):
