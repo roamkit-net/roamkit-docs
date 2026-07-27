@@ -1,48 +1,43 @@
 # Android LPA deep link spike
 
-Evidence pack for **PR B1**: can a GSMA `LPA:1$SM-DP+$ActivationCode` URI open
-the system eSIM installer from a mobile browser?
+Evidence pack for **PR B1 → B2**: Android eSIM install from browser.
 
-Related code: `roamkit-web` `buildLpaUri`, `launchInstallAction`,
-`buildAndroidInstallProbes`, `NEXT_PUBLIC_ANDROID_LPA_DEEP_LINK` (default **off**).
+Related code: `roamkit-web` `buildAndroidUniversalLink`, `buildAndroidInstallActions`,
+`launchInstallAction`, `NEXT_PUBLIC_ANDROID_LPA_DEEP_LINK` (default **off** in
+production bake; staging may be `1`).
 
 ## Security
 
 Do **not** paste Activation Codes, SM-DP+ hosts, or full LPA URIs into this doc,
 tickets, telemetry, or screenshots that leave the device.
 
-Record only: device, browser, OS, scheme (`lpa` / `intent` / probe id), pass/fail, notes.
+Record only: device, browser, OS, scheme / action id, pass/fail, notes.
 
 ## DoD matrix
 
-| Device | Browser | OS / build | Scheme / probe | Result (pass / fail / acceptable) | Notes |
-|--------|---------|------------|----------------|-----------------------------------|-------|
-| Samsung Z Fold 6 | Chrome | staging 2026-07-27 | `lpa` | **fail** | No visibility change; fallback OK |
-| Samsung Z Fold 6 | Samsung Internet | staging 2026-07-27 | `lpa` | **fail** | Same as Chrome |
-| Samsung Z Fold 6 | Chrome / SI | staging 2026-07-27 | `intent`, `intent:`, `intent %24`, `lpa:` | **fail** | Couldn't open |
-| Samsung Z Fold 6 | Chrome / SI | staging 2026-07-27 | `intent-phone` (`com.android.phone`) | **fail** | Leaves browser → Play Store “Item not found” (false positive for visibility heuristic) |
-| Samsung Z Fold 6 | … | | `intent-samsung` / `intent-euicc` / activate / manage-sims | **fail** | Play Store / no installer |
-| Samsung Z Fold 6 | Chrome / SI | | `android-universal` / Settings bridges | | round 3 probes |
-| Pixel Android 15 | Chrome | | `lpa` | | |
-| Xiaomi HyperOS | Chrome | | `lpa` | | |
+| Device | Browser | OS / build | Scheme / probe | Result | Notes |
+|--------|---------|------------|----------------|--------|-------|
+| Samsung Z Fold 6 | Chrome / SI | staging 2026-07-27 | `lpa` / bare `intent://` | **fail** | No installer |
+| Samsung Z Fold 6 | Chrome / SI | staging 2026-07-27 | `intent-phone` / Google eUICC packages | **fail** | Play Store miss / listing |
+| Samsung Z Fold 6 | Chrome / SI | staging 2026-07-27 | `android-universal` (encoded) | **pass** | System “Postavite eSIM” → profile check |
+| Samsung Z Fold 6 | Chrome / SI | staging 2026-07-27 | `android-universal-raw` | **pass** | Same as encoded; dropped as duplicate |
+| Samsung Z Fold 6 | Chrome / SI | staging 2026-07-27 | `settings-network-dashboard` | **acceptable** | Opens Connections (Veze); secondary CTA |
+| Samsung Z Fold 6 | … | | other Settings / Manage SIMs | **fail** | Dropped |
+| Pixel Android 15 | Chrome | | `android-universal` | | follow-up |
+| Xiaomi HyperOS | Chrome | | `android-universal` | | follow-up |
 
 ### Pass criteria
 
-- **Samsung rows:** opens system eSIM / add-profile installer.
-- **Not pass:** Play Store, “item not found”, chooser with no eSIM UI, or browser no-op.
-- **Pixel / Xiaomi:** **acceptable** if installer opens **or** safe no-op (browser stays on RoamKit without broken state).
+- **Samsung:** opens system eSIM / add-profile installer with LPA applied.
+- **Not pass:** Play Store, “item not found”, or browser no-op.
+- **Settings bridge:** acceptable as secondary path only (user still uses QR/manual).
 
-### Success / failure heuristics (for product UX)
+### Success / failure heuristics (product UX)
 
-- **Heuristic only:** page becomes hidden within ~2–3s ≠ product pass.
-- **Product pass:** user reaches eSIM download / Add eSIM UI with LPA applied (or clear path to enter it).
-- **Failure:** browser stays on RoamKit, unknown protocol, Play Store miss, or no eSIM UI.
-
-## How to probe (flag on)
-
-1. Staging with `NEXT_PUBLIC_ANDROID_LPA_DEEP_LINK=1`.
-2. Setup → manufacturer → tap each spike probe button.
-3. Record probe id + pass/fail; never commit secrets.
+- Universal HTTPS often shows a **system dialog over the page** without
+  `visibilityState === hidden` — do **not** treat missing visibility as failure
+  for `https` actions.
+- Product pass = user sees Set up eSIM / profile download UI.
 
 ## Decision Log
 
@@ -50,22 +45,26 @@ Record only: device, browser, OS, scheme (`lpa` / `intent` / probe id), pass/fai
 Spike Result
 
 Decision:
-□ Ship B2
-☑ Extend spike
+☑ Ship B2
+□ Extend spike
 □ Cancel feature
 
 Reason:
-2026-07-27 — Z Fold 6: LPA:/intent fail; intent+phone and Google eUICC open Play
-Store (SIM Manager listing / item not found) — not eSIM installer. Round 3:
-esimsetup.android.com universal link + Settings bridges. Production flag off.
+2026-07-27 — Z Fold 6 confirmed: esimsetup.android.com universal link opens
+native eSIM setup (encoded carddata). Network dashboard is secondary
+Connections bridge. Drop LPA:/intent package probes and universal-raw duplicate.
 
-Enable production flag only if (when shipping B2 / later prod):
-- Samsung pass rate >95% on matrix sample (real eSIM UI, not Play Store)
+Product CTAs (flagged):
+1. Install eSIM → Android universal HTTPS
+2. Open Connections settings → NetworkDashboardActivity
+
+Enable production flag only if:
+- Samsung pass rate >95% on broader matrix (Pixel/Xiaomi follow-up OK as later)
 - No critical browser bugs
-- Fallback (guide + QR) confirmed
+- Fallback (guide + QR) confirmed — already on setup page
 ```
 
 ## Kill switch
 
-`NEXT_PUBLIC_ANDROID_LPA_DEEP_LINK` — leave unset/`0` in production; staging may
-stay `1` while Extending spike. Disable immediately if One UI / browser regresses.
+`NEXT_PUBLIC_ANDROID_LPA_DEEP_LINK` — production bake stays empty until explicit
+enable. Staging may keep `1`. Disable immediately if One UI / GMS regresses.
