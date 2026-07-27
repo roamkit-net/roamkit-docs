@@ -139,8 +139,37 @@ Phase 7 remains **blocked** until Guy confirms Production switch + live smoke.
 | Live-order ack | Explicit: after 17558 Production switch, orders/top-ups are real |
 | Switch notify | Asked Guy to ping when switch is done → then run production validation smoke |
 | Sandbox app (planned) | Email `staging@roamkit.net` · Company `Roamkit-Sandbox` · keep **permanently** in Sandbox |
-| Sandbox registration | Pending human Partner Platform signup; will notify Guy when submitted |
+| Sandbox registration | **SUBMITTED** on Partner Platform (awaiting Guy approval / up to 48h verification) |
 | Honesty notes | Edge cases = go-live scope only; Airalo Partner webhooks **not** enabled for v1 |
+
+## Live API account (Fine Star)
+
+Guy notified that a **Live Partner API account** was created for Fine Star (2026-07-27).
+Orders on that account are real and invoiced. Mode toggle: Sandbox ↔ Production via Partner Platform config (same credentials / base URL).
+
+| Field | Value |
+|-------|-------|
+| Status | **RECEIVED** |
+| Subject | Live API Partner - Fine Star |
+| From | `guy.dor@airalo.com` |
+| To | `avrcan@finestar.hr` · CC `info@roamkit.net` |
+| Implication | Production switch path open; still run live smoke before Phase 7 GREEN |
+
+## Sandbox approval request (Roamkit-Sandbox)
+
+| Field | Value |
+|-------|-------|
+| Status | **SENT** |
+| Sent at (UTC) | 2026-07-27T21:23:12Z |
+| From | `info@roamkit.net` |
+| To | `guy.dor@airalo.com` |
+| CC | `avrcan@finestar.hr` |
+| Subject | RoamKit — please approve Sandbox partner app (Roamkit-Sandbox) |
+| Message-ID | `<178518739259.16237.8464280113533182041@roamkit.net>` |
+| App email | `staging@roamkit.net` |
+| Company | `Roamkit-Sandbox` |
+| Ask | Approve + keep **permanently** in Sandbox mode |
+| Next | Await approval → install sandbox credentials on staging only |
 
 ## Production confirmation
 
