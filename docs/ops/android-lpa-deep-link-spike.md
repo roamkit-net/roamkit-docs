@@ -55,8 +55,12 @@ native eSIM setup (encoded carddata). Network dashboard is secondary
 Connections bridge. Drop LPA:/intent package probes and universal-raw duplicate.
 
 Product CTAs (flagged):
-1. Install eSIM → Android universal HTTPS
-2. Open Connections settings → NetworkDashboardActivity
+1. Install eSIM → Android universal HTTPS (platform-level; no OEM picker)
+2. QR + manual fallback
+3. Optional OEM help (“Need help?”) — guides only, not install gate
+
+Architecture: deep-link capability belongs to the Android platform, not to a
+manufacturer guide entry.
 
 Enable production flag only if:
 - Samsung pass rate >95% on broader matrix (Pixel/Xiaomi follow-up OK as later)
