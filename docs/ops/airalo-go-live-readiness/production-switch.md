@@ -37,6 +37,23 @@ Ask for:
 2. Separate **sandbox** credentials for RoamKit staging (`api.staging.roamkit.net`)
 3. Confirmation when Production mode is active
 
+## Staging pause (before Partner Production flip)
+
+Staging currently shares the live `client_id`. **Before** Guy flips Production mode:
+
+```bash
+cd /opt/stacks/roamkit-net
+./scripts/staging-pause-airalo.sh
+```
+
+After dedicated sandbox credentials arrive:
+
+```bash
+./scripts/staging-pause-airalo.sh restore   # restores backup keys
+# then set the new sandbox AIRALO_CLIENT_ID / AIRALO_CLIENT_SECRET in .env
+docker compose --profile app up -d --force-recreate api celery celery-beat
+```
+
 ## Flip production env
 
 On `/opt/stacks/roamkit-production/`:
