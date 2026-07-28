@@ -1,0 +1,38 @@
+[
+  {
+    "id": "b66dc896-93d3-461c-bae2-f4a162756d96",
+    "event_type": "system.purchased",
+    "source": "system",
+    "schema_version": 1,
+    "idempotency_key": "system.purchased:7",
+    "setup_session_id": null,
+    "payload": {
+      "activation_policy": "first_usage"
+    },
+    "created_at": "2026-07-26T23:13:12.182769Z"
+  },
+  {
+    "id": "dd03bd1d-f0f0-412d-bb1f-5045a3407c73",
+    "event_type": "install.opened",
+    "source": "client",
+    "schema_version": 1,
+    "idempotency_key": "a7b38742-973a-42b8-8e3e-686b53f4ee8a-install.opened",
+    "setup_session_id": "a7b38742-973a-42b8-8e3e-686b53f4ee8a",
+    "payload": {},
+    "created_at": "2026-07-26T23:13:12.666993Z"
+  },
+  {
+    "id": "b7359ad5-9f25-4b93-93fc-9a369c65ed89",
+    "event_type": "system.status.installation_started",
+    "source": "system",
+    "schema_version": 1,
+    "idempotency_key": "system.status.installation_started:7:2026-07-26T23:13:12.667458+00:00",
+    "setup_session_id": null,
+    "payload": {
+      "to": "installation_started",
+      "from": "purchased",
+      "reason": "install.opened"
+    },
+    "created_at": "2026-07-26T23:13:12.668719Z"
+  }
+]

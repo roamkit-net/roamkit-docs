@@ -1,0 +1,13 @@
+{
+  "observed_at_utc": "2026-07-26T23:10:56Z",
+  "esim_id": 6,
+  "package_id": "discover-in-30days-3gb-px-topup",
+  "airalo": "HTTP 429 POST /v2/orders/topups",
+  "roamkit": [
+    "CreditDebited reference_type=topup amount=24",
+    "FulfillmentRefunded reason=provider_fulfillment_failed amount=24",
+    "ledger balance restored"
+  ],
+  "topup_list": "GET /me/esims/{id}/topups/ returned 12 packages (HTTP 200)",
+  "follow_up": "Provider ACK blocked by Airalo sandbox rate limit; RoamKit money path verified."
+}

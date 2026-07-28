@@ -1,0 +1,151 @@
+Phase 6 pilot cohort against https://api.staging.roamkit.net
+COHORT_SIZE=100 RUN_ID=20260727T000058Z USER_DELAY_SEC=10
+
+catalog OK count=1983
+PACKAGE_ID=discover-in-3days-300mb
+  [#1] purchase=1 provision=1 qr=1 install=1 connectivity=1 support=1 order=85 esim=47
+  [#2] purchase=1 provision=1 qr=1 install=1 connectivity=1 support=-1 order=86 esim=48
+  [#3] purchase=1 provision=1 qr=1 install=1 connectivity=1 support=-1 order=87 esim=49
+  [#4] purchase=1 provision=1 qr=1 install=1 connectivity=1 support=-1 order=88 esim=50
+  [#5] purchase=1 provision=1 qr=1 install=1 connectivity=1 support=1 order=89 esim=51
+  [#6] purchase=1 provision=1 qr=1 install=1 connectivity=1 support=-1 order=90 esim=52
+  [#7] purchase=1 provision=1 qr=1 install=1 connectivity=1 support=-1 order=91 esim=53
+  [#8] purchase=1 provision=1 qr=1 install=1 connectivity=1 support=-1 order=92 esim=54
+  [#9] purchase=1 provision=1 qr=1 install=1 connectivity=1 support=-1 order=93 esim=55
+  [#10] purchase=1 provision=1 qr=1 install=1 connectivity=1 support=1 order=94 esim=56
+  [#11] purchase=1 provision=1 qr=1 install=1 connectivity=1 support=-1 order=95 esim=57
+  [#12] purchase=1 provision=1 qr=1 install=1 connectivity=1 support=-1 order=96 esim=58
+  [#13] purchase=1 provision=1 qr=1 install=1 connectivity=1 support=-1 order=97 esim=59
+  [#14] purchase=1 provision=1 qr=1 install=1 connectivity=1 support=-1 order=98 esim=60
+  [#15] purchase=1 provision=1 qr=1 install=1 connectivity=1 support=1 order=99 esim=61
+  [#16] purchase=1 provision=1 qr=1 install=1 connectivity=1 support=-1 order=100 esim=62
+  [#17] purchase=1 provision=1 qr=1 install=1 connectivity=1 support=-1 order=101 esim=63
+  [#18] purchase=1 provision=1 qr=1 install=1 connectivity=1 support=-1 order=102 esim=64
+  [#19] purchase=1 provision=1 qr=1 install=1 connectivity=1 support=-1 order=103 esim=65
+  [#20] purchase=1 provision=1 qr=1 install=1 connectivity=1 support=1 order=104 esim=66
+  [#21] purchase=1 provision=1 qr=1 install=1 connectivity=1 support=-1 order=105 esim=67
+  [#22] purchase=1 provision=1 qr=1 install=1 connectivity=1 support=-1 order=106 esim=68
+  [#23] purchase=1 provision=1 qr=1 install=1 connectivity=1 support=-1 order=107 esim=69
+  [#24] purchase=1 provision=1 qr=1 install=1 connectivity=1 support=-1 order=108 esim=70
+  [#25] purchase=1 provision=1 qr=1 install=1 connectivity=1 support=1 order=109 esim=71
+  [#26] purchase=1 provision=1 qr=1 install=1 connectivity=1 support=-1 order=110 esim=72
+  [#27] purchase=1 provision=1 qr=1 install=1 connectivity=1 support=-1 order=111 esim=73
+  [#28] purchase=1 provision=1 qr=1 install=1 connectivity=1 support=-1 order=112 esim=74
+  [#29] purchase=1 provision=1 qr=1 install=1 connectivity=1 support=-1 order=113 esim=75
+  [#30] purchase=1 provision=1 qr=1 install=1 connectivity=1 support=1 order=114 esim=76
+  [#31] purchase=1 provision=1 qr=1 install=1 connectivity=1 support=-1 order=115 esim=77
+  [#32] purchase=1 provision=1 qr=1 install=1 connectivity=1 support=-1 order=116 esim=78
+  [#33] purchase=1 provision=1 qr=1 install=1 connectivity=1 support=-1 order=117 esim=79
+  [#34] purchase=1 provision=1 qr=1 install=1 connectivity=1 support=-1 order=118 esim=80
+  [#35] purchase=1 provision=1 qr=1 install=1 connectivity=1 support=1 order=119 esim=81
+  [#36] purchase=1 provision=1 qr=1 install=1 connectivity=1 support=-1 order=120 esim=82
+  [#37] purchase=1 provision=1 qr=1 install=1 connectivity=1 support=-1 order=121 esim=83
+  [#38] purchase=1 provision=1 qr=1 install=1 connectivity=1 support=-1 order=122 esim=84
+  [#39] purchase=1 provision=1 qr=1 install=1 connectivity=1 support=-1 order=123 esim=85
+  [#40] purchase=1 provision=1 qr=1 install=1 connectivity=1 support=1 order=124 esim=86
+  [#41] purchase=1 provision=1 qr=1 install=1 connectivity=1 support=-1 order=125 esim=87
+  [#42] purchase=1 provision=1 qr=1 install=1 connectivity=1 support=-1 order=126 esim=88
+  [#43] purchase=1 provision=1 qr=1 install=1 connectivity=1 support=-1 order=127 esim=89
+  [#44] purchase=1 provision=1 qr=1 install=1 connectivity=1 support=-1 order=128 esim=90
+  [#45] purchase=1 provision=1 qr=1 install=1 connectivity=1 support=1 order=129 esim=91
+  [#46] purchase=1 provision=1 qr=1 install=1 connectivity=1 support=-1 order=130 esim=92
+  [#47] purchase=1 provision=1 qr=1 install=1 connectivity=1 support=-1 order=131 esim=93
+  [#48] purchase=1 provision=1 qr=1 install=1 connectivity=1 support=-1 order=132 esim=94
+  [#49] purchase=1 provision=1 qr=1 install=1 connectivity=1 support=-1 order=133 esim=95
+  [#50] purchase=1 provision=1 qr=1 install=1 connectivity=1 support=1 order=134 esim=96
+  [#51] purchase=1 provision=1 qr=1 install=1 connectivity=1 support=-1 order=135 esim=97
+  [#52] purchase=1 provision=1 qr=1 install=1 connectivity=1 support=-1 order=136 esim=98
+  [#53] purchase=1 provision=1 qr=1 install=1 connectivity=1 support=-1 order=137 esim=99
+  [#54] purchase=1 provision=1 qr=1 install=1 connectivity=1 support=-1 order=138 esim=100
+  [#55] purchase=1 provision=1 qr=1 install=1 connectivity=1 support=1 order=139 esim=101
+  [#56] purchase=1 provision=1 qr=1 install=1 connectivity=1 support=-1 order=140 esim=102
+  [#57] purchase=1 provision=1 qr=1 install=1 connectivity=1 support=-1 order=141 esim=103
+  [#58] purchase=1 provision=1 qr=1 install=1 connectivity=1 support=-1 order=142 esim=104
+  [#59] purchase=1 provision=1 qr=1 install=1 connectivity=1 support=-1 order=143 esim=105
+  [#60] purchase=1 provision=1 qr=1 install=1 connectivity=1 support=1 order=144 esim=106
+  [#61] purchase=1 provision=1 qr=1 install=1 connectivity=1 support=-1 order=145 esim=107
+  [#62] purchase=1 provision=1 qr=1 install=1 connectivity=1 support=-1 order=146 esim=108
+  [#63] purchase=1 provision=1 qr=1 install=1 connectivity=1 support=-1 order=147 esim=109
+  [#64] purchase=1 provision=1 qr=1 install=1 connectivity=1 support=-1 order=148 esim=110
+  [#65] purchase=1 provision=1 qr=1 install=1 connectivity=1 support=1 order=149 esim=111
+  [#66] purchase=1 provision=1 qr=1 install=1 connectivity=1 support=-1 order=150 esim=112
+  [#67] purchase=1 provision=1 qr=1 install=1 connectivity=1 support=-1 order=151 esim=113
+  [#68] purchase=1 provision=1 qr=1 install=1 connectivity=1 support=-1 order=152 esim=114
+  [#69] purchase=1 provision=1 qr=1 install=1 connectivity=1 support=-1 order=153 esim=115
+  [#70] purchase=1 provision=1 qr=1 install=1 connectivity=1 support=1 order=154 esim=116
+  [#71] purchase=1 provision=1 qr=1 install=1 connectivity=1 support=-1 order=155 esim=117
+  [#72] purchase=1 provision=1 qr=1 install=1 connectivity=1 support=-1 order=156 esim=118
+  [#73] purchase=1 provision=1 qr=1 install=1 connectivity=1 support=-1 order=157 esim=119
+  [#74] purchase=1 provision=1 qr=1 install=1 connectivity=1 support=-1 order=158 esim=120
+  [#75] purchase=1 provision=1 qr=1 install=1 connectivity=1 support=1 order=159 esim=121
+  [#76] purchase=1 provision=1 qr=1 install=1 connectivity=1 support=-1 order=160 esim=122
+  [#77] purchase=1 provision=1 qr=1 install=1 connectivity=1 support=-1 order=161 esim=123
+  [#78] purchase=1 provision=1 qr=1 install=1 connectivity=1 support=-1 order=162 esim=124
+  [#79] purchase=1 provision=1 qr=1 install=1 connectivity=1 support=-1 order=163 esim=125
+  [#80] purchase=1 provision=1 qr=1 install=1 connectivity=1 support=1 order=164 esim=126
+  [#81] purchase=1 provision=1 qr=1 install=1 connectivity=1 support=-1 order=165 esim=127
+  [#82] purchase=1 provision=1 qr=1 install=1 connectivity=1 support=-1 order=166 esim=128
+  [#83] purchase=1 provision=1 qr=1 install=1 connectivity=1 support=-1 order=167 esim=129
+  [#84] purchase=1 provision=1 qr=1 install=1 connectivity=1 support=-1 order=168 esim=130
+  [#85] purchase=1 provision=1 qr=1 install=1 connectivity=1 support=1 order=169 esim=131
+  [#86] purchase=1 provision=1 qr=1 install=1 connectivity=1 support=-1 order=170 esim=132
+  [#87] purchase=1 provision=1 qr=1 install=1 connectivity=1 support=-1 order=171 esim=133
+  [#88] purchase=1 provision=1 qr=1 install=1 connectivity=1 support=-1 order=172 esim=134
+  [#89] purchase=1 provision=1 qr=1 install=1 connectivity=1 support=-1 order=173 esim=135
+  [#90] purchase=1 provision=1 qr=1 install=1 connectivity=1 support=1 order=174 esim=136
+  [#91] purchase=1 provision=1 qr=1 install=1 connectivity=1 support=-1 order=175 esim=137
+  [#92] purchase=1 provision=1 qr=1 install=1 connectivity=1 support=-1 order=176 esim=138
+  [#93] purchase=1 provision=1 qr=1 install=1 connectivity=1 support=-1 order=177 esim=139
+  [#94] purchase=1 provision=1 qr=1 install=1 connectivity=1 support=-1 order=178 esim=140
+  [#95] purchase=1 provision=1 qr=1 install=1 connectivity=1 support=1 order=179 esim=141
+  [#96] purchase=1 provision=1 qr=1 install=1 connectivity=1 support=-1 order=180 esim=142
+  [#97] purchase=1 provision=1 qr=1 install=1 connectivity=1 support=-1 order=181 esim=143
+  [#98] purchase=1 provision=1 qr=1 install=1 connectivity=1 support=-1 order=182 esim=144
+  [#99] purchase=1 provision=1 qr=1 install=1 connectivity=1 support=-1 order=183 esim=145
+  [#100] purchase=1 provision=1 qr=1 install=1 connectivity=1 support=1 order=184 esim=146
+
+===== Phase 6 pilot KPI summary =====
+{
+  "cohort_size": 100,
+  "completed_rows": 100,
+  "counts": {
+    "purchase": 100,
+    "provision": 100,
+    "qr": 100,
+    "install": 100,
+    "connectivity": 100,
+    "support_ok": 21,
+    "support_total": 21
+  },
+  "metrics_pct": {
+    "purchase_success": 100.0,
+    "provision_success": 100.0,
+    "qr_delivery": 100.0,
+    "successful_installation": 100.0,
+    "connectivity": 100.0,
+    "support_samples_ok": 21,
+    "support_samples_total": 21
+  },
+  "targets": {
+    "purchase_success": 98.0,
+    "provision_success": 99.0,
+    "qr_delivery": 100.0,
+    "successful_installation": 95.0,
+    "connectivity": 95.0
+  },
+  "met": {
+    "purchase_success": true,
+    "provision_success": true,
+    "qr_delivery": true,
+    "successful_installation": true,
+    "connectivity": true,
+    "support_response": true,
+    "critical_bugs": true
+  },
+  "all_kpi_met": true,
+  "support_response_max_ms": 1000,
+  "support_response_target": "<24h",
+  "critical_bugs_p0_p1": 0
+}
+Evidence written to /tmp/phase6-pilot-100
+PHASE6 PILOT COHORT 100 PASSED

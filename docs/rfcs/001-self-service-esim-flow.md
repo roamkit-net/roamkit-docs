@@ -48,15 +48,19 @@ sequenceDiagram
   Note over U,A: Later: low data webhook → notification handler
 ```
 
-## API additions (Faza 3)
+## API additions (Faza 2–3)
+
+> **Superseded for payments:** Faza 3 shipped as Polygon USDT prepaid credits
+> ([ADR 010](../adr/010-polygon-usdt-prepaid-credits.md)) under `/api/v1/billing/`,
+> not Stripe checkout. Rows below that mention Stripe are historical RFC text.
 
 | Method | Path | Notes |
 |--------|------|-------|
-| `POST` | `/api/v1/orders/` | Create pending order + Stripe session |
-| `POST` | `/api/v1/webhooks/stripe/` | Verify signature, complete order |
+| `POST` | `/api/v1/orders/` | Paid order via prepaid credits (debit then fulfill) |
+| `GET` | `/api/v1/billing/*` | Balance, deposit-info, verify-wallet/cex, config (ADR 010) |
 | `GET` | `/api/v1/me/esims/` | List user eSIMs (Faza 2) |
 | `GET` | `/api/v1/me/esims/{id}/usage/` | Usage from provider |
-| `POST` | `/api/v1/me/esims/{id}/topups/` | Top-up via TopupProvider |
+| `POST` | `/api/v1/me/esims/{id}/topups/` | Top-up via TopupProvider + CreditService |
 
 ## Domain events
 
@@ -70,17 +74,18 @@ sequenceDiagram
 ## Provider usage
 
 - `PackageProvider` — catalog sync (Faza 1).
-- `OrderProvider` — fulfillment after payment (Faza 2–3).
-- `TopupProvider` — self-service top-up (Faza 3).
-- `PaymentProvider` — Stripe (Faza 3).
+- `OrderProvider` — fulfillment after credit debit (Faza 2–3).
+- `TopupProvider` — self-service top-up (Faza 2–3).
+- `BlockchainProvider` — Polygon USDT deposit verification (Faza 3 / ADR 010).
 
 See [provider abstractions](../architecture/provider-abstractions.md).
 
 ## Data model (sketch)
 
-- `Order`: user, package_id, status, stripe_session_id, external_order_id.
+- `Order`: account → `billing.Account`, package_id, status, external_order_id.
 - `Esim`: user, iccid, qr_payload, status, provider_ref.
-- `Topup`: esim, package_id, status, external_ref.
+- `Topup`: account → `billing.Account`, esim, package_id, status, external_ref.
+- Billing: `Account`, `DepositRequest`, `CreditLedgerEntry` (ADR 010).
 
 Exact schema defined in `roamkit-api` during implementation.
 

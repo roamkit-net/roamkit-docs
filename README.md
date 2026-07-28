@@ -1,6 +1,6 @@
 # roamkit-docs
 
-Architecture decisions, RFCs, and engineering standards for [RoamKit](https://github.com/roamkit).
+Architecture decisions, RFCs, and engineering standards for [RoamKit](https://github.com/roamkit-net).
 
 This repo is the **source of truth for documentation** — ADRs and standards are not scattered across `roamkit-api`, `roamkit-web`, or `roamkit-infra`.
 
@@ -10,7 +10,8 @@ This repo is the **source of truth for documentation** — ADRs and standards ar
 |------|---------|
 | [ADR_INDEX.md](./ADR_INDEX.md) | Index of all Architecture Decision Records |
 | [docs/architecture/](./docs/architecture/) | System overview, directory layout, provider patterns |
-| [docs/adr/](./docs/adr/) | ADR 001–008 (accepted decisions) |
+| [docs/adr/](./docs/adr/) | ADR 001–013 (decisions; see [ADR_INDEX](./ADR_INDEX.md) for status) |
+| [docs/ops/](./docs/ops/) | **Operations Handbook** — Launch Gates, cutover, incidents, maturity |
 | [docs/rfcs/](./docs/rfcs/) | Request for Comments — proposed features before implementation |
 | [standards/](./standards/) | Branching, coding, Docker, CI, API versioning, DoD |
 
@@ -31,4 +32,4 @@ This repo is the **source of truth for documentation** — ADRs and standards ar
 
 ## Status
 
-Architecture Freeze (Faza -1b): ADR 001–008, standards, and Definition of Done are defined here. Application repos (`roamkit-api`, `roamkit-web`) start in Faza 0 after bootstrap.
+Architecture Freeze (Faza -1b): ADR 001–009, standards, and Definition of Done are defined here. Faza 3 adds [ADR 010](./docs/adr/010-polygon-usdt-prepaid-credits.md) (Polygon USDT prepaid credits). Billing design freeze: [ADR 012](./docs/adr/012-billing-extensibility-rules.md) + [ADR 011](./docs/adr/011-credit-vouchers-gift-codes.md). Faza 4 gate: [ADR 013](./docs/adr/013-production-launch.md) (production launch; [ADR 007](./docs/adr/007-staging-only-until-launch.md) superseded) + [go-live checklist](./docs/ops/production-go-live-checklist.md). PR0.5: [production readiness review](./docs/ops/production-readiness-review.md) — **GO WITH CONDITIONS**. Release Engineering: [Operations Handbook](./docs/ops/README.md) / [Launch Gates](./docs/ops/launch-gates.md) (Gate C open; Gate D blocked).

@@ -16,7 +16,7 @@ All routine GitHub org administration is scripted under `roamkit-infra/bootstrap
 
 | Script | Purpose |
 |--------|---------|
-| `create-org.sh` | Ensure `roamkit` org exists |
+| `create-org.sh` | Ensure `roamkit-net` org exists |
 | `create-repos.sh` | Create infra, docs, api, web, `.github` |
 | `branch-protection.sh` | `main` + `develop` require PR |
 | `labels.sh` | Standard issue labels |

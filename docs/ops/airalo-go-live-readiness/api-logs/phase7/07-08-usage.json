@@ -1,0 +1,11 @@
+{
+  "remaining_mb": 300,
+  "total_mb": 300,
+  "expired_at": null,
+  "is_unlimited": false,
+  "status": "NOT_ACTIVE",
+  "remaining_voice": 0,
+  "remaining_text": 0,
+  "total_voice": 0,
+  "total_text": 0
+}

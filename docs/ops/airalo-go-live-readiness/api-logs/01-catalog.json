@@ -1,0 +1,48 @@
+{
+  "count": 1983,
+  "results": [
+    {
+      "id": "discover-in-3days-300mb",
+      "title": "300 MB - 3 days",
+      "operator_title": "Discover",
+      "country_code": "",
+      "data_allowance": "300 MB",
+      "validity_days": 3,
+      "price_usd": "1.00",
+      "is_unlimited": false,
+      "plan_type": "data",
+      "voice_minutes": null,
+      "text_sms": null,
+      "activation_policy": "first_usage"
+    },
+    {
+      "id": "asialink-in-3days-500mb",
+      "title": "500 MB - 3 days",
+      "operator_title": "Asialink",
+      "country_code": "",
+      "data_allowance": "500 MB",
+      "validity_days": 3,
+      "price_usd": "1.53",
+      "is_unlimited": false,
+      "plan_type": "data",
+      "voice_minutes": null,
+      "text_sms": null,
+      "activation_policy": "first_usage"
+    },
+    {
+      "id": "discover-in-30days-200mb",
+      "title": "200 MB - 30 days",
+      "operator_title": "Discover",
+      "country_code": "",
+      "data_allowance": "200 MB",
+      "validity_days": 30,
+      "price_usd": "2.34",
+      "is_unlimited": false,
+      "plan_type": "data",
+      "voice_minutes": null,
+      "text_sms": null,
+      "activation_policy": "first_usage"
+    }
+  ],
+  "note": "Truncated sample from staging GET /api/v1/packages/"
+}
