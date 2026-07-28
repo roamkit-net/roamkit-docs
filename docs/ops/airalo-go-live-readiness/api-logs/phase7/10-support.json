@@ -1,0 +1,21 @@
+{
+  "user_id": 8,
+  "account_id": "4d73be03-c1f8-4ac2-82b3-58817dd579a5",
+  "order_id": 7,
+  "order_status": "fulfilled",
+  "external_order_id": "2208690",
+  "esim_id": 4,
+  "esim_status": "installed",
+  "activation_policy": "first_usage",
+  "event_types": [
+    "system.purchased",
+    "install.opened",
+    "system.status.installation_started",
+    "install.qr_rendered",
+    "install.completed",
+    "system.status.installed",
+    "install.roaming_checklist_viewed",
+    "install.setup_confirmed"
+  ],
+  "ledger_order_refs": 3
+}
