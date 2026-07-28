@@ -1,0 +1,92 @@
+[
+  {
+    "id": "5db67630-9011-41c1-98fc-193a93c3763b",
+    "event_type": "system.purchased",
+    "source": "system",
+    "schema_version": 1,
+    "idempotency_key": "system.purchased:4",
+    "setup_session_id": null,
+    "payload": {
+      "activation_policy": "first_usage"
+    },
+    "created_at": "2026-07-28T11:19:42.684115Z"
+  },
+  {
+    "id": "4e4062ed-385d-4d38-b1eb-4f277bc6c550",
+    "event_type": "install.opened",
+    "source": "client",
+    "schema_version": 1,
+    "idempotency_key": "7eb0ddf8-c2a0-45a0-9579-29ac2f9b6ef2-install.opened",
+    "setup_session_id": "7eb0ddf8-c2a0-45a0-9579-29ac2f9b6ef2",
+    "payload": {},
+    "created_at": "2026-07-28T11:19:43.253880Z"
+  },
+  {
+    "id": "04fa43e7-8ec8-4f3e-8209-1799d4d9eaab",
+    "event_type": "system.status.installation_started",
+    "source": "system",
+    "schema_version": 1,
+    "idempotency_key": "system.status.installation_started:4:2026-07-28T11:19:43.254856+00:00",
+    "setup_session_id": null,
+    "payload": {
+      "to": "installation_started",
+      "from": "purchased",
+      "reason": "install.opened"
+    },
+    "created_at": "2026-07-28T11:19:43.257383Z"
+  },
+  {
+    "id": "8706c8c1-89e8-4855-9e5b-dc91887322de",
+    "event_type": "install.qr_rendered",
+    "source": "client",
+    "schema_version": 1,
+    "idempotency_key": "7eb0ddf8-c2a0-45a0-9579-29ac2f9b6ef2-install.qr_rendered",
+    "setup_session_id": "7eb0ddf8-c2a0-45a0-9579-29ac2f9b6ef2",
+    "payload": {},
+    "created_at": "2026-07-28T11:19:43.337970Z"
+  },
+  {
+    "id": "fc5e2967-ba2b-461c-a6c0-c89a48b5f8e2",
+    "event_type": "install.completed",
+    "source": "client",
+    "schema_version": 1,
+    "idempotency_key": "7eb0ddf8-c2a0-45a0-9579-29ac2f9b6ef2-install.completed",
+    "setup_session_id": "7eb0ddf8-c2a0-45a0-9579-29ac2f9b6ef2",
+    "payload": {},
+    "created_at": "2026-07-28T11:19:43.420471Z"
+  },
+  {
+    "id": "5fc6d9d0-7d33-4b44-a536-1268283854c2",
+    "event_type": "system.status.installed",
+    "source": "system",
+    "schema_version": 1,
+    "idempotency_key": "system.status.installed:4:2026-07-28T11:19:43.421273+00:00",
+    "setup_session_id": null,
+    "payload": {
+      "to": "installed",
+      "from": "installation_started",
+      "reason": "install.completed"
+    },
+    "created_at": "2026-07-28T11:19:43.423696Z"
+  },
+  {
+    "id": "9c88d06f-9015-4438-9bd9-ffdb6f9bbafc",
+    "event_type": "install.roaming_checklist_viewed",
+    "source": "client",
+    "schema_version": 1,
+    "idempotency_key": "7eb0ddf8-c2a0-45a0-9579-29ac2f9b6ef2-install.roaming_checklist_viewed",
+    "setup_session_id": "7eb0ddf8-c2a0-45a0-9579-29ac2f9b6ef2",
+    "payload": {},
+    "created_at": "2026-07-28T11:19:43.500093Z"
+  },
+  {
+    "id": "a9ff0c8c-3001-4c3a-85b3-db037f5d957a",
+    "event_type": "install.setup_confirmed",
+    "source": "client",
+    "schema_version": 1,
+    "idempotency_key": "7eb0ddf8-c2a0-45a0-9579-29ac2f9b6ef2-install.setup_confirmed",
+    "setup_session_id": "7eb0ddf8-c2a0-45a0-9579-29ac2f9b6ef2",
+    "payload": {},
+    "created_at": "2026-07-28T11:19:43.564499Z"
+  }
+]

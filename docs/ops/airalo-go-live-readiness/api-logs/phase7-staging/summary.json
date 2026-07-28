@@ -1,0 +1,30 @@
+{
+  "email": "phase5-e2e-1785238092@***",
+  "package_id": "discover-in-3days-300mb",
+  "esim_id": "148",
+  "order_id": "186",
+  "pass": 9,
+  "fail": 1,
+  "results": [
+{"n": 1, "name": "Catalog browse", "ok": "PASS", "note": "API packages + web /plans 200"}
+,
+{"n": 3, "name": "Charge via RoamKit billing", "ok": "PASS", "note": "CreditService credit + ledger==balance; Airalo not charged"}
+,
+{"n": 2, "name": "Package purchase", "ok": "PASS", "note": "POST /orders/ 201 order_id=186"}
+,
+{"n": 4, "name": "Airalo API provisioning", "ok": "PASS", "note": "Provider order fulfilled; Esim row created"}
+,
+{"n": 5, "name": "QR generated", "ok": "PASS", "note": "qrcode/lpa on detail; setup wizard HTTP 200"}
+,
+{"n": 6, "name": "eSIM installation", "ok": "PASS", "note": "Client-attested install.* \u2192 status installed; setup_completed_at set"}
+,
+{"n": 7, "name": "Activation", "ok": "PASS", "note": "lifecycle=activated; usage={\"status\": \"ACTIVE\", \"remaining_mb\": 1024, \"total_mb\": 1024, \"raw_keys\": [\"expired_at\", \"is_unlimited\", \"remaining_mb\", \"remaining_text\", \"remaining_voice\", \"status\", \"total_mb\", \"total_text\", \"total_voice\"]}"}
+,
+{"n": 8, "name": "Data traffic confirmed", "ok": "PASS", "note": "Provider usage DTO reachable (no_consume_yet); physical radio deferred to pilot if no consume"}
+,
+{"n": 9, "name": "Top-up works", "ok": "FAIL", "note": "topup failed after retries (last_http=502)"}
+,
+{"n": 10, "name": "Lifecycle + support finds order", "ok": "PASS", "note": "User\u2192Account\u2192Order\u2192Esim\u2192events+ledger"}
+
+  ]
+}

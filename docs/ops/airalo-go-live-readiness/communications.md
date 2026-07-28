@@ -169,7 +169,7 @@ Orders on that account are real and invoiced. Mode toggle: Sandbox ↔ Productio
 | App email | `staging@roamkit.net` |
 | Company | `Roamkit-Sandbox` |
 | Ask | Approve + keep **permanently** in Sandbox mode |
-| Next | Await approval → install sandbox credentials on staging only |
+| Next | **DONE** — sandbox credentials installed on staging 2026-07-28 |
 
 ## Production confirmation
 
@@ -181,12 +181,18 @@ After credentials + smoke ([production-switch.md](./production-switch.md)):
 
 | Field | Value |
 |-------|-------|
-| Status | PENDING Guy confirmation + live smoke |
-| Production env | `AIRALO_SANDBOX` still `true` until switch confirmed |
-| Smoke | Not run (awaits Production mode) |
+| Status | **COMPLETE** — Phase 7 **GREEN WITH CONDITIONS** |
+| Closed at (UTC) | 2026-07-28T11:32:50Z |
+| Production env | `AIRALO_SANDBOX=false`, Fine Star live |
+| Staging env | Roamkit-Sandbox keys, `AIRALO_SANDBOX=true` |
+| Preflight | PASS |
+| Production live smoke | **10/10 PASS** ([api-logs/phase7/](./api-logs/phase7/)) |
+| Staging smoke | **9/10** — #9 sandbox top-up 429 ([phase-7-complete.md](../releases/1.0.0/evidence/phase-7-complete.md)) |
+| Production Freeze | **ENDED** |
 
 ## Related
 
 - [README.md](./README.md)
 - [release-decision.md](./release-decision.md)
 - [production-switch.md](./production-switch.md)
+- [Airalo removable eUICC (future — on hold)](../airalo-removable-euicc.md)

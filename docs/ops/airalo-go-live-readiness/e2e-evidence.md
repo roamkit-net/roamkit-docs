@@ -65,25 +65,26 @@ Fill during Phase 5 (sandbox) and Phase 6 (pilot). Attach artifacts under `scree
 
 | Field | Value |
 |-------|-------|
-| Partner Production mode | PENDING Guy / Partner Platform |
-| Staging sandbox isolation | PENDING separate sandbox credentials |
-| Live smoke | PENDING (blocked on Production mode) |
-| Verdict | **IN PROGRESS** |
+| Partner Production mode | **LIVE** (Fine Star Partner API) |
+| Staging sandbox isolation | **Roamkit-Sandbox** credentials on staging only |
+| Live smoke | **PASSED** 10/10 — 2026-07-28T11:19Z |
+| Staging smoke | **9/10** — #9 top-up Airalo sandbox 429 (GREEN WITH CONDITIONS) |
+| Verdict | **GREEN WITH CONDITIONS** — [phase-7-complete.md](../releases/1.0.0/evidence/phase-7-complete.md) |
 
-When GREEN, attach redacted artifacts under `api-logs/phase7/` and fill the 10-point table below.
+Redacted artifacts: [api-logs/phase7/](./api-logs/phase7/).
 
 | # | Criterion | Pass? | Evidence |
 |---|-----------|:-----:|----------|
-| 1 | Catalog browse | | |
-| 2 | Package purchase (LIVE) | | |
-| 3 | Charge via RoamKit billing | | |
-| 4 | Airalo API provisioning | | |
-| 5 | QR generated | | |
-| 6 | eSIM installation | | |
-| 7 | Activation | | |
-| 8 | Data traffic confirmed | | |
-| 9 | Top-up works | | |
-| 10 | Lifecycle + support finds order | | |
+| 1 | Catalog browse | ✅ | [01-catalog.json](./api-logs/phase7/01-catalog.json) |
+| 2 | Package purchase (LIVE) | ✅ | [02-04-order.json](./api-logs/phase7/02-04-order.json) |
+| 3 | Charge via RoamKit billing | ✅ | [03-billing.json](./api-logs/phase7/03-billing.json) |
+| 4 | Airalo API provisioning | ✅ | order fulfilled; external `2208690` |
+| 5 | QR generated | ✅ | [05-qr-detail.json](./api-logs/phase7/05-qr-detail.json) |
+| 6 | eSIM installation | ✅ | [06-installed.json](./api-logs/phase7/06-installed.json) |
+| 7 | Activation | ✅ | [07-08-lifecycle.json](./api-logs/phase7/07-08-lifecycle.json) |
+| 8 | Data traffic confirmed | ✅ | [07-08-usage.json](./api-logs/phase7/07-08-usage.json) |
+| 9 | Top-up works | ✅ | [09-topup.json](./api-logs/phase7/09-topup.json) |
+| 10 | Lifecycle + support finds order | ✅ | [10-support.json](./api-logs/phase7/10-support.json) |
 
 ## Related
 
