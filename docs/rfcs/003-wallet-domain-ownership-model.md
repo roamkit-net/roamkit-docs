@@ -6,32 +6,33 @@
 | Date | 2026-08 |
 | Authors | Product / Engineering |
 | Parent | [RoamKit Wallet Platform Vision](../architecture/roamkit-wallet-platform-vision.md) |
+| Also | [Wallet Conversion Boundary](../architecture/wallet-conversion-boundary.md) |
 | Template | [TEMPLATE-wallet.md](./TEMPLATE-wallet.md) |
 
 > This RFC is a proposal. It does **not** amend [ADR 010](../adr/010-polygon-usdt-prepaid-credits.md). No implementation may treat this document as normative until a related ADR is Accepted.
 
 ## Problem
 
-The Wallet Vision describes a long-term platform where each Account has a logical wallet, on-chain receive addresses, abstract deposits, and a conversion path into Credits. Before key storage, funding providers, or detection adapters are designed, RoamKit needs a **shared domain language and ownership graph**. Without that, later RFCs will embed Polygon/USDT/vendor assumptions into the core model and force costly refactors.
+The Wallet Vision describes funding into a per-Account logical wallet, then **conversion into Credits**, after which all product spend (including auto renew) uses the Credits ledger only. Before key management or funding adapters are designed, RoamKit needs a shared **domain language and ownership graph**. Without that, later RFCs will bake Polygon/USDT/vendors into the core model or blur “user spend keys” with “platform deposit keys.”
 
 ## Goals
 
-- Define core Wallet domain entities and **ownership** aligned with `billing.Account` (not `User`).
-- Separate **WalletIdentity** (logical) from **WalletAddress** (per-chain receive endpoints).
-- Introduce **Asset** and abstract **Deposit** so USDT/Polygon are not baked into the domain names.
-- Define a Deposit **state machine** usable across funding providers.
-- Define **Identity vs Capability** so what a wallet *can* do evolves without boolean sprawl.
-- State **domain invariants**, including ledger independence from Wallet operational state.
-- Remain abstract: no MEXC, Etherscan, Fireblocks, HSM, MPC, or UI.
+- Define ownership: `Account → WalletIdentity → WalletAddress` (not User → Wallet).
+- Separate **WalletIdentity** from time-bound **WalletAddress**.
+- Introduce **Asset** and abstract **Deposit** (Deposit → **WalletAddress**).
+- Distinguish **FundingSource** (domain) from **FundingProvider** (RFC 005).
+- Define Deposit **state machine** and **Identity vs Capability** (receive/convert — not on-chain renew).
+- State **domain invariants**, including ledger independence and **no irreversible conversion until invariants hold**.
+- Stay abstract: no MEXC/Etherscan/Fireblocks/HSM/UI implementation.
 
 ## Non-goals
 
-- Managed key storage / signing implementation (RFC 004).
-- Funding Provider interface or exchange integrations (RFC 005).
-- Deposit Detection adapters / indexer / explorer wiring (RFC 006).
-- Wallet Sandbox lab setup (separate architecture note).
-- Schema migrations, API shapes, or production code.
-- Changing ADR 010 or today’s shared `POLYGON_PLATFORM_WALLET` path.
+- Platform Wallet Key Management (RFC 004 — deposit/sweep keys, not user spend keys).
+- Funding Provider interface (RFC 005).
+- Deposit Detection adapters (RFC 006).
+- Wallet Sandbox lab setup.
+- Schema/API/production code.
+- Changing ADR 010.
 
 ## Domain
 
@@ -40,27 +41,46 @@ The Wallet Vision describes a long-term platform where each Account has a logica
 ```text
 User
   ↓
-Account                 # financial owner (same spirit as ADR 010 billing.Account)
+Account
   ↓
-WalletIdentity          # logical wallet
+WalletIdentity
   ↓
-WalletAddress (1..N)    # receive endpoints on Chains
+WalletAddress (1..N, time-bound)
+  ↓
+Deposit (references WalletAddress)
 ```
 
-- **WalletIdentity** belongs to exactly one **Account**.
-- Do **not** attach WalletIdentity directly to User (preserves Business / Team accounts later).
-- Registration (future) creates **WalletIdentity**; materializing the first **WalletAddress** remains an open decision (eager vs lazy / HD / per-payment).
+```text
+Deposit → WalletAddress → WalletIdentity → Account
+```
+
+- WalletIdentity belongs to exactly one Account (never directly to User).
+- First address materialization remains an open decision.
+
+### WalletAddress lifecycle
+
+Addresses are **not necessarily eternal**:
+
+```text
+WalletIdentity
+  ├── WalletAddress #1 (active)
+  ├── WalletAddress #2 (retired)
+  └── WalletAddress #3 (future / reserved)
+```
+
+States at minimum: **active**, **retired** (optional: pending). Rotation is allowed by the model even if v1 never rotates.
 
 ### Core entities
 
 | Entity | Role |
 |--------|------|
-| **WalletIdentity** | Logical wallet: lifecycle, capabilities, link to Account |
-| **WalletAddress** | Deposit address on a specific **Chain** |
-| **Chain** | Network identity (e.g. Polygon conceptually; others later) |
-| **Asset** | Fungible unit of value (e.g. USDT, USDC, EURC) — not hard-coded to USDT |
-| **FundingSource** | Abstract origin of an inbound transfer (provider-agnostic) |
-| **Deposit** | Abstract inbound transfer of an **Asset** toward a WalletIdentity |
+| **WalletIdentity** | Logical funding wallet |
+| **WalletAddress** | Receive endpoint on a **Chain** (lifecycle above) |
+| **Chain** | Network identity |
+| **Asset** | e.g. USDT, USDC, EURC — not hard-coded into entity names |
+| **FundingSource** | *Kind* of inbound: on-chain transfer, exchange withdrawal, card purchase, … |
+| **FundingProvider** | *Who* facilitated funding (MEXC, Binance, MoonPay, …) — **out of RFC 003**; see RFC 005 |
+| **Deposit** | Inbound **Asset** observed against a **WalletAddress** |
 
 ```mermaid
 flowchart TD
@@ -68,127 +88,105 @@ flowchart TD
   Account[Account]
   Identity[WalletIdentity]
   Addr[WalletAddress]
-  Chain[Chain]
   Deposit[Deposit]
   Asset[Asset]
+  FS[FundingSource]
   Credits[Credits_Ledger]
   User --> Account --> Identity
   Identity --> Addr
-  Addr --> Chain
-  Deposit --> Identity
+  Deposit --> Addr
   Deposit --> Asset
-  Deposit --> FundingSource[FundingSource]
+  Deposit --> FS
   Credits -.->|"not owned by Wallet"| Account
 ```
 
 ### Identity vs Capability
 
-**WalletIdentity** describes what the wallet **is**. **Capabilities** describe what it **may do**, and can grow without scattering booleans across the system.
-
 ```text
 WalletIdentity
     ↓
-Capabilities (examples)
+Capabilities (near-term)
     • Receive
-    • Hold
+    • Hold              (optional / policy)
     • ConvertToCredits
-    • AutoRenew          (future)
-    • Withdraw           (future)
 ```
 
-Near-term expected set (illustrative, not a product commit): **Receive**, **Hold**, **ConvertToCredits**. Adding **Withdraw** or **AutoRenew** later should be a capability grant / policy change, not a domain-model rewrite.
+**Not** Wallet capabilities for product v1:
 
-Exact capability catalog and storage shape are left to a later ADR; this RFC only requires the **separation** of identity and capability.
+- **AutoRenew** — lives on **Credits** / billing after conversion ([Conversion Boundary](../architecture/wallet-conversion-boundary.md)).
+- **Withdraw** — future optional Wallet capability if on-chain payouts exist; not required for eSIM renew.
 
 ### Deposit (abstract)
 
-A Deposit is not named “blockchain deposit.” Conceptual fields:
-
 | Field | Meaning |
 |-------|---------|
-| FundingSource | Where the funds conceptually came from |
+| WalletAddress | Address that received the value (required for audit) |
+| FundingSource | Kind of inbound (not the vendor name) |
 | Asset | What was transferred |
-| Chain / Network | Where it was observed (when on-chain) |
-| Amount | Quantity in Asset precision |
-| Status | Position in the state machine below |
-| WalletIdentity | Owner of the inbound transfer |
+| Chain | Where observed (when on-chain) |
+| Amount | Quantity |
+| Status | State machine below |
 
 ### Deposit state machine
 
 ```text
-Created
-  ↓
-Detected
-  ↓
-Confirming
-  ↓
-Confirmed
-  ↓
-Credited
-
-Any non-terminal path may also end in:
-  → Failed
-  → Expired
+Created → Detected → Confirming → Confirmed → Credited
+                 ↘ Failed
+                 ↘ Expired
 ```
 
-| Status | Intent |
-|--------|--------|
-| Created | Record opened (intent or first signal) |
-| Detected | Observation of inbound value |
-| Confirming | Waiting for confirmation policy |
-| Confirmed | Safe to consider for credit conversion |
-| Credited | Credits ledger updated (via CreditService / events) |
-| Failed | Terminal failure |
-| Expired | Terminal timeout / abandoned |
-
-Event names in the Vision (`DepositDetected`, `DepositConfirmed`, `CreditGranted`) should map cleanly onto these statuses; exact event catalog is RFC 006 / ADR territory.
+Conversion to Credits occurs only on the **Confirmed → Credited** path (via events / CreditService), never before invariants are satisfied.
 
 ### Domain invariants
 
-1. **WalletIdentity belongs to exactly one Account.**
-2. **Deposit belongs to exactly one WalletIdentity.**
-3. **Credits never belong to Wallet** — purchasing power stays on Account / ledger.
-4. **Wallet never owns Orders** — spend remains a Credits / billing concern.
-5. **WalletAddress belongs to exactly one WalletIdentity.**
-6. **Wallet state must never affect the integrity of the Credits ledger.**  
-   If the Wallet service is down, a chain is delayed, or deposit detection stalls, the **Credits ledger remains consistent**. Wallet outages may delay *new* credits; they must not corrupt existing ledger history or balances.
+1. WalletIdentity belongs to exactly one Account.  
+2. WalletAddress belongs to exactly one WalletIdentity.  
+3. Deposit belongs to exactly one WalletAddress (hence one WalletIdentity / Account).  
+4. Credits never belong to Wallet.  
+5. Wallet never owns Orders.  
+6. **Wallet state must never affect the integrity of the Credits ledger.** Outages may delay *new* credits; they must not corrupt ledger history. Renewals that already have Credits do not require Wallet availability.  
+7. **No irreversible operations until invariants hold:** *No blockchain settlement assumption or credit conversion may become irreversible until all domain invariants are satisfied.* In practice: do not Credited until Deposit is Confirmed under policy; Credits mutations only via `CreditService`.
 
-### Relationship to ADR 010 (today)
+### FundingSource ≠ FundingProvider
 
-| Today (ADR 010) | This RFC (future domain) |
-|-----------------|--------------------------|
-| Shared platform wallet | Per-Account WalletIdentity + addresses |
-| On-chain verify → CreditService | Deposit state machine → events → CreditService |
-| USDT on Polygon only | Asset + Chain as first-class concepts |
+| | FundingSource | FundingProvider |
+|---|---------------|-----------------|
+| Layer | Domain (this RFC) | Integration (RFC 005) |
+| Examples | On-chain transfer, exchange withdrawal, card purchase | MEXC, Binance, MoonPay, Transak |
 
-Production continues on ADR 010 until Wallet ADRs and a cutover plan exist.
+Same source kind can be fulfilled by many providers over time without changing the Deposit model.
+
+### Relationship to ADR 010
+
+Production stays on ADR 010 until Wallet ADRs + cutover. This RFC describes the **future** domain vocabulary for funding → Credits, aligned with the Vision’s Funding Boundary.
 
 ## Open Questions
 
-1. When is the first WalletAddress materialized (signup vs first Add funds)?
-2. Address discovery: permanent address vs new per deposit vs HD derivation?
-3. Is `FundingSource` an entity, an enum, or a link to a Funding Provider id (RFC 005)?
-4. How are Capabilities stored and authorized (flags table, policy engine, product plan)?
-5. Precision / decimals: per Asset registry vs global Decimal(20,6) from ADR 010?
-6. Lifecycle states for WalletIdentity (`Created` → `Active` → …) — confirm enum with Vision; any Deposit interaction rules while `Frozen`?
+1. First WalletAddress timing; permanent vs per-deposit vs HD.  
+2. Address lifecycle transitions and who may retire an address.  
+3. FundingSource storage (enum vs entity) vs link to FundingProvider id.  
+4. Capability storage/authorization.  
+5. Asset precision registry vs ADR 010 Decimal(20,6).  
+6. Whether Hold is a real capability or implied by unconverted balance.  
+7. Platform Deposit Keys needed? (→ RFC 004) vs Address Provider only.
 
 ## Exit Criteria
 
-This RFC is ready to close (or promote into a Wallet Platform ADR draft) when:
+- [ ] Ownership Account → WalletIdentity → WalletAddress accepted.  
+- [ ] Deposit → WalletAddress accepted.  
+- [ ] Address lifecycle accepted.  
+- [ ] FundingSource ≠ FundingProvider accepted.  
+- [ ] Capabilities = receive/convert (renew on Credits) accepted.  
+- [ ] Invariants including irreversible-ops and ledger independence accepted.  
+- [ ] Open questions answered or deferred to Sandbox / RFC 004–006.  
+- [ ] No production code required.
 
-- [ ] Product + Engineering agree ownership is Account → WalletIdentity → WalletAddress.
-- [ ] Asset and abstract Deposit are accepted (no USDT/Polygon hard-coding in entity names).
-- [ ] Deposit state machine is accepted as the shared status vocabulary.
-- [ ] Identity vs Capability separation is accepted.
-- [ ] Domain invariants (including ledger independence) are accepted.
-- [ ] Open questions are either answered or explicitly deferred to RFC 004–006 / Sandbox PoCs.
-- [ ] No production code was required to validate this RFC.
-
-**Next after review of RFC 003:** Wallet Sandbox note (if PoCs needed), then RFC 004 — not an ADR yet.
+**Next:** Wallet Sandbox (if needed) → **RFC 004 — Platform Wallet Key Management** (not “user spend keys”).
 
 ## Related
 
 - [RoamKit Wallet Platform Vision](../architecture/roamkit-wallet-platform-vision.md)
-- [ADR 010 — Polygon USDT prepaid credits](../adr/010-polygon-usdt-prepaid-credits.md)
-- [ADR 012 — Billing extensibility rules](../adr/012-billing-extensibility-rules.md)
+- [Wallet Conversion Boundary](../architecture/wallet-conversion-boundary.md)
+- [ADR 010](../adr/010-polygon-usdt-prepaid-credits.md)
+- [ADR 012](../adr/012-billing-extensibility-rules.md)
 - [TEMPLATE-wallet.md](./TEMPLATE-wallet.md)
