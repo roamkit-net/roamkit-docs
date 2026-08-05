@@ -130,6 +130,12 @@ Close artifact: [design-system-v1-review.md](./design-system-v1-review.md).
 
 From here, UI evolves on a stable foundation — not via ad hoc styles. **No Cap7 Design System program** — Cap6 MINOR items are optional backlog / tiny follow-ups only.
 
+### Ongoing maintenance rule (v1.0+)
+
+> **Every new UI must use existing tokens and Cap2 primitives. If a feature needs a new token or a new primitive, that is a separate decision and a separate small capability — never a drive-by change inside a feature PR.**
+
+This keeps Cap2 API Freeze and ADR 016 discipline after Cap6 close.
+
 ## Cap5 — Design Consistency Polish — **CLOSED**
 
 | Doc | Status |
