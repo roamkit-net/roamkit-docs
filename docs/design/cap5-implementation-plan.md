@@ -2,9 +2,10 @@
 
 | Field | Value |
 |-------|-------|
-| Status | **Accepted** |
+| Status | **Done** — Cap5 CLOSED |
 | Date | 2026-08 |
 | Accepted | 2026-08-05 |
+| Closed | 2026-08-05 |
 | Prerequisite | [Design Lock](./cap5-design-consistency-lock.md) = **Accepted** |
 | Related | [ADR 016](../adr/016-web-design-tokens.md), [status.md](./status.md), [capability-ledger.md](./capability-ledger.md) |
 | Repo | `roamkit-web` (code), this doc in `roamkit-docs` |
@@ -44,7 +45,7 @@ Cap5 is done when all Design Lock stop rules hold, including:
 |---------|----------|-----|-----|-------|--------|
 | Tabs | `PlansStore` (`/plans`); `LocationDetail` service tabs | ✓ | ✓ | ✓ | **PILOT FROZEN** Cap5.1 (`a1c6dea`) |
 | Stepper | `/me/esims/[id]/setup` pills | ✓ | ✓ | ✓ | **PILOT FROZEN** Cap5.2 (`db051f7`) |
-| Avatar | `UserMenu` trigger | ⏳ | ⏳ | ⏳ | Cap5.3 |
+| Avatar | `UserMenu` trigger | ✓ | ✓ | ✓ | Cap5.3 (`d405263`) |
 
 Legend: Old = pre-Cap5 baseline · New = `--app-*` chrome · Smoke = staging green.
 
@@ -216,10 +217,10 @@ Cap5.4  Validation + close Cap5
 
 ### Cap5.3 done when
 
-- [ ] Trigger chrome on `--app-*` (no `sky-700` / `sky-500` on avatar button)
-- [ ] Dropdown behaviour / panel styles unchanged
-- [ ] Spot-check TopBar account menu on staging
-- [ ] Cap3.5 `SKY700_ALLOWLIST` empty
+- [x] Trigger chrome on `--app-*` (no `sky-700` / `sky-500` on avatar button)
+- [x] Dropdown behaviour / panel styles unchanged
+- [x] Spot-check TopBar account menu on staging (`d405263`)
+- [x] Cap3.5 `SKY700_ALLOWLIST` empty
 
 ---
 
@@ -231,32 +232,32 @@ Cap5.4  Validation + close Cap5
 
 | Element | Result |
 |---------|--------|
-| Button | ☐ stays ✓ |
-| Input | ☐ stays ✓ |
-| Alert | ☐ stays ✓ |
-| Card | ☐ stays ✓ |
-| Tabs | ☐ Cap5.1 |
-| Stepper | ☐ Cap5.2 |
-| Avatar | ☐ Cap5.3 |
+| Button | ✅ |
+| Input | ✅ |
+| Alert | ✅ |
+| Card | ✅ |
+| Tabs | ✅ Cap5.1 |
+| Stepper | ✅ Cap5.2 |
+| Avatar | ✅ Cap5.3 |
 
 ### Legacy Chrome Audit (Cap5-scoped)
 
 On Cap5 surfaces (`/plans`, LocationDetail tabs, setup stepper, UserMenu trigger), confirm **no**:
 
-- [ ] Hardcoded `sky-*` that were in Cap5 scope (Cap3.5 allowlist rows)
-- [ ] Old border/radius chrome for tabs / stepper / avatar that bypasses `--app-*`
-- [ ] Local chrome styles that bypass Cap2 primitives + `--app-*` for those three elements
+- [x] Hardcoded `sky-*` that were in Cap5 scope (Cap3.5 allowlist rows)
+- [x] Old border/radius chrome for tabs / stepper / avatar that bypasses `--app-*`
+- [x] Local chrome styles that bypass Cap2 primitives + `--app-*` for those three elements
 
 Cap5.4 close table (must all read Cleared):
 
 | Legacy element | Status |
 |----------------|--------|
-| Tabs | ☐ Cleared |
-| Stepper | ☐ Cleared |
-| Avatar | ☐ Cleared |
-| Cap3.5 sky allowlist | ☐ Cleared |
+| Tabs | ✅ Cleared |
+| Stepper | ✅ Cleared |
+| Avatar | ✅ Cleared |
+| Cap3.5 sky allowlist | ✅ Cleared |
 
-Cap3.5 `SKY700_ALLOWLIST` must be **empty** (or removed) after Cap5.4 — those three files no longer exempt.
+Cap3.5 `SKY700_ALLOWLIST` is **empty** after Cap5.3/5.4.
 
 ### Isolation smoke
 
@@ -303,8 +304,8 @@ Cap3.5 `SKY700_ALLOWLIST` must be **empty** (or removed) after Cap5.4 — those 
 | State | Meaning |
 |-------|---------|
 | Draft — awaiting acceptance | Closed |
-| **Accepted** | Closed — Cap5.1 shipped |
-| **PILOT FROZEN** | **Current** — Cap5.1 Tabs frozen on staging `a1c6dea`; Cap5.2 awaits GO |
-| Done | Cap5.4 closed Cap5 |
+| Accepted | Closed — Cap5.1–5.3 shipped |
+| PILOT FROZEN | Closed — Cap5.1 / Cap5.2 frozen |
+| **Done** | **Current** — Cap5.4 closed Cap5 |
 
-**Next:** Cap5.2 Stepper — **only after explicit GO** (Pilot Freeze green).
+**Cap5 CLOSED.** Next: Cap6 Cross-Route Consistency Review (audit only; do not reopen Cap5).
