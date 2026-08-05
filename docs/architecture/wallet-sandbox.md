@@ -147,6 +147,7 @@ Lightweight place to record risks found while researching (expand as tracks run)
 | WalletAddress Assignment (Track 1) | In-house HD Preferred; Index Registry platform state | Exit Artifact | 2026-08 | [Track 1](./wallet-sandbox-artifacts/01-wallet-address-assignment.md) |
 | Platform Wallet Infrastructure (RFC 004) | Architecture Review Passed / Frozen | Allocation policy + ownership complete; no blocking infra gaps | 2026-08 | [RFC 004](../rfcs/004-platform-wallet-infrastructure.md), [Freeze](./wallet-architecture-freeze.md) |
 | Wallet foundation freeze | Vision + Conversion Boundary + RFC 003 + RFC 004 frozen | Discipline: no change without research evidence or ADR proposal | 2026-08 | [Freeze](./wallet-architecture-freeze.md) |
+| Funding Provider Interface (RFC 005) | Architecture Review Passed / Frozen | Generic adapter contract; destination = WalletAddress; never Credits SoT | 2026-08 | [RFC 005](../rfcs/005-funding-provider-interface.md), [Freeze](./wallet-architecture-freeze.md) |
 
 Add rows as Exit Artifacts close. Always fill **Reason**.
 
@@ -158,30 +159,29 @@ What this framework has **not** answered yet (prioritized for sequencing RFC wor
 
 | Unknown | Priority |
 |---------|----------|
-| Funding Provider interface and hard limits (how value reaches a RoamKit `WalletAddress`) | High → **RFC 005** |
-| Authoritative deposit event source (RPC vs indexer vs hybrid) | High → RFC 006 / research |
+| Confirmation policy parameters (depth/finality) and primary observation adapter | High → **RFC 006** + research |
 | Sweep policy and treasury destination (ADR detail under RFC 004) | Medium |
 | Multi-chain beyond Polygon | Medium |
 | On-chain Withdraw to user | Low |
-| Card on-ramp vendor choice | Low |
+| Card on-ramp / first Funding Provider vendor choice | Low |
 
-**Answered by Track 1 / RFC 004 (removed from unknowns):** Platform Wallet Infrastructure ownership; address materialization (HD + Index Registry); Funding Providers never define WalletIdentity.
+**Answered (removed from unknowns):** Platform Wallet Infrastructure (Track 1 / RFC 004); Funding Provider interface shape (RFC 005); Funding Providers never define WalletIdentity.
 
 Update this table as tracks close; move answered items into the Decision Register.
 
 ---
 
-## Relationship to RFC 004 / 005
+## Relationship to RFC 004 / 005 / 006
 
-[RFC 004 — Platform Wallet Infrastructure](../rfcs/004-platform-wallet-infrastructure.md) is **Architecture Review Passed / Frozen**.
+[RFC 004](../rfcs/004-platform-wallet-infrastructure.md) and [RFC 005](../rfcs/005-funding-provider-interface.md) are **Architecture Review Passed / Frozen**.
 
-Next proposal when product prioritizes funding arrival:
+Current Draft:
 
-**RFC 005 — Funding Provider Interface**
+**[RFC 006 — Deposit Observation & Confirmation](../rfcs/006-deposit-observation-confirmation.md)**
 
-In scope: pluggable adapters that help value reach a RoamKit-owned `WalletAddress`; never define `WalletIdentity`; never Credits SoT.
+In scope: when a deposit is Confirmed enough for Credit Conversion; observation adapters are non-authoritative alone.
 
-Then Deposit Detection research / RFC 006, then the first Wallet Platform ADR (cutover from ADR 010).
+Then Wallet Platform ADR (cutover from ADR 010) when implementing.
 
 ---
 
@@ -192,4 +192,6 @@ Then Deposit Detection research / RFC 006, then the first Wallet Platform ADR (c
 - [Wallet Conversion Boundary](./wallet-conversion-boundary.md)
 - [RFC 003 — Wallet Domain & Ownership Model](../rfcs/003-wallet-domain-ownership-model.md)
 - [RFC 004 — Platform Wallet Infrastructure](../rfcs/004-platform-wallet-infrastructure.md)
+- [RFC 005 — Funding Provider Interface](../rfcs/005-funding-provider-interface.md)
+- [RFC 006 — Deposit Observation & Confirmation](../rfcs/006-deposit-observation-confirmation.md)
 - [ADR 010](../adr/010-polygon-usdt-prepaid-credits.md)

@@ -244,8 +244,8 @@ Platform DR for deposit-key material / index rebuild — not user seed-phrase UX
 | [RFC 003](../rfcs/003-wallet-domain-ownership-model.md) | Domain & ownership — **Frozen** |
 | Wallet Sandbox | Isolated PoCs — framework **Frozen** |
 | [RFC 004 — Platform Wallet Infrastructure](../rfcs/004-platform-wallet-infrastructure.md) | HD + Index Registry + allocation — **Frozen** |
-| RFC 005 | Funding Provider interface |
-| RFC 006 | Deposit Detection |
+| [RFC 005 — Funding Provider Interface](../rfcs/005-funding-provider-interface.md) | Funding adapters — **Frozen** |
+| [RFC 006 — Deposit Observation & Confirmation](../rfcs/006-deposit-observation-confirmation.md) | When deposit is Confirmed for Credits |
 | ADRs | Wallet Platform, Funding, Credits Engine |
 
 ---

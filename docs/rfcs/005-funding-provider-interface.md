@@ -2,17 +2,18 @@
 
 | Field | Value |
 |-------|-------|
-| Status | Draft |
+| Status | **Architecture Review Passed / Frozen** (2026-08) |
 | Date | 2026-08 |
 | Authors | Product / Engineering |
 | Parent | [RoamKit Wallet Platform Vision](../architecture/roamkit-wallet-platform-vision.md) |
 | Depends on | [RFC 003](./003-wallet-domain-ownership-model.md) (Frozen), [RFC 004](./004-platform-wallet-infrastructure.md) (Frozen) |
 | Freeze context | [Wallet Architecture Freeze](../architecture/wallet-architecture-freeze.md) |
+| Contract appendix | [Funding Provider Interface Contract](../architecture/funding-provider-interface-contract.md) (technical, non-RFC) |
 | Template | [TEMPLATE-wallet.md](./TEMPLATE-wallet.md) |
 
 > This RFC is a proposal. It does **not** amend [ADR 010](../adr/010-polygon-usdt-prepaid-credits.md). No implementation may treat this document as normative until a related ADR is Accepted.
 >
-> Do not amend frozen Vision / RFC 003 / RFC 004 unless [freeze rules](../architecture/wallet-architecture-freeze.md) are met.
+> **Architecture Freeze:** further modifications require evidence from subsequent research tracks or a new ADR proposal.
 
 ---
 
@@ -173,30 +174,34 @@ Discovery here means: product can add a new adapter behind the same matrix witho
 
 This RFC is ready to close / promote toward an ADR when:
 
-- [ ] FundingSource ≠ FundingProvider accepted as the integration boundary.
-- [ ] Destination contract (active RoamKit `WalletAddress`) accepted.
-- [ ] Standing rules (never WalletIdentity; never Credits SoT) accepted.
-- [ ] Provider Capability Matrix (required vs optional) accepted.
-- [ ] Capability Discovery scope accepted (enabled, not implemented here).
-- [ ] Open questions deferred to vendor research / ADR without blocking the interface shape.
-- [ ] No production vendor hard-coded as architecture.
-- [ ] Frozen RFC 003 / 004 unchanged except via freeze process.
-- [ ] **Architecture Review** (below) completed with no blocking gaps.
+- [x] FundingSource ≠ FundingProvider accepted as the integration boundary.
+- [x] Destination contract (active RoamKit `WalletAddress`) accepted.
+- [x] Standing rules (never WalletIdentity; never Credits SoT) accepted.
+- [x] Provider Capability Matrix (required vs optional) accepted.
+- [x] Capability Discovery scope accepted (enabled, not implemented here).
+- [x] Open questions deferred to vendor research / ADR without blocking the interface shape.
+- [x] No production vendor hard-coded as architecture.
+- [x] Frozen RFC 003 / 004 unchanged except via freeze process.
+- [x] **Architecture Review** completed with no blocking gaps (2026-08 — PASS).
 
 ### Architecture Review (before freeze / RFC 006)
 
-Answer:
+**Result (2026-08): PASS**
 
-> Is the Funding Provider Interface generic enough to support MEXC, Binance, MoonPay, and future providers **without changing the Wallet domain**?
+> Is the Funding Provider Interface generic enough to support MEXC, Binance, MoonPay, and future providers **without changing the Wallet domain?** → **DA**
 
-| If | Then |
-|----|------|
-| **DA** | Mark Architecture Review Passed; add RFC 005 to [Architecture Freeze](../architecture/wallet-architecture-freeze.md); then open **RFC 006 — Deposit Observation & Confirmation** |
-| **NE** | Amend this RFC only (capability matrix / destination contract) — do not reopen RFC 003 / 004 |
+| Criterion | Status |
+|-----------|--------|
+| Scope (single responsibility) | ✅ |
+| Domain boundaries | ✅ |
+| Replaceability | ✅ |
+| Credits boundary | ✅ |
+| Provider independence | ✅ |
+| Future extensibility | ✅ |
 
-Do **not** start RFC 006 until this review passes.
+RFC 005 is on the [Architecture Freeze](../architecture/wallet-architecture-freeze.md). Logical ops live in the [Interface Contract Appendix](../architecture/funding-provider-interface-contract.md) (not an RFC).
 
-**Naming note for RFC 006:** prefer **Deposit Observation & Confirmation** over “Deposit Detection” — detection is the first step; confirmation is what may unlock convert-to-Credits.
+**Next:** [RFC 006 — Deposit Observation & Confirmation](./006-deposit-observation-confirmation.md).
 
 ---
 
@@ -205,6 +210,8 @@ Do **not** start RFC 006 until this review passes.
 - [Wallet Architecture Freeze](../architecture/wallet-architecture-freeze.md)
 - [RFC 003 — Domain & Ownership](./003-wallet-domain-ownership-model.md)
 - [RFC 004 — Platform Wallet Infrastructure](./004-platform-wallet-infrastructure.md)
+- [RFC 006 — Deposit Observation & Confirmation](./006-deposit-observation-confirmation.md)
+- [Funding Provider Interface Contract](../architecture/funding-provider-interface-contract.md)
 - [Track 1 Exit Artifact](../architecture/wallet-sandbox-artifacts/01-wallet-address-assignment.md)
 - [Vision — Funding Provider](../architecture/roamkit-wallet-platform-vision.md)
 - [ADR 010](../adr/010-polygon-usdt-prepaid-credits.md)
