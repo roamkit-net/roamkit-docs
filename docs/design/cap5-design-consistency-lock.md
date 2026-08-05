@@ -103,7 +103,7 @@ Theme binding uses existing `--app-*` (authenticated AppShell surfaces). Do not 
 
 | Element | Location (today) | Cap5 change |
 |---------|------------------|-------------|
-| **Tabs** | `PlansStore` tablist (`bg-sky-700` active); related tab chrome on AppShell catalog surfaces if same pattern | Theme binding only; keep `role="tablist"` / URL `tab` param / labels |
+| **Tabs** | `PlansStore` tablist (`bg-sky-700` active); `LocationDetail` service tablist (slate underline chrome on elevated) | Theme binding only; keep roles / params / labels / filter semantics |
 | **Stepper pills** | `/me/esims/[id]/setup` step pills (`bg-sky-700` / `bg-sky-100` / `bg-slate-200`) | Active / completed / inactive → `--app-*` (or brand via `--app-*`); no step machine changes |
 | **Avatar / profile chrome** | `UserMenu` circular trigger (`bg-sky-700`, `ring-sky-500`) | Surface, border, radius, focus ring + `--app-background` offset |
 | **Registered Cap3 allowlist** | Cap3.5 `SKY700_ALLOWLIST` rows for the three above | Clear allowlist when chrome is token-bound |
