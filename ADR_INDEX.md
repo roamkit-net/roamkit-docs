@@ -64,6 +64,7 @@ every **6 months** (Architecture Decision Review: still valid?).
 - [Directory structure](./docs/architecture/directory-structure.md)
 - [Provider abstractions](./docs/architecture/provider-abstractions.md)
 - [RoamKit Wallet Platform — Architecture Vision](./docs/architecture/roamkit-wallet-platform-vision.md) — **Draft / Vision** (non-normative; does **not** amend [ADR 010](./docs/adr/010-polygon-usdt-prepaid-credits.md))
+- [Wallet Conversion Boundary](./docs/architecture/wallet-conversion-boundary.md) — why product spend stays on Credits after convert
 
 ## Standards
 
