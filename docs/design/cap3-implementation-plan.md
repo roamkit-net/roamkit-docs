@@ -2,19 +2,19 @@
 
 | Field | Value |
 |-------|-------|
-| Status | **Draft — awaiting acceptance** |
+| Status | **Accepted** |
 | Date | 2026-08 |
 | Prerequisite | [Design Lock](./cap3-appshell-design-lock.md) = **Accepted** |
 | Related | [ADR 016](../adr/016-web-design-tokens.md), [status.md](./status.md) |
 | Repo | `roamkit-web` (code), this doc in `roamkit-docs` |
 
-**Discipline:** One slice = one goal. No Cap3 code until **this plan is Accepted**.  
-**Do not reopen** the Design Lock. Cap2 API Freeze holds.
+**Discipline:** One slice = one goal. Design Lock is **closed** — no new design decisions.  
+**Cap2 API Freeze holds.** No new primitives, tokens, AppShell variants, or colors until Cap3 closes.
 
 ```text
 Design Lock ✅ Accepted
-  → Implementation Plan (this doc)
-    → Cap3.1 → Cap3.2 → Cap3.3 → Cap3.4 → Cap3.5
+  → Implementation Plan ✅ Accepted (this doc)
+    → Cap3.1 → Cap3.2 → Cap3.3 (pilot) → smoke → Cap3.3b → Cap3.4 → Cap3.5
 ```
 
 ---
@@ -28,6 +28,68 @@ Cap3 is done when all Design Lock stop rules hold, including:
 - Landing + auth untouched
 - Zero feature work (no new APIs, hooks, nav destinations)
 - No new JS dependencies
+
+---
+
+## Quality gates (not features)
+
+### 1. Migration Matrix
+
+Track every AppShell surface. Update after each slice.
+
+| Route | Old | New | Smoke | Status |
+|-------|-----|-----|-------|--------|
+| `/plans` | ✓ | ⏳ | ⏳ | pending |
+| `/me/esims` | ✓ | ⏳ | ⏳ | **pilot** (Cap3.3a) |
+| `/me/esims/[id]` | ✓ | ⏳ | ⏳ | pending |
+| `/me/esims/[id]/setup` | ✓ | ⏳ | ⏳ | pending |
+| `/me/deposit` | ✓ | ⏳ | ⏳ | pending |
+| `/[slug]-esim` | ✓ | ⏳ | ⏳ | pending |
+
+Legend: Old = pre-Cap3 baseline still reachable · New = Variant A chrome applied · Smoke = staged check green.
+
+### 2. Rollback point
+
+> **If pilot smoke is not green, migration stops.**  
+> Do not open Cap3.3b (propagate) or Cap3.4 until the pilot gate passes.
+
+Same rule between Cap3.1 → Cap3.2 and Cap3.2 → Cap3.3 if shell/TopBar smoke fails.
+
+### 3. Acceptance gate (before leaving Cap3.1 / Cap3.2 for surfaces)
+
+Before Cap3.3 propagate (and before Cap3.4):
+
+- [ ] Same spacing SoT (AppShell-owned)
+- [ ] Same shell chrome
+- [ ] Same TopBar contract
+- [ ] No local layout overrides for basic padding/max-width
+- [ ] Cap2 public API unchanged (`git diff` on `ui/*` props/types)
+
+### 4. Visual Diff (pilot routes — required)
+
+For `/me/esims` pilot (and each route as it migrates):
+
+| Artifact | Required |
+|----------|----------|
+| Before screenshot | Baseline (light slate shell) |
+| After screenshot | Variant A (dark shell + light elevated) |
+| Expected diffs note | Planned redesign only — list intentional changes; flag anything else as regression |
+
+Not for redesign debate — for regression control.
+
+### 5. Exit criteria — Cap3 Complete
+
+```text
+Cap3 Complete
+```
+
+when **all** are true:
+
+- All **6** AppShell surfaces use the same AppShell
+- No layout hacks / local padding systems for shell basics
+- Cap2 API Freeze still held
+- Migration Matrix all New + Smoke ✓
+- Cap3.5 smoke matrix green (desktop + mobile)
 
 ---
 
@@ -226,9 +288,8 @@ Prefer **two PRs** inside Cap3.3: `Cap3.3a` pilot, `Cap3.3b` propagate (after pi
 
 | State | Meaning |
 |-------|---------|
-| **Draft — awaiting acceptance** | **Current** |
-| Accepted | Safe to open Cap3.1 PR |
+| Draft — awaiting acceptance | Superseded |
+| **Accepted** | **Current** — Cap3.1 may start |
 | Done | Cap3.5 closed Cap3 |
 
-**Acceptance:** reply **Accepted** on this plan (or merge with status → Accepted).  
-**Next after Accepted:** Cap3.1 only — shell tokens + background.
+**Next:** Cap3.1 only — shell tokens + background. No new design tokens, primitives, or AppShell variants until Cap3 Complete.
