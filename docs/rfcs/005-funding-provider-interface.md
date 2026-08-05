@@ -41,11 +41,11 @@ Not: how RPC works. Not: how one vendor’s API works in isolation.
 - Specify the **destination contract**: providers deliver value to a RoamKit-owned `WalletAddress`.
 - State standing invariants inherited from the freeze (never define `WalletIdentity`; never Credits SoT).
 - Describe provider **capabilities** at interface level (guide / buy / withdraw-to-address / status), without vendor lock-in.
-- Keep Deposit Detection and Credits conversion out of this interface.
+- Keep deposit observation/confirmation and Credits conversion out of this interface.
 
 ## Non-goals
 
-- Deposit Detection (RPC / indexer / explorer) — RFC 006 / research.
+- Deposit observation & confirmation (RPC / indexer / explorer) — future **RFC 006**; not this interface.
 - Choosing a single vendor (MEXC vs Binance vs MoonPay) as architecture.
 - Card processor contracts, KYC product design, or fee schedules (ops / vendor research).
 - Amending RFC 003 / 004 / Vision.
@@ -87,7 +87,7 @@ Funding Provider (adapter)     ← optional UX / rails
 RoamKit WalletAddress (active) ← RFC 004
   │
   ▼
-Deposit Detection              ← RFC 006 (out of scope here)
+Deposit Observation & Confirmation  ← RFC 006 (out of scope here)
   │
   ▼
 Convert → Credits              ← Billing / CreditService
@@ -112,7 +112,7 @@ A Funding Provider adapter **must not**:
 - Create or own `WalletIdentity` / Index Registry rows.
 - Allocate RoamKit derivation indices.
 - Call `CreditService` or mutate the ledger.
-- Claim deposit finality for Credits (that is Detection + Billing policy).
+- Claim deposit finality for Credits (that is Observation & Confirmation + Billing policy).
 - Require RoamKit to treat provider balance or history as source of truth.
 
 ### Destination contract
@@ -132,17 +132,32 @@ If a Deposit or funding attempt records a provider:
 - Store an opaque **provider id** (or null for external send) alongside `FundingSource`.
 - Do not embed vendor SDK types in the Wallet domain model.
 
-### Minimal capability matrix (for evaluating adapters)
+### Provider Capability Matrix
 
-Use this when researching vendors (Sandbox track / Exit Artifact) — not as a product commitment to any row:
+Every Funding Provider adapter implements the **same contract**. Fill required vs optional at the interface; vendor research later ticks what each adapter supports.
 
-| Capability | Needed for “buy then withdraw to RoamKit”? | Credits SoT? |
-|------------|--------------------------------------------|--------------|
-| Fiat → Asset (card/bank) | Often yes | No |
-| Withdraw Asset to external address | **Required** for CEX-style path | No |
-| Correct Chain support (e.g. Polygon USDT) | **Required** for that Asset/Chain pair | No |
-| Webhook / order status | Optional UX | No |
-| Unique per-user deposit address **on the exchange** | Not required for RoamKit core | No |
+| Capability | Required | Optional | Notes |
+|------------|:--------:|:--------:|-------|
+| **Deposit** (deliver / guide Asset to RoamKit `WalletAddress` on supported Chain) | ✅ | | Core of the destination contract |
+| **Status** (provider-side progress for UX/ops) | ✅ | | Never Credits SoT |
+| **Metadata** (provider id, Asset, Chain labels, limits/errors surfaced to UX) | ✅ | | Opaque to Wallet domain beyond ids |
+| **Explorer URL** (link to provider or tx explorer) | | ✅ | UX convenience |
+| **Buy with Card** (fiat → Asset on provider) | | ✅ | On-ramp; still ends at WalletAddress |
+| **Webhooks** (provider push events) | | ✅ | Ops/UX only; not ledger authority |
+| **Memo / tag** (if provider or chain requires it *on their side*) | | ✅ | Must not replace RoamKit `WalletAddress` |
+
+**Architecture review question:** is this matrix generic enough for MEXC, Binance, MoonPay, and future adapters **without changing the Wallet domain**? If yes, freeze candidates after review.
+
+### Capability Discovery (out of scope, enabled by this RFC)
+
+This interface does **not** implement the following. It **enables** them as interchangeable adapter classes later:
+
+- Exchange adapters (CEX buy → withdraw to RoamKit address)
+- Card / on-ramp providers
+- Bank transfer / SEPA-style ramps (where they settle to crypto then to `WalletAddress`)
+- Stablecoin bridges (only as a path that still lands on a RoamKit `WalletAddress`)
+
+Discovery here means: product can add a new adapter behind the same matrix without amending RFC 003 / 004.
 
 ---
 
@@ -161,12 +176,27 @@ This RFC is ready to close / promote toward an ADR when:
 - [ ] FundingSource ≠ FundingProvider accepted as the integration boundary.
 - [ ] Destination contract (active RoamKit `WalletAddress`) accepted.
 - [ ] Standing rules (never WalletIdentity; never Credits SoT) accepted.
-- [ ] Capability allow/deny lists accepted at interface level.
+- [ ] Provider Capability Matrix (required vs optional) accepted.
+- [ ] Capability Discovery scope accepted (enabled, not implemented here).
 - [ ] Open questions deferred to vendor research / ADR without blocking the interface shape.
 - [ ] No production vendor hard-coded as architecture.
 - [ ] Frozen RFC 003 / 004 unchanged except via freeze process.
+- [ ] **Architecture Review** (below) completed with no blocking gaps.
 
-**Next:** vendor/UX research Exit Artifact(s) against this interface; RFC 006 Deposit Detection when detection authority is the open question — not before the destination contract is clear.
+### Architecture Review (before freeze / RFC 006)
+
+Answer:
+
+> Is the Funding Provider Interface generic enough to support MEXC, Binance, MoonPay, and future providers **without changing the Wallet domain**?
+
+| If | Then |
+|----|------|
+| **DA** | Mark Architecture Review Passed; add RFC 005 to [Architecture Freeze](../architecture/wallet-architecture-freeze.md); then open **RFC 006 — Deposit Observation & Confirmation** |
+| **NE** | Amend this RFC only (capability matrix / destination contract) — do not reopen RFC 003 / 004 |
+
+Do **not** start RFC 006 until this review passes.
+
+**Naming note for RFC 006:** prefer **Deposit Observation & Confirmation** over “Deposit Detection” — detection is the first step; confirmation is what may unlock convert-to-Credits.
 
 ---
 
