@@ -136,16 +136,32 @@ After Cap4 the system is **polished and finished**, not redesigned. Cap5+ is con
 
 | Slice | Status | Notes |
 |-------|--------|-------|
-| Cap5.1 Tabs (pilot) | ▶ next | Golden Route `/plans` → Pilot Freeze |
-| Cap5.2 Stepper | pending | After Pilot Freeze |
+| Cap5.1 Tabs (pilot) | ✅ **PILOT FROZEN** | staging `a1c6dea` — [web #116](https://github.com/roamkit-net/roamkit-web/pull/116) |
+| Cap5.2 Stepper | pending | **Blocked** until GO after Pilot Freeze |
 | Cap5.3 Avatar | pending | |
 | Cap5.4 Validation | pending | Matrix + Legacy Chrome Audit |
 
+### Cap5.1 Pilot Freeze (staging `a1c6dea`)
+
+| Check | Result |
+|-------|--------|
+| `/plans` HTTP 200 + `--app-primary` tab chrome | ✅ |
+| No `bg-sky-700` on PlansStore tabs | ✅ |
+| `--app-chrome-text-muted` / `--app-focus-ring` / `--app-border-chrome` | ✅ |
+| `/croatia-esim` ServiceTab `--app-*` | ✅ |
+| `SegmentButton` still `bg-slate-900` (out of scope) | ✅ |
+| Landing `/` / Auth `/login` unchanged | ✅ |
+| Cap3.5 allowlist: `PlansStore` removed | ✅ |
+
 ```text
-Cap5.1 Tabs (pilot) → Pilot Freeze → Cap5.2 Stepper → Cap5.3 Avatar → Cap5.4 Validation
+Cap5.1
+
+STATUS:
+
+PILOT FROZEN
 ```
 
-Do not reopen Cap1–Cap4. Cap5.2 does not start until Tabs Pilot Freeze is green.
+**Cap5.2 does not start until explicit GO.** Do not reopen Cap1–Cap4.
 
 Then **Cap6 — Cross-Route Consistency Review** (audit only).
 

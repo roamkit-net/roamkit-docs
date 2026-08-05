@@ -42,7 +42,7 @@ Cap5 is done when all Design Lock stop rules hold, including:
 
 | Element | Surfaces | Old | New | Smoke | Status |
 |---------|----------|-----|-----|-------|--------|
-| Tabs | `PlansStore` (`/plans`); `LocationDetail` service tabs | ⏳ | ⏳ | ⏳ | **Pilot** Cap5.1 |
+| Tabs | `PlansStore` (`/plans`); `LocationDetail` service tabs | ✓ | ✓ | ✓ | **PILOT FROZEN** Cap5.1 (`a1c6dea`) |
 | Stepper | `/me/esims/[id]/setup` pills | ⏳ | ⏳ | ⏳ | Cap5.2 |
 | Avatar | `UserMenu` trigger | ⏳ | ⏳ | ⏳ | Cap5.3 |
 
@@ -81,11 +81,11 @@ Cap5.4  Validation + close
 
 Before Cap5.2:
 
-- [ ] Tab API / navigation / state unchanged (`tab` params, roles, labels)
-- [ ] Stepper + UserMenu **not** in Cap5.1 diff
-- [ ] No Landing / Auth / AppShell layout files in Cap5.1 diff
-- [ ] Cap2 public API unchanged; no new primitives/tokens
-- [ ] `/plans` staging smoke green (desktop + mobile); LocationDetail service tabs spot-check
+- [x] Tab API / navigation / state unchanged (`tab` params, roles, labels)
+- [x] Stepper + UserMenu **not** in Cap5.1 diff
+- [x] No Landing / Auth / AppShell layout files in Cap5.1 diff
+- [x] Cap2 public API unchanged; no new primitives/tokens
+- [x] `/plans` staging smoke green (desktop + mobile); LocationDetail service tabs spot-check
 
 ### 4. Visual Diff (pilot — required)
 
@@ -160,10 +160,10 @@ Cap5.4  Validation + close Cap5
 
 ### Cap5.1 done when
 
-- [ ] PlansStore + LocationDetail service tabs use `--app-*` (no Cap5-scoped `sky-700` on tabs)
-- [ ] Behaviour / a11y roles unchanged
-- [ ] Staging Pilot Freeze green on `/plans`
-- [ ] Cap5.2 still closed
+- [x] PlansStore + LocationDetail service tabs use `--app-*` (no Cap5-scoped `sky-700` on tabs)
+- [x] Behaviour / a11y roles unchanged
+- [x] Staging Pilot Freeze green on `/plans` (`a1c6dea`)
+- [x] Cap5.2 still closed (awaiting GO)
 
 ---
 
@@ -298,7 +298,8 @@ Cap3.5 `SKY700_ALLOWLIST` must be **empty** (or removed) after Cap5.4 — those 
 | State | Meaning |
 |-------|---------|
 | Draft — awaiting acceptance | Closed |
-| **Accepted** | **Current** — Cap5.1 may start |
+| **Accepted** | Closed — Cap5.1 shipped |
+| **PILOT FROZEN** | **Current** — Cap5.1 Tabs frozen on staging `a1c6dea`; Cap5.2 awaits GO |
 | Done | Cap5.4 closed Cap5 |
 
-**Next:** Cap5.1 Tabs pilot (Golden Route `/plans`) → Pilot Freeze → Cap5.2 → Cap5.3 → Cap5.4.
+**Next:** Cap5.2 Stepper — **only after explicit GO** (Pilot Freeze green).
