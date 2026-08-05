@@ -24,9 +24,7 @@ RFC 004 (Infrastructure)   🔒
     ↓
 RFC 005 (Funding Interface) 🔒
     ↓
-RFC 006 (Observation)      🔒
-    ↓
-ADR 017 (Wallet Platform)  Proposed
+RFC 006 (Observation)      Draft
 ```
 
 | Document | Status | One-line job |
@@ -36,8 +34,7 @@ ADR 017 (Wallet Platform)  Proposed
 | [RFC 003 — Domain & Ownership](../rfcs/003-wallet-domain-ownership-model.md) | Frozen | What Wallet is: Account → WalletIdentity → WalletAddress → Deposit |
 | [RFC 004 — Platform Wallet Infrastructure](../rfcs/004-platform-wallet-infrastructure.md) | Frozen | How addresses are allocated/recovered (HD + Index Registry) |
 | [RFC 005 — Funding Provider Interface](../rfcs/005-funding-provider-interface.md) | Frozen | How value is guided to a RoamKit WalletAddress |
-| [RFC 006 — Deposit Observation & Confirmation](../rfcs/006-deposit-observation-confirmation.md) | **Frozen** | When a deposit is Confirmed enough for Credit Conversion |
-| [ADR 017 — RoamKit Wallet Platform](../adr/017-roamkit-wallet-platform.md) | **Proposed** | Normative adoption + Failure Domains + cutover stance vs ADR 010 |
+| [RFC 006 — Deposit Observation & Confirmation](../rfcs/006-deposit-observation-confirmation.md) | **Draft** | When a deposit is Confirmed enough for Credit Conversion |
 | [Architecture Freeze](./wallet-architecture-freeze.md) | Active | Change control for frozen set |
 | [Sandbox framework](./wallet-sandbox.md) | Frozen (process) | Research tracks → Exit Artifacts |
 | [Funding Provider Interface Contract](./funding-provider-interface-contract.md) | Appendix | Logical `deposit` / `status` / `metadata` |
@@ -58,7 +55,6 @@ ADR 017 (Wallet Platform)  Proposed
 
 ## Next
 
-- Accept / refine **[ADR 017](../adr/017-roamkit-wallet-platform.md)** (Wallet Platform).  
-- Then capabilities and implementation; Chain Policy numbers and cutover as follow-on ADRs/PRs.  
-- Do not reopen RFC 003–006 without [freeze](./wallet-architecture-freeze.md) evidence.  
-- Optional: terminology cleanup PR (legacy Vision/Sandbox labels).
+- Keep **RFC 006** as the open Draft for behavior (confirmation).  
+- Do not reopen RFC 003–005 without [freeze](./wallet-architecture-freeze.md) evidence.  
+- First **Wallet ADR** when implementing cutover from ADR 010.
