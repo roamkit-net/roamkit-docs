@@ -23,6 +23,7 @@ ship safely — Launch Gates, cutover discipline, incidents, and maturity tracki
 | [Wallet Product Activation](./wallet-product-activation.md) | ADR 018 cutover phases, flags, readiness, rollback |
 | [Phase 2 Validation Report](./wallet-phase-2-validation.md) | Limited Traffic KPI gate before PR5 / Phase 3 |
 | [Pricing Validation Checklist](./pricing-validation-checklist.md) | ADR 019 staging gate before pricing API / web (PR4+) |
+| [Pricing Validation Report](./pricing-validation-report.md) | Official PASS/FAIL decision record after staging (unlocks PR4) |
 | [SLO targets](./slo.md) | Lightweight availability / billing targets |
 | [Production retrospective](./production-retrospective.md) | Post-hypercare lessons learned template |
 | [Billing dashboard](./billing-dashboard.md) | Operator metrics after cutover |
