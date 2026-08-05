@@ -40,7 +40,7 @@ Track every AppShell surface. Update after each slice.
 | Route | Old | New | Smoke | Status |
 |-------|-----|-----|-------|--------|
 | `/plans` | ✓ | ⏳ | ⏳ | pending |
-| `/me/esims` | ✓ | ⏳ | ⏳ | **pilot** (Cap3.3a) |
+| `/me/esims` | ✓ | ⏳ | ⏳ | **Golden Route** (Cap3.3a) |
 | `/me/esims/[id]` | ✓ | ⏳ | ⏳ | pending |
 | `/me/esims/[id]/setup` | ✓ | ⏳ | ⏳ | pending |
 | `/me/deposit` | ✓ | ⏳ | ⏳ | pending |
@@ -271,18 +271,9 @@ Do **not** open Cap3.3a until all are true:
 
 Then pilot `/me/esims` only.
 
-### Pilot Scorecard (fill during Cap3.3a)
+### Pilot Scorecard
 
-| Check | Status |
-|-------|--------|
-| Layout | ☐ |
-| Contrast | ☐ |
-| Responsive | ☐ |
-| Keyboard | ☐ |
-| CLS | ☐ |
-| Scroll | ☐ |
-
-Propagate only when scorecard is green and pilot smoke passes.
+Filled during Cap3.3a smoke — see **Cap3.3a Pilot Scorecard** below (do not maintain a second copy here).
 
 ---
 
@@ -294,25 +285,91 @@ Propagate only when scorecard is green and pilot smoke passes.
 
 > **One route is the pilot.** After the pilot is accepted and staging smoke passes, apply the same pattern to the remaining AppShell routes.
 
-Do **not** propagate Variant A surfaces to all six routes in the same step as the first visual call.
+Do **not** propagate Variant A surfaces to all six routes in the same step as the first visual call.  
+Do **not** parallelize two pilot routes.
 
 | Step | Route | Gate |
 |------|-------|------|
-| Pilot | **`/me/esims`** | Visual accept + staging smoke |
-| Propagate | `/plans`, `/[slug]-esim`, `/me/esims/[id]`, `/me/esims/[id]/setup`, `/me/deposit` | Same surface pattern only |
+| Cap3.3a Pilot | **`/me/esims`** | Visual accept + staging smoke → Golden Route |
+| Cap3.3b Propagate | `/plans`, `/[slug]-esim`, `/me/esims/[id]`, `/me/esims/[id]/setup`, `/me/deposit` | Match Golden Route pattern only |
 
-**Why `/me/esims`:** Account shell with Card / Skeleton / Empty — exercises elevated surfaces without PlanCard catalog density.  
-Prefer **two PRs** inside Cap3.3: `Cap3.3a` pilot, `Cap3.3b` propagate (after pilot GO).
+**Why `/me/esims`:** Account shell with Card / Skeleton / Empty / ListRow — exercises elevated surfaces without PlanCard catalog density.
 
-**Done when (pilot):**
+### Cap3.3a — Golden Route (`/me/esims`)
 
-- Pilot route: content sits on `--app-surface-elevated` (via `ui/Card` / shell-owned wrappers)
-- No PlanCard redesign; no deposit banner redesign
-- Staging smoke on pilot green → **then** propagate PR(s)
+Treat Cap3.3a as the **reference AppShell implementation**, not “the first of six similar PRs”.
 
-**Propagate may be one PR or small follow-ups** — still Cap3.3 scope, still no CTA theme work (that is Cap3.4).
+> **Golden Route:** After pilot smoke is green, `/me/esims` is frozen as the composition reference. Later routes copy it; they do not invent a second pattern.
 
-**Out:** `sky-700` → cyan CTA sweep; Cap2 Review backlog Buttons on setup pages (unless they are shell chrome only).
+#### Composition pattern (locked for propagate)
+
+| Layer | On `/me/esims` |
+|-------|----------------|
+| Shell canvas | `AppShell` / `--app-background` + chrome text |
+| Page header on shell | `AppPageHeader` slots use `--app-chrome-text` / `--app-chrome-text-muted` |
+| Elevated content | Cap2 `Card` / `ListRow` / `ListSkeleton` / `Alert` (light panels) |
+| Actions | Existing Cap2 `Button` / `DepositCta` — **no** Cap2 API edits; CTA cyan = Cap3.4 |
+
+#### Cap3.3a operational rules
+
+1. **Migrate layout / contrast — do not beautify Cap2.** If Button / Card / Badge / Input look imperfect, open a debt row — do not “quick polish” primitives.
+2. **Visual Debt Register** (below) for leftover margins, local wrappers, interim contrast — do not leave as “fix later in chat”.
+3. **Smoke is end-to-end**, not “looks fine”: nav, scroll, loading, empty, error, keyboard, mobile (~390), Fold/narrow, balance chip, user menu.
+4. **Pilot Freeze:** when smoke passes, **do not keep editing `/me/esims`** except true regressions. Propagate next.
+
+#### Cap3.3a Definition of Done
+
+- [ ] `/me/esims` header readable on dark shell (chrome text tokens)
+- [ ] List / empty / loading / error sit on light elevated chrome (Cap2 Card / ListRow / Alert / Skeleton)
+- [ ] No Cap2 public API changes; no PlanCard / deposit redesign; no Cap3.4 CTA sweep
+- [ ] Visual Debt Register updated for any leftovers
+- [ ] Pilot Scorecard filled after smoke
+- [ ] Lint / tests green
+
+#### Pilot Scorecard (fill during Cap3.3a smoke)
+
+| Check | Status |
+|-------|--------|
+| Layout | ☐ |
+| Contrast | ☐ |
+| Responsive | ☐ |
+| Keyboard | ☐ |
+| CLS | ☐ |
+| Scroll | ☐ |
+
+| Smoke (E2E) | Status |
+|-------------|--------|
+| Navigation (browse plans / TopBar) | ☐ |
+| Loading skeleton | ☐ |
+| Empty state | ☐ |
+| Error state | ☐ |
+| List + row navigation | ☐ |
+| Balance chip / UserMenu | ☐ |
+| Mobile ~390 / narrow Fold | ☐ |
+
+Propagate only when scorecard + smoke are green (**Pilot Freeze** then applies).
+
+#### Visual Debt Register (Cap3.3+)
+
+| Route / area | Debt | Planned |
+|--------------|------|---------|
+| Cap2 `Card` / `ListRow` | Still hardcode `bg-white` / `border-slate-*` (equals elevated today; not yet bound to `--app-surface-elevated` / `--app-border`) | Cap3.3b or Cap3.5 binding — **no API change** |
+| `ListSkeleton` | Duplicates elevated chrome (`rounded-xl`) instead of composing `Card` | Later debt / Cap3.3b if needed |
+| `AppPageHeader` | Still uses literal `mb-8` (not spacing SoT alias) | Cap3 close / layout debt |
+| Header actions | `DepositCta` secondary sky outline; Cap2 secondary ring-offset not tokenized on all CTAs | Cap3.4 / Cap2 backlog — do not polish in Cap3.3a |
+| Other 5 AppShell routes | Page headers still `text-slate-*` / `text-sky-700` on dark shell | Cap3.3b propagate |
+
+### Cap3.3b — Propagate
+
+**Done when (pilot):** Cap3.3a scorecard green + Pilot Freeze.
+
+Then apply the **same** Golden Route pattern to the remaining five routes (one PR or small sequential follow-ups). Still no CTA theme work (Cap3.4).
+
+**Out of Cap3.3:** `sky-700` → cyan CTA sweep; Cap2 Review backlog Buttons on setup pages (unless shell chrome only); AuthShell; PlanCard redesign.
+
+### After Cap3 Complete
+
+Write a short **Cap3 Retrospective** (not a new plan): what worked, what Cap4 should do differently, remaining layout debt, lessons for Auth polish / Visual Language. Lives under `docs/design/` next to this plan.
 
 ---
 
@@ -396,4 +453,4 @@ Prefer **two PRs** inside Cap3.3: `Cap3.3a` pilot, `Cap3.3b` propagate (after pi
 | **Accepted** | **Current** — Cap3.1 may start |
 | Done | Cap3.5 closed Cap3 |
 
-**Next:** Cap3.1 only — shell tokens + background. No new design tokens, primitives, or AppShell variants until Cap3 Complete.
+**Next:** Cap3.3a Golden Route (`/me/esims`) → smoke → Pilot Freeze → Cap3.3b propagate. No new design tokens, primitives, or AppShell variants until Cap3 Complete.
