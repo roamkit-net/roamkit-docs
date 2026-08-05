@@ -2,9 +2,10 @@
 
 | Field | Value |
 |-------|-------|
-| Status | **Accepted** |
+| Status | **Done** — Cap6 CLOSED |
 | Date | 2026-08 |
 | Accepted | 2026-08-05 |
+| Closed | 2026-08-05 |
 | Prerequisite | [Design Lock](./cap6-consistency-review-lock.md) = **Accepted** |
 | Related | [ADR 016](../adr/016-web-design-tokens.md), [status.md](./status.md), [capability-ledger.md](./capability-ledger.md), close artifact [design-system-v1-review.md](./design-system-v1-review.md) (created at close) |
 | Repo | Primarily `roamkit-docs` (audit + review). `roamkit-web` **only** for dispositioned **REGRESSION** bugfix PRs |
@@ -196,54 +197,32 @@ Audit order inside Cap6.2: **Tokens → Accessibility → Legacy**.
 
 | Doc | Check | Result |
 |-----|-------|--------|
-| Cap1–Cap5 Design Locks / Plans / status | Match shipped system | ☐ |
-| Cap2 Review / API Freeze | Still held | ☐ |
-| Capability ledger | Cap1–Cap5 ✅; Cap6 close pending | ☐ |
-| ADR 016 | Not contradicted by Cap6 | ☐ |
+| Cap1–Cap5 Design Locks / Plans / status | Match shipped system | ✅ PASS |
+| Cap2 Review / API Freeze | Still held | ✅ PASS |
+| Capability ledger | Cap1–Cap6 ✅ | ✅ PASS |
+| ADR 016 | Not contradicted by Cap6 | ✅ PASS |
 
 ### Close artifact
 
-Create and merge:
-
-```text
-docs/design/design-system-v1-review.md
-```
-
-Minimum sections:
-
-1. Scope & method (audit order)
-2. **Executive summary** (one-screen table — required)
-
-| Area | Status | Notes |
-|------|--------|-------|
-| Routes | PASS / … | — |
-| Primitives | PASS / … | — |
-| Tokens | PASS / … | — |
-| Accessibility | PASS / … | — |
-| Legacy | PASS / MINOR / … | short refs |
-| Documentation | PASS / … | — |
-
-3. Matrices (final detail)
-4. Findings (classified + disposition)
-5. Accepted as-is
-6. Backlog / follow-up capabilities
-7. Close gate assessment (Architecture / Operations / Product / Audit)
+Published: [design-system-v1-review.md](./design-system-v1-review.md) — **APPROVED**.
 
 ### Close gate
 
 | Gate | Result |
 |------|--------|
-| Architecture | ☐ PASS |
-| Operations | ☐ PASS |
-| Product | ☐ PASS |
-| Audit | ☐ PASS |
+| Architecture | ✅ PASS |
+| Operations | ✅ PASS |
+| Product | ✅ PASS |
+| Audit | ✅ PASS |
 
 ### Cap6.3 done when
 
-- [ ] Review doc merged
-- [ ] Cap6 marked **CLOSED** in [status.md](./status.md)
-- [ ] Ledger Cap6 ✅
-- [ ] No Cap6 mega-refactor left open
+- [x] Review doc merged
+- [x] Cap6 marked **CLOSED** in [status.md](./status.md)
+- [x] Ledger Cap6 ✅
+- [x] No Cap6 mega-refactor left open
+
+**Cap6 CLOSED.** Design System v1.0 **COMPLETE**. No Cap7.
 
 ---
 
@@ -286,9 +265,8 @@ Avoid:
 | State | Meaning |
 |-------|---------|
 | Draft — awaiting acceptance | Closed |
-| **Accepted** | Closed — Cap6.1 executed |
-| Cap6.1 done | Closed |
-| Cap6.2 done | **Current** — Cap6.3 next |
-| Done | Cap6.3 closed Cap6 |
+| Accepted | Closed |
+| Cap6.1 / Cap6.2 done | Closed |
+| **Done** | **Current** — Cap6 CLOSED; Design System v1.0 COMPLETE |
 
-**Next:** Cap6.3 Documentation review + `design-system-v1-review.md` + Cap6 CLOSE.
+**Cap6 CLOSED.** No Cap7 Design System capability.

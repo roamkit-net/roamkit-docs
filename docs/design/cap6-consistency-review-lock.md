@@ -246,7 +246,7 @@ Cap6.3  Findings disposition + review doc + close
 | State | Meaning |
 |-------|---------|
 | Draft — awaiting acceptance | Closed |
-| **Accepted** | **Current** — Implementation Plan may proceed |
-| Done | Cap6 closed; `design-system-v1-review.md` published |
+| **Accepted** | Closed — Cap6 executed |
+| **Done** | **Current** — Cap6 CLOSED; `design-system-v1-review.md` APPROVED |
 
-**Next:** Cap6 Implementation Plan acceptance — then Cap6.1 audit (no web polish; REGRESSION-only code).
+**Cap6 CLOSED.** Design System v1.0 COMPLETE. No Cap7.
