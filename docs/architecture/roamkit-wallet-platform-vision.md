@@ -288,7 +288,7 @@ Vision → RFC → ADR → Capability → Production
 1. Keep production on **ADR 010**.
 2. Stabilize **RFC 003** (domain).
 3. [Wallet Conversion Boundary](./wallet-conversion-boundary.md) (why chain stops at convert).
-4. Wallet Sandbox → RFC 004 (Platform Wallet Key Management) → 005 → 006 → first Wallet ADR.
+4. Wallet Sandbox ([research framework](./wallet-sandbox.md)) → RFC 004 (Platform Wallet Key Management) → 005 → 006 → first Wallet ADR.
 
 ---
 

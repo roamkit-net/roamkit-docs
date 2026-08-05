@@ -181,7 +181,7 @@ Production stays on ADR 010 until Wallet ADRs + cutover. This RFC describes the 
 - [ ] Open questions answered or deferred to Sandbox / RFC 004–006.  
 - [ ] No production code required.
 
-**Next:** Wallet Sandbox (if needed) → **RFC 004 — Platform Wallet Key Management** (not “user spend keys”).
+**Next:** [Wallet Sandbox](../architecture/wallet-sandbox.md) (research framework) → **RFC 004 — Platform Wallet Key Management** (not “user spend keys”).
 
 ## Related
 
