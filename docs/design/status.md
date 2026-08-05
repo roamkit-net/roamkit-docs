@@ -47,12 +47,12 @@ Colocated mirror: `roamkit-web/components/ui/README.md`.
 |-------|--------|-----|
 | Cap3.1 Shell tokens + background | ✅ | [web #103](https://github.com/roamkit-net/roamkit-web/pull/103) |
 | Cap3.2 TopBar + nav chrome | ✅ | [web #104](https://github.com/roamkit-net/roamkit-web/pull/104) |
-| Cap3.3a Pilot `/me/esims` | ✅ merged | [web #105](https://github.com/roamkit-net/roamkit-web/pull/105) |
-| Cap3.3b Propagate | blocked on pilot staging accept | — |
+| Cap3.3a Pilot `/me/esims` | ✅ Pilot Freeze Accepted | [web #105](https://github.com/roamkit-net/roamkit-web/pull/105) |
+| Cap3.3b Propagate | ▶ in progress | remaining five AppShell routes |
 | Cap3.4 CTA theme | after 3.3b | — |
 | Cap3.5 Validation | last | — |
 
-**Gates:** Cap3.3b only after `/me/esims` pilot accepted on staging; any surface-token fix lands once before propagate.  
+**Gates:** Cap3.3b copies Golden Route only (chrome text + elevated Cap2 panels). No Cap3.4 CTA. No new surface levels. Landing + auth untouched.  
 Cap3.3a Golden Route ops / Visual Debt Register: see Implementation Plan companions.  
 Cap2 Merge leftovers = migration backlog, not Cap3.
 
