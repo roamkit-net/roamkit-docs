@@ -35,6 +35,8 @@ Track 1 closed with: **in-house HD Preferred**, Index Registry as platform state
 - Define **Platform Wallet Infrastructure** (not “Platform Deposit Key” / not “HSM implementation”).
 - Specify v1 address assignment: **in-house HD** with one **active** `WalletAddress` per Account + Chain (Polygon first).
 - Make **Index Registry** a domain/platform requirement for recovery.
+- Define **WalletAddress Allocation Policy** (reserve → persist → derive; indices immutable, never reused).
+- Require **idempotent and concurrency-safe** address allocation.
 - Clarify **Platform State Ownership** (seed vs registry vs domain vs billing).
 - State invariants: Funding Providers never define `WalletIdentity`; User Spending Keys never stored.
 - Record deferred / future paths (custody, MPC/TEE) without selecting them for v1.
@@ -93,13 +95,48 @@ Account
 
 | Step | Behavior |
 |------|----------|
-| Materialize | Lazy on first funding intent (“Add funds”): allocate next `derivation_index` → derive address → persist in Index Registry + domain `WalletAddress` |
+| Materialize | Lazy on first funding intent (“Add funds”): follow Allocation Policy below |
 | Path (suggested) | BIP44 EVM: `m/44'/60'/0'/0/{derivation_index}` |
 | Active set | Exactly one **active** address per Account + Chain in v1 |
 | Rotate | New index → new active; previous → **retired**, still watchable for late deposits |
 | Never (v1) | New address per payment |
 
 `WalletIdentity` is created as a domain object (no seed access required). Address materialization requires Platform Wallet Infrastructure.
+
+### WalletAddress Allocation Policy
+
+Allocation is a defined sequence, not an ad-hoc “derive and hope”:
+
+```text
+WalletIdentity
+    ↓
+Allocate next free index
+    ↓
+Persist Index Registry          ← index is reserved / final here
+    ↓
+Derive Address
+    ↓
+Persist WalletAddress           ← domain record (active)
+```
+
+| Rule | Requirement |
+|------|-------------|
+| When is the index reserved? | When it is written to the **Index Registry** (before or atomically with derive). |
+| When is it final? | On successful persist of the Index Registry row; it is never “soft” or speculative after that. |
+| May an index be reused? | **No.** Index values are **immutable and never reused**, including after address retirement. |
+| Rotation | Always allocates a **new** unused index; retired indices remain in the registry for recovery and late-deposit watch. |
+
+Why never reuse: recovery and audit must map `derivation_index → address → Account` without ambiguity across the lifetime of the platform seed.
+
+### Idempotent and concurrency-safe allocation
+
+Architectural requirement (implementation mechanism is out of scope for this RFC):
+
+> **Wallet address allocation must be idempotent and concurrency-safe.**
+
+Concurrent “create / materialize address” for the same `WalletIdentity` + Chain must not produce two rows with the same `derivation_index`, nor two **active** addresses for that pair. A safe outcome is: one winner allocation, or both callers observe the same already-allocated active address (idempotent retry).
+
+This RFC does not prescribe locks, unique constraints, or job queues — only that the platform must guarantee the property above.
 
 ### Recovery model
 
@@ -135,10 +172,12 @@ Boundary rule:
 
 1. RoamKit owns `WalletAddress` attribution; Funding Providers never define `WalletIdentity`.
 2. Recovery requires Seed **and** Index Registry consistency.
-3. No User Spending Keys are generated or stored for billing/renew.
-4. Platform Wallet Infrastructure may hold material only for receive/derive/sweep — not for acting “as the user.”
-5. Credits ledger remains independent; conversion calls into Billing/`CreditService` (details outside this RFC).
-6. Evolution of custody (wrap → TEE/MPC) must preserve published addresses or define an explicit cutover + watch window — not silent renumbering.
+3. Derivation indices are **immutable and never reused**.
+4. Address allocation is **idempotent and concurrency-safe** (no duplicate index; no duplicate active address per WalletIdentity + Chain).
+5. No User Spending Keys are generated or stored for billing/renew.
+6. Platform Wallet Infrastructure may hold material only for receive/derive/sweep — not for acting “as the user.”
+7. Credits ledger remains independent; conversion calls into Billing/`CreditService` (details outside this RFC).
+8. Evolution of custody (wrap → TEE/MPC) must preserve published addresses or define an explicit cutover + watch window — not silent renumbering.
 
 ### Evolution (not “HSM implementation”)
 
@@ -164,7 +203,7 @@ Boundary rule:
 
 ## Open Questions
 
-1. Exact Index Registry schema fields and uniqueness constraints (→ ADR when implementing).
+1. Exact Index Registry schema fields (→ ADR when implementing). Uniqueness of `derivation_index` and at-most-one active per WalletIdentity+Chain are **requirements** above; schema is the only open part.
 2. Who may authorize address **rotation** (ops vs user vs automated policy).
 3. Watch window length for **retired** addresses.
 4. Sweep destination (treasury) and gas-funding policy for ERC-20 receive addresses.
@@ -179,13 +218,29 @@ This RFC is ready to close / promote toward an ADR when:
 - [ ] Platform Wallet Infrastructure definition accepted (not “HSM RFC”).
 - [ ] Platform State Ownership table accepted.
 - [ ] HD + Index Registry recovery model accepted.
+- [ ] WalletAddress Allocation Policy accepted (including never-reuse).
+- [ ] Idempotent / concurrency-safe allocation accepted as architectural requirement.
 - [ ] One active address per Account + Chain accepted for v1.
 - [ ] Standing rule accepted: Funding Providers never define `WalletIdentity`.
 - [ ] Deferred custody/MPC paths recorded without blocking v1.
 - [ ] Open questions answered or explicitly deferred to ADR / RFC 005–006.
+- [ ] **Architecture Review** (below) completed with no blocking gaps.
 - [ ] No production code required to accept this RFC as Draft→Ready.
 
-**Next after acceptance:** implement via a dedicated Wallet ADR (cutover from ADR 010); then RFC 005 (Funding Provider Interface) and Deposit Detection research / RFC 006 — in that product order, not before this ownership model is clear.
+### Architecture Review (before RFC 005)
+
+Before opening RFC 005 (Funding Provider Interface) or Deposit Detection research, answer:
+
+> After RFC 004, is anything still unanswered about **Platform Wallet Infrastructure** itself?
+
+| If | Then |
+|----|------|
+| **No** blocking gaps | Mark this RFC Ready for ADR intake; open RFC 005 / detection track only when product needs them |
+| **Yes** | Amend this RFC (or a focused research note) before expanding scope |
+
+Remaining open questions above are **ADR/ops detail**, not missing infrastructure principles — unless review finds a principle gap.
+
+**Next after Architecture Review:** dedicated Wallet ADR (cutover from ADR 010) when implementing; RFC 005 and Deposit Detection / RFC 006 only when product prioritizes them — not automatically next.
 
 ---
 
