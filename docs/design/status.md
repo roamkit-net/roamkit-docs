@@ -108,9 +108,9 @@ Brand primary CTA contrast (`#22d3ee` on dark auth chrome): **11.16:1** (same br
 
 **Visual Debt (was Cap5):** PlansStore tabs, setup stepper, UserMenu avatar — **cleared in Cap5**.
 
-## Design System v1.0 — IMPLEMENTATION COMPLETE
+## Design System v1.0 — **COMPLETE**
 
-Internal milestone (not a marketing label / git tag). Cap1–Cap5 closed the build + consistency phase:
+Internal milestone (not a marketing label / git tag). Cap1–Cap6 closed the full program:
 
 ```text
 RoamKit Design System v1.0
@@ -120,12 +120,15 @@ RoamKit Design System v1.0
 ✅ AppShell            Cap3
 ✅ Auth                Cap4
 ✅ Consistency Polish  Cap5
+✅ Governance / Audit  Cap6
 
-STATUS: IMPLEMENTATION COMPLETE
-READY FOR LONG-TERM EVOLUTION
+STATUS: COMPLETE
+APPROVED
 ```
 
-From here, UI evolves on a stable foundation — not via ad hoc styles. Cap6 is **audit only**, not a redesign capability.
+Close artifact: [design-system-v1-review.md](./design-system-v1-review.md).
+
+From here, UI evolves on a stable foundation — not via ad hoc styles. **No Cap7 Design System program** — Cap6 MINOR items are optional backlog / tiny follow-ups only.
 
 ## Cap5 — Design Consistency Polish — **CLOSED**
 
@@ -166,27 +169,34 @@ Validation          ✅
 
 Chrome consistency matrix: Button / Input / Alert / Card / Tabs / Stepper / Avatar — all green.
 
-## Next
-
-**Cap6 — Cross-Route Consistency Review** (**governance / audit**)
+## Cap6 — Cross-Route Consistency Review — **CLOSED**
 
 | Doc | Status |
 |-----|--------|
 | [Design Lock](./cap6-consistency-review-lock.md) | **Accepted** |
-| [Implementation Plan](./cap6-implementation-plan.md) | **Accepted** |
-| Close artifact | `docs/design/design-system-v1-review.md` (at Cap6 close) |
+| [Implementation Plan](./cap6-implementation-plan.md) | **Done** |
+| [v1.0 Review](./design-system-v1-review.md) | **APPROVED** |
 
-| Slice | Status | Notes |
-|-------|--------|-------|
-| Cap6.1 Routes + Primitives | ✅ | staging `fb86a52` — all PASS |
-| Cap6.2 Tokens + A11y + Legacy | ✅ | PASS (+ MINOR legacy links documented) |
-| Cap6.3 Review doc + close | ▶ next | |
+| Slice | Status | PR |
+|-------|--------|-----|
+| Cap6.1 Routes + Primitives | ✅ | [docs #124](https://github.com/roamkit-net/roamkit-docs/pull/124) |
+| Cap6.2 Tokens + A11y + Legacy | ✅ | [docs #125](https://github.com/roamkit-net/roamkit-docs/pull/125) |
+| Cap6.3 Review + close | ✅ | Cap6.3 (this close) |
+| **Cap6** | **CLOSED** | Cap6.1–6.3 |
 
 ```text
-Cap6.1 ✅ → Cap6.2 ✅ → Cap6.3 ▶
+Architecture   PASS
+Operations     PASS
+Product        PASS
+Audit          PASS
+Overall        APPROVED
 ```
 
-`roamkit-web` only for dispositioned **REGRESSION** (none in Cap6.1–6.2).
+Zero `roamkit-web` Cap6 PRs. REGRESSION: **0**. MAJOR: **0**. MINOR: **3** (backlog — not blockers).
+
+## Next
+
+Product / platform work on Design System v1.0. Optional UI follow-ups are small named PRs — **not Cap7**.
 
 ## Inventory
 
