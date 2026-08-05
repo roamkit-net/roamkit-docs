@@ -85,8 +85,8 @@ Cutover capability [#116](https://github.com/roamkit-net/roamkit-docs/issues/116
 
 ```text
 PR1–PR4: done (flags → backfill → shadow → limited traffic cohort)
-Phase 2: ACTIVE — fill [Phase 2 Validation Report](./wallet-phase-2-validation.md)
-PR5 (Default WalletAddress): NOT YET APPROVED until Phase 2 Recommendation = Proceed
+Phase 2: ACTIVE / RUNNING — [Phase 2 Validation Report](./wallet-phase-2-validation.md) = AWAITING RESULTS
+PR5: BLOCKED pending Phase 2 PASS (NOT AUTHORIZED until Decision = Proceed to Phase 3)
 ```
 
 Phase 3 still needs live Readiness Gate evidence + all three GO Authority approvals at activation time.
