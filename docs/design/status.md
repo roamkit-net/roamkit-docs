@@ -137,9 +137,19 @@ After Cap4 the system is **polished and finished**, not redesigned. Cap5+ is con
 | Slice | Status | Notes |
 |-------|--------|-------|
 | Cap5.1 Tabs (pilot) | ✅ **PILOT FROZEN** | staging `a1c6dea` — [web #116](https://github.com/roamkit-net/roamkit-web/pull/116) |
-| Cap5.2 Stepper | pending | **Blocked** until GO after Pilot Freeze |
+| Cap5.2 Stepper | ▶ Cap5.2 | Inventory: single call site (`setup/page`); theme-only GO |
 | Cap5.3 Avatar | pending | |
 | Cap5.4 Validation | pending | Matrix + Legacy Chrome Audit |
+
+### Cap5.2 Stepper inventory (precondition)
+
+| Surface | Role | Cap5.2? |
+|---------|------|---------|
+| `app/me/esims/[id]/setup/page.tsx` pill `<ol>` | Cap3.5 allowlisted stepper | **Yes** — theme only |
+| `components/landing/LandingSections.tsx` How-it-works | Landing STEPS | **No** (Landing closed) |
+| `components/ui/Stepper` | — | **Does not exist** |
+
+No shared Stepper primitive; no checkout/onboarding forks. Theme-only change is safe.
 
 ### Cap5.1 Pilot Freeze (staging `a1c6dea`)
 

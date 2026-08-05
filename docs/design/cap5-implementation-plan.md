@@ -43,7 +43,7 @@ Cap5 is done when all Design Lock stop rules hold, including:
 | Element | Surfaces | Old | New | Smoke | Status |
 |---------|----------|-----|-----|-------|--------|
 | Tabs | `PlansStore` (`/plans`); `LocationDetail` service tabs | ✓ | ✓ | ✓ | **PILOT FROZEN** Cap5.1 (`a1c6dea`) |
-| Stepper | `/me/esims/[id]/setup` pills | ⏳ | ⏳ | ⏳ | Cap5.2 |
+| Stepper | `/me/esims/[id]/setup` pills | ✓ | ✓ | ⏳ | Cap5.2 (theme-only; single call site) |
 | Avatar | `UserMenu` trigger | ⏳ | ⏳ | ⏳ | Cap5.3 |
 
 Legend: Old = pre-Cap5 baseline · New = `--app-*` chrome · Smoke = staging green.
@@ -169,28 +169,32 @@ Cap5.4  Validation + close Cap5
 
 ## Cap5.2 — Stepper pills
 
-**Open only after Pilot Freeze.**
+**Open only after Pilot Freeze + GO** (inventory precondition: theme-only safe).
 
 **Route:** `/me/esims/[id]/setup`
+
+**Inventory (locked):** Cap5 stepper chrome exists **only** as an inline pill list on the setup page. Landing `LandingSections` STEPS is a different surface (out of Cap5). There is no `ui/Stepper` and no other AppShell forks.
 
 ### In scope
 
 | Area | Notes |
 |------|--------|
-| Setup step `<ol>` pills | `active` / `completed` / `inactive` → `--app-*` |
-| Contrast | AA on shell / elevated context as today |
+| Setup step `<ol>` pills | `active` / `completed` / `inactive` → `--app-*` only |
 
 ### Out of scope
 
 - Step machine, step count, setup copy, install guides
+- Spacing, motion, DOM structure, new props/variants
 - `text-sky-700` helper links on the same page (Cap6 audit — not Cap5 invent)
+- Landing How-it-works STEPS
 - Tabs, avatar
 
 ### Cap5.2 done when
 
 - [ ] Three visual states token-bound
-- [ ] No step logic change
+- [ ] No step logic / spacing / DOM change
 - [ ] Spot-check setup route on staging
+- [ ] Cap3.5 allowlist: setup page removed (avatar remains)
 
 ---
 
