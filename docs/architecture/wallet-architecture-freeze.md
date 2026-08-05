@@ -36,6 +36,7 @@ Architecture Freeze does **not** mean “never change.” It means **no change w
 
 - RFC 006+ (Deposit Observation & Confirmation, …)
 - Technical appendices (e.g. [Funding Provider Interface Contract](./funding-provider-interface-contract.md))
+- [Wallet Architecture Index](./wallet-architecture-index.md) (navigation — update freely)
 - Sandbox **Exit Artifacts** and Decision Register rows
 - Production ADR 010 and future Wallet ADRs
 - Implementation in `roamkit-api` / `roamkit-web`
@@ -50,7 +51,9 @@ Do **not** keep reviewing frozen RFCs for incremental rules. Review:
 
 ## Related
 
+- [Wallet Architecture Index](./wallet-architecture-index.md)
 - [Track 1 Exit Artifact](./wallet-sandbox-artifacts/01-wallet-address-assignment.md)
+- [Cross-RFC Consistency Review](./wallet-sandbox-artifacts/02-cross-rfc-consistency-review.md)
 - [RFC 004 Architecture Review](../rfcs/004-platform-wallet-infrastructure.md#architecture-review-before-rfc-005)
 - [RFC 005 Architecture Review](../rfcs/005-funding-provider-interface.md#architecture-review-before-freeze--rfc-006)
 - [RFC 006 — Deposit Observation & Confirmation](../rfcs/006-deposit-observation-confirmation.md)

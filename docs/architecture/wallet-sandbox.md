@@ -148,6 +148,7 @@ Lightweight place to record risks found while researching (expand as tracks run)
 | Platform Wallet Infrastructure (RFC 004) | Architecture Review Passed / Frozen | Allocation policy + ownership complete; no blocking infra gaps | 2026-08 | [RFC 004](../rfcs/004-platform-wallet-infrastructure.md), [Freeze](./wallet-architecture-freeze.md) |
 | Wallet foundation freeze | Vision + Conversion Boundary + RFC 003 + RFC 004 frozen | Discipline: no change without research evidence or ADR proposal | 2026-08 | [Freeze](./wallet-architecture-freeze.md) |
 | Funding Provider Interface (RFC 005) | Architecture Review Passed / Frozen | Generic adapter contract; destination = WalletAddress; never Credits SoT | 2026-08 | [RFC 005](../rfcs/005-funding-provider-interface.md), [Freeze](./wallet-architecture-freeze.md) |
+| Cross-RFC Consistency Review | **PASS** | Vocabulary/authority/deps aligned; legacy “Deposit Key/Detection” labels only | 2026-08 | [Review](./wallet-sandbox-artifacts/02-cross-rfc-consistency-review.md), [Index](./wallet-architecture-index.md) |
 
 Add rows as Exit Artifacts close. Always fill **Reason**.
 
@@ -187,6 +188,7 @@ Then Wallet Platform ADR (cutover from ADR 010) when implementing.
 
 ## Related
 
+- [Wallet Architecture Index](./wallet-architecture-index.md)
 - [Wallet Architecture Freeze](./wallet-architecture-freeze.md)
 - [RoamKit Wallet Platform Vision](./roamkit-wallet-platform-vision.md)
 - [Wallet Conversion Boundary](./wallet-conversion-boundary.md)
