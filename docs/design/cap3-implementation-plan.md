@@ -220,15 +220,69 @@ Record “later” findings here — not in code comments. Delete table when emp
 
 ## Cap3.2 — TopBar + navigation chrome
 
-**Files (expected):** `components/TopBar.tsx`, callers’ `nav` link classes only if required for contrast on dark shell, `AuthNav` **app** presentation if it sits in `rightSlot` (not landing variant).
+TopBar is **part of the Shell**, not a page component.
 
-**Done when:**
+### Ownership
 
-- TopBar / nav / account chrome readable on dark shell (`--app-chrome-text*`)
-- Grid contract unchanged (`nav` left, `rightSlot` right)
-- No new nav items or IA
+> **TopBar owns navigation chrome.** Pages own content — not mini-headers that duplicate TopBar.
 
-**Out:** Page body cards; PlanCard; deposit panels.
+TopBar is the sole place for: back/nav slot, account actions, balance chip, future notifications.  
+Pages must not add competing chrome headers for those roles.
+
+### Cap3.2 locks (operational)
+
+| Decision | Lock |
+|----------|------|
+| Sticky policy | **Static** (not sticky) — one policy for all AppShell routes |
+| Scroll behaviour | **Always visible** (follows static; no hide-on-scroll, no scroll shadow) |
+| Height SoT | `--app-topbar-height` (single source) |
+| Safe area | Shell/`TopBar` respect `env(safe-area-inset-*)` |
+| Cap2 | No new primitives; use existing cluster / Button where needed |
+
+### Cap3.2 forbidden
+
+- Wallet balance redesign, search, notifications, theme switch, UserMenu refactor
+- Sticky on some routes only
+- New AppShell forks / page-level mini-headers
+- Cap2 API changes; Card/CTA migration (Cap3.3 / Cap3.4)
+
+### Cap3.2 Definition of Done
+
+- [ ] TopBar uses `--app-topbar-height`, chrome border, shell nav link contrast
+- [ ] Static + always-visible scroll policy applied uniformly
+- [ ] Safe-area insets on shell frame
+- [ ] App `AuthNav` / account cluster readable on dark shell (no product redesign)
+- [ ] Grid contract unchanged (`nav` left, `rightSlot` right)
+- [ ] Landing AuthNav `variant="landing"` untouched
+- [ ] Cap2 API Freeze held; lint/tests green
+
+**Files (expected):** `globals.css`, `TopBar.tsx`, shell `nav` link classes on AppShell callers, `AuthNav` app focus/chrome only if required.
+
+**Out:** Page body cards; PlanCard; deposit panels; Cap3.3 surface work.
+
+### Pilot Readiness (gate before Cap3.3)
+
+Do **not** open Cap3.3a until all are true:
+
+- [ ] Cap3.1 shell done
+- [ ] Cap3.2 TopBar done
+- [ ] Spacing SoT in place
+- [ ] Shell/TopBar contrast resolved (chrome text on dark)
+
+Then pilot `/me/esims` only.
+
+### Pilot Scorecard (fill during Cap3.3a)
+
+| Check | Status |
+|-------|--------|
+| Layout | ☐ |
+| Contrast | ☐ |
+| Responsive | ☐ |
+| Keyboard | ☐ |
+| CLS | ☐ |
+| Scroll | ☐ |
+
+Propagate only when scorecard is green and pilot smoke passes.
 
 ---
 
