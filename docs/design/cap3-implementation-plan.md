@@ -415,23 +415,25 @@ Write a short **Cap3 Retrospective** (not a new plan): what worked, what Cap4 sh
 
 | Route | Visual | Responsive | Keyboard | Dark shell | Desktop | Mobile (~390) | Notes |
 |-------|--------|------------|----------|------------|---------|---------------|--------|
-| `/plans` | ☐ | ☐ | ☐ | ☐ | ☐ | ☐ | |
-| `/[slug]-esim` | ☐ | ☐ | ☐ | ☐ | ☐ | ☐ | one location |
-| `/me/esims` | ☐ | ☐ | ☐ | ☐ | ☐ | ☐ | loading + empty + list if possible |
-| `/me/esims/[id]` | ☐ | ☐ | ☐ | ☐ | ☐ | ☐ | |
-| `/me/esims/[id]/setup` | ☐ | ☐ | ☐ | ☐ | ☐ | ☐ | |
-| `/me/deposit` | ☐ | ☐ | ☐ | ☐ | ☐ | ☐ | |
+| `/plans` | ✅ | ✅ | ✅* | ✅ | ✅ | ✅* | *code + HTTP; focus via Button tokens |
+| `/[slug]-esim` | ✅ | ✅ | ✅* | ✅ | ✅ | ✅* | `/croatia-esim` staging 200 |
+| `/me/esims` | ✅ | ✅ | ✅* | ✅ | ✅ | ✅* | Golden Route |
+| `/me/esims/[id]` | ✅ | ✅ | ✅* | ✅ | ✅ | ✅* | Cap3.3b + Cap3.4 CTAs |
+| `/me/esims/[id]/setup` | ✅ | ✅ | ✅* | ✅ | ✅ | ✅* | stepper sky = Visual Debt |
+| `/me/deposit` | ✅ | ✅ | ✅* | ✅ | ✅ | ✅* | primary via Button |
+| `/login` | ✅ | — | — | — | ✅ | — | auth unchanged |
+| `/` | ✅ | — | — | — | ✅ | — | landing unchanged |
 
 ### Checklist
 
-- [ ] Dark shell + light elevated surfaces on all six
-- [ ] Layout DOM / nav structure unchanged
-- [ ] Landing `/` unchanged
-- [ ] Auth `/login` `/register` unchanged
-- [ ] Cap2 API Freeze held (`git diff` shows no public prop/type API changes on `ui/*` — internal class/token binding OK)
-- [ ] `prefers-reduced-motion` still respected where Cap2 motion exists
-- [ ] Lint / typecheck / tests green
-- [ ] Short Cap3 close note in [status.md](./status.md)
+- [x] Dark shell + light elevated surfaces on all six
+- [x] Layout DOM / nav structure unchanged
+- [x] Landing `/` unchanged
+- [x] Auth `/login` `/register` unchanged
+- [x] Cap2 API Freeze held (`git diff` shows no public prop/type API changes on `ui/*` — internal class/token binding OK)
+- [x] `prefers-reduced-motion` still respected where Cap2 motion exists
+- [x] Lint / typecheck / tests green (`cap35.validation.test.ts`)
+- [x] Short Cap3 close note in [status.md](./status.md)
 
 ---
 
@@ -459,7 +461,7 @@ Write a short **Cap3 Retrospective** (not a new plan): what worked, what Cap4 sh
 | State | Meaning |
 |-------|---------|
 | Draft — awaiting acceptance | Superseded |
-| **Accepted** | **Current** — Cap3.1 may start |
-| Done | Cap3.5 closed Cap3 |
+| Accepted | Cap3.1–3.5 executed under this plan |
+| **Done** | **Current** — Cap3.5 closed Cap3 |
 
-**Next:** Cap3.3a Golden Route (`/me/esims`) → smoke → Pilot Freeze → Cap3.3b propagate. No new design tokens, primitives, or AppShell variants until Cap3 Complete.
+**Cap3 CLOSED.** Next: Cap4 Auth Polish (do not reopen Cap3).

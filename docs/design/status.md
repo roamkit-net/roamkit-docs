@@ -21,9 +21,9 @@ Colocated mirror: `roamkit-web/components/ui/README.md`.
 ## Cap2 API Freeze
 
 - New props only with justification.
-- Breaking changes only via a new capability / ADR — **never drive-by in Cap3**.
+- Breaking changes only via a new capability / ADR — **never drive-by** in later caps.
 - No business / domain props on `ui/*`.
-- Cap3 must not change Cap2 primitive APIs.
+- Cap3 held the freeze (internal class/token binding only on Button primary).
 
 ## Rules
 
@@ -34,14 +34,12 @@ Colocated mirror: `roamkit-web/components/ui/README.md`.
 - Card is a **container** only (no billing/auth/pricing variants; no elevation API)
 - Composition: `Button → Field → Card → Page`
 
-## Next
-
-**Cap3 — AppShell Variant A**
+## Cap3 — AppShell Variant A — **CLOSED**
 
 | Doc | Status |
 |-----|--------|
 | [Design Lock](./cap3-appshell-design-lock.md) | **Accepted** |
-| [Implementation Plan](./cap3-implementation-plan.md) | **Accepted** |
+| [Implementation Plan](./cap3-implementation-plan.md) | **Done** |
 
 | Slice | Status | PR |
 |-------|--------|-----|
@@ -50,11 +48,32 @@ Colocated mirror: `roamkit-web/components/ui/README.md`.
 | Cap3.3a Pilot `/me/esims` | ✅ Pilot Freeze | [web #105](https://github.com/roamkit-net/roamkit-web/pull/105) |
 | Cap3.3b Propagate | ✅ staging smoke `eaf4c0c` | [web #110](https://github.com/roamkit-net/roamkit-web/pull/110) |
 | **Cap3.3 (surfaces)** | **CLOSED** | 3.3a + 3.3b |
-| Cap3.4 CTA theme | ▶ next | `--app-primary` cyan; no layout |
-| Cap3.5 Validation | last | — |
+| Cap3.4 CTA theme | ✅ | [web #111](https://github.com/roamkit-net/roamkit-web/pull/111) |
+| Cap3.5 Validation | ✅ | [web #112](https://github.com/roamkit-net/roamkit-web/pull/112) |
+| **Cap3 (AppShell)** | **CLOSED** | Cap3.1–3.5 |
 
-**Cap3.3 closed:** Golden Route propagated; tabs/steppers remain Visual Debt; landing + auth untouched; CTA still sky until Cap3.4.  
-Cap2 Merge leftovers = migration backlog, not Cap3.
+### Cap3 close note
+
+| Stop-rule criterion | Result |
+|---------------------|--------|
+| Dark shell + light elevated surfaces | ✅ Cap3.3 |
+| Brand primary CTAs via `--app-primary` | ✅ Cap3.4 — staging `6333899` (`bg-[var(--app-primary)]` in client chunks) |
+| Cap2 primitive APIs unchanged | ✅ Freeze held |
+| Landing `/` unchanged | ✅ `landing-cta` / `--landing-ink` |
+| Auth `/login` unchanged | ✅ `auth-page-bg` / `tone="auth"` |
+| Validation | ✅ Cap3.5 suite + cross-route HTTP 200 |
+
+CTA contrast (`#22d3ee` on `#020617`): **11.16:1**.
+
+**Visual Debt (not Cap3):** PlansStore tab indicator, setup stepper pills, UserMenu avatar — still `sky-700`.
+
+Cap2 Merge leftovers remain migration backlog.
+
+## Next
+
+**Cap4 — Auth Polish**, then Cap5 Quality, Cap6 Consistency Review.
+
+Brand Design System is functionally complete for the **application core** (tokens → primitives → AppShell).
 
 ## Inventory
 
