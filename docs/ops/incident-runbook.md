@@ -90,6 +90,7 @@ Also verify public paths with curl when diagnosing edge/TLS: `https://api.roamki
 
 - [Launch Gates](./launch-gates.md)
 - [Gate D cutover](./gate-d-cutover.md)
+- [Wallet Operations](./wallet-operations.md) (ADR 017 Failure Domains)
 - [Billing dashboard](./billing-dashboard.md)
 - [SLO targets](./slo.md)
 - [Observability Criterion #2 PASS](./releases/1.0.0/evidence/observability-criterion-2.md)
