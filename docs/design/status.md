@@ -108,22 +108,24 @@ Brand primary CTA contrast (`#22d3ee` on dark auth chrome): **11.16:1** (same br
 
 **Visual Debt (was Cap5):** PlansStore tabs, setup stepper, UserMenu avatar — **cleared in Cap5**.
 
-## Design System v1.0 — FOUNDATION COMPLETE
+## Design System v1.0 — IMPLEMENTATION COMPLETE
 
-Internal milestone (not a marketing label / git tag). Cap1–Cap4 closed the build phase:
+Internal milestone (not a marketing label / git tag). Cap1–Cap5 closed the build + consistency phase:
 
 ```text
-Design System v1.0
+RoamKit Design System v1.0
 
-✅ Tokens          Cap1
-✅ Primitives      Cap2
-✅ AppShell        Cap3
-✅ Auth            Cap4
+✅ Tokens              Cap1
+✅ Primitives          Cap2
+✅ AppShell            Cap3
+✅ Auth                Cap4
+✅ Consistency Polish  Cap5
 
-FOUNDATION + APP + AUTH COMPLETE
+STATUS: IMPLEMENTATION COMPLETE
+READY FOR LONG-TERM EVOLUTION
 ```
 
-After Cap4 the system is **polished and finished**, not redesigned. Cap5+ is consistency polish and audit — not new architecture.
+From here, UI evolves on a stable foundation — not via ad hoc styles. Cap6 is **audit only**, not a redesign capability.
 
 ## Cap5 — Design Consistency Polish — **CLOSED**
 
@@ -166,11 +168,40 @@ Chrome consistency matrix: Button / Input / Alert / Card / Tabs / Stepper / Avat
 
 ## Next
 
-**Cap6 — Cross-Route Consistency Review** (audit only — not a feature capability).
+**Cap6 — Cross-Route Consistency Review** (audit-only capability)
 
-Scope: leftover `text-sky-*` links/eyebrows, old card/focus/spacing chrome; small follow-up PRs only if needed. Do not reopen Cap1–Cap5.
+> **Prove the system is consistent — do not make it different.**
 
-Cap6 starts with a short audit brief when GO’d (no Cap5 reopen).
+| In | Out |
+|----|-----|
+| Cross-route / legacy / a11y / token / primitive audit | New tokens, primitives, layouts, UX, capabilities |
+| Docs PR + tiny follow-ups if needed | Big-bang polish / redesign PR |
+
+**Finding rule (locked intent):** every Cap6 finding is either (1) accepted as-is, or (2) spun into a **separate small follow-up** — never absorbed into a Cap6 mega-refactor. Cap6 may close with **zero production code change**.
+
+Planned audit matrices (fill when Cap6 runs):
+
+| Area | Status |
+|------|--------|
+| Landing | ☐ |
+| Auth | ☐ |
+| Plans | ☐ |
+| eSIM detail | ☐ |
+| Setup | ☐ |
+| Deposit | ☐ |
+| Account | ☐ |
+
+| Primitive | Status |
+|-----------|--------|
+| Button / Input / Alert / Card | ☐ |
+| Tabs / Stepper / Avatar | ☐ |
+
+| Token audit | Result |
+|-------------|--------|
+| Legacy colors / radius / spacing / shadows | ☐ |
+| Hardcoded chrome | ☐ |
+
+Cap6 starts with a Design Lock / audit brief when GO’d. Do not reopen Cap1–Cap5. Do not open `roamkit-web` Cap6 work until that brief is Accepted.
 
 ## Inventory
 
