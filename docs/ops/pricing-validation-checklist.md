@@ -1,0 +1,152 @@
+# Pricing Validation Checklist (ADR 019)
+
+Operational gate between **backend pricing (PR1–PR3)** and **public surface (PR4–PR6)**.
+
+This is **not** a new ADR. It is the evidence pack that backend charge behaviour matches
+[ADR 019](../adr/019-account-pricing-profiles.md) before additive catalog API / web / admin
+preview land.
+
+**PR4 (API + preview) is BLOCKED until Decision Outcome = PASS.**
+
+| Field | Value |
+|-------|-------|
+| Checklist status | **READY FOR STAGING** |
+| Report status | **AWAITING RESULTS** |
+| ADR | [019 — Account pricing profiles](../adr/019-account-pricing-profiles.md) |
+| Code (merged) | [roamkit-api#68](https://github.com/roamkit-net/roamkit-api/pull/68) (schema), [#69](https://github.com/roamkit-net/roamkit-api/pull/69) (service), [#70](https://github.com/roamkit-net/roamkit-api/pull/70) (charge path) |
+| Environment | staging (required) |
+| Window start (UTC) | |
+| Window end (UTC) | |
+| Operator | |
+| Reviewed by | |
+
+## Governance status
+
+```text
+Architecture: LOCKED (ADR 019)
+PR1 schema: MERGED
+PR2 PricingService + snapshots: MERGED
+PR3 charge path (debit-from-snapshot): MERGED
+
+Pricing Validation Checklist: READY FOR STAGING
+Pricing Validation Report: AWAITING RESULTS
+
+PR4 (API + preview): BLOCKED pending Report PASS
+PR5 (web dual price): BLOCKED pending PR4
+PR6 / PR1a: after surface PRs (or earlier if blocking)
+```
+
+## What is in scope now
+
+| Look at | Do not look at |
+|---------|----------------|
+| Staging purchase / refund / replay with flag | Public API shape (PR4) |
+| Order/Topup snapshot fields + ledger deltas | Frontend (PR5) |
+| Flag ON vs OFF behaviour | New pricing features |
+| Formal Decision block below | “feels correct” without Evidence |
+
+---
+
+## Worked example (amounts)
+
+Use one fixed catalog package for Scenarios 1–6 so numbers are comparable.
+
+| Symbol | Meaning | Example |
+|--------|---------|---------|
+| `L` | Provider list / MSP (`Package.price_usd`) | `56.00` |
+| `N` | Wholesale net (`net_price_usd`) | `50.00` |
+| Family | `discount_percent = 5`, `floor_policy = wholesale` | — |
+| `C` | Customer charge | `money_round(L × 0.95)` → **`53.20`** (if `C ≥ N`) |
+
+Substitute real staging package IDs/prices in Evidence; Expected column must match
+`PricingService.resolve` for that package + profile.
+
+---
+
+## Staging setup (preconditions shared)
+
+1. Staging API deploy includes PR1–PR3 (schema + service + charge path).
+2. Django admin: create `PricingProfile` slug `family`, `discount_percent=5.00`,
+   `floor_policy=wholesale`, active, effective window covers now.
+3. Assign profile to a **test billing Account** (not a random production-like user).
+4. Fund the account with enough credits for two purchases + margin.
+5. Note package `external_id`, `price_usd` (`L`), `net_price_usd` (`N`).
+6. Feature flag env:
+   - Scenarios 1–3, 5–6: `PRICING_PROFILES_ENABLED=true`
+   - Scenario 4: `PRICING_PROFILES_ENABLED=false` (redeploy or toggle; document which)
+
+Instant rollback (no migration rollback): set `PRICING_PROFILES_ENABLED=false`.
+
+---
+
+## Validation checklist
+
+Fill **Result** (`PASS` / `FAIL` / `BLOCKED`) and **Evidence** (IDs, amounts, links/screenshots)
+during staging. Leave empty until executed.
+
+| # | Scenario | Preconditions | Expected | Evidence (collect) | Result |
+|---|----------|---------------|----------|--------------------|--------|
+| 1 | Family 5% purchase | Flag **ON**; Account has `family` profile; package with known `L` | Charged **`C`** (e.g. `53.20` for `L=56`); Order `list_price_usd=L`, `retail_price_usd=C`; ledger ORDER debit `delta=-C` | Order id; snapshot fields (`list_price_usd`, `retail_price_usd`, `pricing_profile_slug`, `pricing_context_hash`, `snapshot_schema_version`); Ledger entry id + `delta` | |
+| 2 | Profile changed after purchase | Scenario 1 Order fulfilled (or failed-after-debit path); then admin changes Family to **20%** (or other) | Refund / compensate equals **original `C`**, not new resolve | Same Order id; profile version after edit; REFUND ledger `delta=+C` (original); prove `retail_price_usd` unchanged on Order | |
+| 3 | Profile archived after purchase | Scenario 1 completed; archive Family profile | Refund still succeeds using Order snapshot `C` | Order snapshot; `archived_at` on profile; REFUND ledger `+C` | |
+| 4 | Flag OFF → legacy | Flag **OFF**; same Account may still have profile assigned | Charge **`L`** (legacy `package.price_usd`); pricing fingerprint fields empty/unused for charge | Order `retail_price_usd=L`; Ledger debit `-L`; note flag value in Evidence | |
+| 5 | Flag ON → discount | Flag **ON**; Family assigned; same package as #1 | Charge **`C`** again (matches #1 math) | Order snapshot + Ledger; compare to Scenario 1 | |
+| 6 | Replay / retry | Flag **ON**; trigger retry with **same** `idempotency_key` after first reserve/fulfill (or mid-FULFILLING → complete then retry) | Single debit; same Order; same snapshotted `C`; no second resolve effect | Order id; idempotency key; Ledger count for that `reference_id` (=1 debit); provider call count if observable | |
+| 7 | Deterministic preview | **Blocked until PR4** lands preview endpoint | Preview `customer` == later purchase `retail_price_usd` for same Account+package | Preview response JSON; Order snapshot after purchase | **BLOCKED** |
+
+### Scenario notes
+
+- **#2 / #3** prefer a controlled provider-failure path after debit (compensate) *or* an
+  admin/ops refund that credits from Order snapshot — whichever staging supports.
+  The invariant is: **refund amount = snapshotted charged amount**, never a fresh resolve.
+- **#6** directly proves resolve-once: changing the live profile between attempts must not
+  change the charged amount on the existing Order.
+- **#7** is recorded here so the Validation Report can stay one artifact; execute after PR4.
+
+---
+
+## Pricing Validation Report (fill after staging)
+
+Copy results into this block when all runnable scenarios are done. Attach evidence
+under `docs/ops/releases/…/evidence/` or link staging admin / ticket IDs.
+
+| Scenario | Result | Evidence ref |
+|----------|--------|--------------|
+| 1 Family 5% purchase | | |
+| 2 Profile changed after purchase | | |
+| 3 Profile archived after purchase | | |
+| 4 Flag OFF legacy | | |
+| 5 Flag ON discount | | |
+| 6 Replay | | |
+| 7 Deterministic preview | BLOCKED until PR4 | |
+
+### GO rule
+
+```text
+PASS  = Scenarios 1–6 all PASS (Scenario 7 deferred to post-PR4 addendum)
+FAIL  = any of 1–6 FAIL
+BLOCKED = staging unavailable / cannot collect Evidence
+```
+
+### Decision
+
+| Field | Value |
+|-------|-------|
+| Outcome | `PASS` / `FAIL` / `BLOCKED` (fill after execution) |
+| Date (UTC) | |
+| Signed off by | |
+| Notes | |
+| Unblocks | PR4 (API + internal preview) when Outcome = **PASS** |
+
+```text
+Decision Outcome: _______________
+PR4: NOT AUTHORIZED until Outcome = PASS
+```
+
+---
+
+## Related
+
+- [ADR 019](../adr/019-account-pricing-profiles.md)
+- [ADR 010](../adr/010-polygon-usdt-prepaid-credits.md) (CreditService / ledger invariants unchanged)
+- Analogous gate: [Phase 2 Validation Report (Wallet)](./wallet-phase-2-validation.md)
