@@ -149,6 +149,8 @@ Lightweight place to record risks found while researching (expand as tracks run)
 | Wallet foundation freeze | Vision + Conversion Boundary + RFC 003 + RFC 004 frozen | Discipline: no change without research evidence or ADR proposal | 2026-08 | [Freeze](./wallet-architecture-freeze.md) |
 | Funding Provider Interface (RFC 005) | Architecture Review Passed / Frozen | Generic adapter contract; destination = WalletAddress; never Credits SoT | 2026-08 | [RFC 005](../rfcs/005-funding-provider-interface.md), [Freeze](./wallet-architecture-freeze.md) |
 | Cross-RFC Consistency Review | **PASS** | Vocabulary/authority/deps aligned; legacy “Deposit Key/Detection” labels only | 2026-08 | [Review](./wallet-sandbox-artifacts/02-cross-rfc-consistency-review.md), [Index](./wallet-architecture-index.md) |
+| Deposit Observation (RFC 006) | Architecture Review Passed / Frozen | Observation SM, Identity, Confirmation Policy, Confirmed→Credits | 2026-08 | [RFC 006](../rfcs/006-deposit-observation-confirmation.md) |
+| Wallet Platform (ADR 017) | Proposed | Adopts RFC 003–006; Failure Domains; Normative Sources | 2026-08 | [ADR 017](../adr/017-roamkit-wallet-platform.md) |
 
 Add rows as Exit Artifacts close. Always fill **Reason**.
 
@@ -160,29 +162,24 @@ What this framework has **not** answered yet (prioritized for sequencing RFC wor
 
 | Unknown | Priority |
 |---------|----------|
-| Confirmation policy parameters (depth/finality) and primary observation adapter | High → **RFC 006** + research |
+| Confirmation policy parameters (depth/finality) and primary observation adapter | Medium → ADR 017 follow-ons / research |
 | Sweep policy and treasury destination (ADR detail under RFC 004) | Medium |
 | Multi-chain beyond Polygon | Medium |
 | On-chain Withdraw to user | Low |
 | Card on-ramp / first Funding Provider vendor choice | Low |
+| ADR 010 shared-wallet → per-Account address cutover runbook | High → follow-on after ADR 017 Accepted |
 
-**Answered (removed from unknowns):** Platform Wallet Infrastructure (Track 1 / RFC 004); Funding Provider interface shape (RFC 005); Funding Providers never define WalletIdentity.
+**Answered (removed from unknowns):** Platform Wallet Infrastructure (Track 1 / RFC 004); Funding Provider interface (RFC 005); Observation & Confirmation rules (RFC 006); Funding Providers never define WalletIdentity.
 
 Update this table as tracks close; move answered items into the Decision Register.
 
 ---
 
-## Relationship to RFC 004 / 005 / 006
+## Relationship to RFC / ADR
 
-[RFC 004](../rfcs/004-platform-wallet-infrastructure.md) and [RFC 005](../rfcs/005-funding-provider-interface.md) are **Architecture Review Passed / Frozen**.
+RFC 003–006 are **Architecture Review Passed / Frozen**. [ADR 017](../adr/017-roamkit-wallet-platform.md) is **Proposed** as the implementable Wallet Platform adoption.
 
-Current Draft:
-
-**[RFC 006 — Deposit Observation & Confirmation](../rfcs/006-deposit-observation-confirmation.md)**
-
-In scope: when a deposit is Confirmed enough for Credit Conversion; observation adapters are non-authoritative alone.
-
-Then Wallet Platform ADR (cutover from ADR 010) when implementing.
+Then capability/implementation work and cutover from ADR 010 — not RFC 007 for the same foundation.
 
 ---
 
@@ -190,6 +187,7 @@ Then Wallet Platform ADR (cutover from ADR 010) when implementing.
 
 - [Wallet Architecture Index](./wallet-architecture-index.md)
 - [Wallet Architecture Freeze](./wallet-architecture-freeze.md)
+- [ADR 017 — RoamKit Wallet Platform](../adr/017-roamkit-wallet-platform.md)
 - [RoamKit Wallet Platform Vision](./roamkit-wallet-platform-vision.md)
 - [Wallet Conversion Boundary](./wallet-conversion-boundary.md)
 - [RFC 003 — Wallet Domain & Ownership Model](../rfcs/003-wallet-domain-ownership-model.md)
