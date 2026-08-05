@@ -135,8 +135,8 @@ python manage.py wallet_resume_converts --apply --limit 50
 
 ## Related
 
-- [ADR 017 — Failure Domains](../adr/017-roamkit-wallet-platform.md#failure-domains-and-expected-recovery)
-- [RFC 006 — Observation & Confirmation](../rfcs/006-deposit-observation-confirmation.md)
+- [ADR 018](../adr/018-wallet-product-activation-strategy.md) — Wallet Product Activation (Proposed)
+- [Wallet Product Activation (ops)](./wallet-product-activation.md)
 - [Incident runbook](./incident-runbook.md)
 - [Disaster Day](./disaster-day.md)
 - [Billing dashboard](./billing-dashboard.md)
