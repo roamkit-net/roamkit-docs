@@ -131,21 +131,16 @@ After Cap4 the system is **polished and finished**, not redesigned. Cap5+ is con
 
 | Doc | Status |
 |-----|--------|
-| [Design Lock](./cap5-design-consistency-lock.md) | **Draft — awaiting acceptance** |
-| Implementation Plan | not started |
+| [Design Lock](./cap5-design-consistency-lock.md) | **Accepted** |
+| [Implementation Plan](./cap5-implementation-plan.md) | **Draft — awaiting acceptance** |
 
-Narrow scope (locked in Design Lock draft):
+```text
+Cap5.1 Tabs (pilot) → Pilot Freeze → Cap5.2 Stepper → Cap5.3 Avatar → Cap5.4 Validation
+```
 
-- tabs
-- stepper pills
-- avatar / profile chrome
-- Cap2/Cap3 registered legacy chrome only
-
-No new layouts, tokens, or Cap2 primitives. Do not reopen Cap1–Cap4.
+No `roamkit-web` Cap5 code until Implementation Plan is Accepted. Do not reopen Cap1–Cap4.
 
 Then **Cap6 — Cross-Route Consistency Review** (audit only).
-
-**Do not open `roamkit-web` Cap5 code** until Design Lock + Implementation Plan are Accepted.
 
 ## Inventory
 
