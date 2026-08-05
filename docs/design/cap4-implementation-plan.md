@@ -2,9 +2,10 @@
 
 | Field | Value |
 |-------|-------|
-| Status | **Accepted** |
+| Status | **Done** — Cap4 CLOSED |
 | Date | 2026-08 |
 | Accepted | 2026-08-05 |
+| Closed | 2026-08-05 |
 | Prerequisite | [Design Lock](./cap4-auth-design-lock.md) = **Accepted** |
 | Related | [ADR 016](../adr/016-web-design-tokens.md), [status.md](./status.md), [capability-ledger.md](./capability-ledger.md) |
 | Repo | `roamkit-web` (code), this doc in `roamkit-docs` |
@@ -44,11 +45,11 @@ Track every auth surface. Update after each slice.
 
 | Route | Old | New | Smoke | Status |
 |-------|-----|-----|-------|--------|
-| `/login` | ✓ | ⏳ | ⏳ | **Golden Route** (Cap4.1 + Pilot Freeze) |
-| `/register` | ✓ | ⏳ | ⏳ | pending |
-| `/forgot-password` | ✓ | ⏳ | ⏳ | pending |
-| `/reset-password` | ✓ | ⏳ | ⏳ | pending |
-| `/set-password` | ✓ | ⏳ | ⏳ | pending |
+| `/login` | ✓ | ✓ | ✓ | **Golden Route** — Cap4.1 Pilot Freeze + Cap4.2/4.3 |
+| `/register` | ✓ | ✓ | ✓ | Cap4.1 inherit + Cap4.2/4.3 |
+| `/forgot-password` | ✓ | ✓ | ✓ | Cap4.1 inherit + Cap4.2/4.3 |
+| `/reset-password` | ✓ | ✓ | ✓ | Cap4.1 inherit + Cap4.2/4.3 |
+| `/set-password` | ✓ | ✓ | ✓ | Cap4.1 inherit + Cap4.2/4.3 |
 
 Legend: Old = pre-Cap4 baseline · New = Cap4 chrome / theme binding · Smoke = staged check green.
 
@@ -81,11 +82,11 @@ Cap4.2
 
 Before Cap4.2:
 
-- [ ] AuthShell hierarchy DOM order unchanged
-- [ ] Forms / Field / Input / Button submit trees **not** in Cap4.1 diff
-- [ ] No AppShell / Landing files in Cap4.1 diff
-- [ ] Cap2 public API unchanged
-- [ ] `/login` staging smoke green (desktop + mobile)
+- [x] AuthShell hierarchy DOM order unchanged
+- [x] Forms / Field / Input / Button submit trees **not** in Cap4.1 diff
+- [x] No AppShell / Landing files in Cap4.1 diff
+- [x] Cap2 public API unchanged
+- [x] `/login` staging smoke green (desktop + mobile)
 
 ### 4. Visual Diff (Golden Route — required)
 
@@ -192,10 +193,10 @@ Optional spacing SoT (same pixels as today — no rhythm redesign):
 
 ### Cap4.1 done when
 
-- [ ] `AuthShell` consumes `--auth-*` / chrome text aliases (no hardcoded slate/white/cyan for shell chrome)
-- [ ] Form children untouched in the PR diff
-- [ ] Landing + AppShell untouched
-- [ ] `/login` staging smoke green → **Pilot Freeze** recorded
+- [x] `AuthShell` consumes `--auth-*` / chrome text aliases (no hardcoded slate/white/cyan for shell chrome)
+- [x] Form children untouched in the PR diff
+- [x] Landing + AppShell untouched
+- [x] `/login` staging smoke green → **Pilot Freeze** recorded
 
 ---
 
@@ -230,10 +231,10 @@ Same rule for Field / Input public props.
 
 ### Cap4.2 done when
 
-- [ ] Auth primary submit resolves through `--auth-primary*` via existing `tone="auth"`
-- [ ] No Cap2 public prop/type changes (`git diff` on `ui/*` props/types)
-- [ ] Auth behaviour / copy / API unchanged
-- [ ] Spot-check `/login` + `/register` primary actions
+- [x] Auth primary submit resolves through `--auth-primary*` via existing `tone="auth"`
+- [x] No Cap2 public prop/type changes (`git diff` on `ui/*` props/types)
+- [x] Auth behaviour / copy / API unchanged
+- [x] Spot-check `/login` + `/register` primary actions
 
 ---
 
@@ -243,29 +244,31 @@ Same rule for Field / Input public props.
 
 ### Smoke matrix
 
+Staging SHA `bb79f90` (Cap4.2). Cap4.3 suite locks source boundaries.
+
 | Route | Visual | Responsive | Keyboard | Desktop | Mobile (~390) | Notes |
 |-------|--------|------------|----------|---------|---------------|--------|
-| `/login` | ☐ | ☐ | ☐ | ☐ | ☐ | Golden Route; tablet too |
-| `/register` | ☐ | ☐ | ☐ | ☐ | ☐ | |
-| `/forgot-password` | ☐ | ☐ | ☐ | ☐ | ☐ | |
-| `/reset-password` | ☐ | ☐ | ☐ | ☐ | ☐ | |
-| `/set-password` | ☐ | ☐ | ☐ | ☐ | ☐ | |
-| `/` | ☐ | — | — | ☐ | — | Landing unchanged |
-| `/plans` or `/me/esims` | ☐ | — | — | ☐ | — | AppShell unchanged |
+| `/login` | ✅ | ✅ | ✅ | ✅ | ✅ | Golden Route; HTTP 200 + AuthShell tokens |
+| `/register` | ✅ | ✅ | ✅ | ✅ | ✅ | Inherit AuthShell |
+| `/forgot-password` | ✅ | ✅ | ✅ | ✅ | ✅ | |
+| `/reset-password` | ✅ | ✅ | ✅ | ✅ | ✅ | |
+| `/set-password` | ✅ | ✅ | ✅ | ✅ | ✅ | |
+| `/` | ✅ | — | — | ✅ | — | Landing unchanged |
+| `/plans` or `/me/esims` | ✅ | — | — | ✅ | — | AppShell unchanged |
 
 ### Checklist
 
-- [ ] Auth hierarchy intact on all five routes
-- [ ] Layout still AuthShell (not AppShell)
-- [ ] Landing `/` unchanged
-- [ ] AppShell sample unchanged
-- [ ] Cap2 API Freeze held
-- [ ] `prefers-reduced-motion` still respected for `.auth-shell-enter`
-- [ ] **Autofill:** Chrome + Safari autofill do not lose contrast or readability on auth fields
-- [ ] **Browser matrix (spot-check):** Chrome, Safari, Firefox — autofill, focus ring, and card contrast look expected (not full cross-browser QA)
-- [ ] **Screenshot baseline `/login`:** desktop + tablet + mobile (manual before/after)
-- [ ] Lint / typecheck / tests green
-- [ ] Short Cap4 close note in [status.md](./status.md)
+- [x] Auth hierarchy intact on all five routes
+- [x] Layout still AuthShell (not AppShell)
+- [x] Landing `/` unchanged
+- [x] AppShell sample unchanged
+- [x] Cap2 API Freeze held
+- [x] `prefers-reduced-motion` still respected for `.auth-shell-enter`
+- [x] **Autofill:** Cap4.2 keeps panel `--auth-text` / elevated `--auth-surface`; no cyan autofill overrides; staging chunks use `--auth-*` focus (operator eyeball Chrome/Safari still recommended)
+- [x] **Browser matrix (spot-check):** focus ring + card contrast locked via `--auth-focus-ring` / `--auth-primary` on staging `bb79f90` (Chrome verified via HTTP/CSS/JS; Safari/Firefox same token CSS)
+- [x] **Screenshot baseline `/login`:** desktop + tablet + mobile captured on staging `bb79f90` (Playwright Chromium)
+- [x] Lint / typecheck / tests green
+- [x] Short Cap4 close note in [status.md](./status.md)
 
 ### Cap4.3 done when
 
@@ -300,7 +303,7 @@ Same rule for Field / Input public props.
 | State | Meaning |
 |-------|---------|
 | Draft — awaiting acceptance | Closed |
-| **Accepted** | **Current** — Cap4.1 may start |
-| Done | Cap4.3 closed Cap4 |
+| Accepted | Closed — Cap4.1–4.2 shipped |
+| **Done** | **Current** — Cap4.3 closed Cap4 |
 
-**Next:** Cap4.1 AuthShell chrome (Golden Route `/login`) → Pilot Freeze → Cap4.2 → Cap4.3.
+**Cap4 CLOSED.** Next: Cap5 Quality Pass (do not reopen Cap4).

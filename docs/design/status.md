@@ -23,7 +23,7 @@ Colocated mirror: `roamkit-web/components/ui/README.md`.
 - New props only with justification.
 - Breaking changes only via a new capability / ADR — **never drive-by** in later caps.
 - No business / domain props on `ui/*`.
-- Cap3 held the freeze (internal class/token binding only on Button primary).
+- Cap3–Cap4 held the freeze (internal class/token binding only).
 
 ## Rules
 
@@ -69,25 +69,50 @@ CTA contrast (`#22d3ee` on `#020617`): **11.16:1**.
 
 Cap2 Merge leftovers remain migration backlog.
 
-## Next
-
-**Cap4 — Auth Polish**
+## Cap4 — Auth Polish — **CLOSED**
 
 | Doc | Status |
 |-----|--------|
 | [Design Lock](./cap4-auth-design-lock.md) | **Accepted** |
-| [Implementation Plan](./cap4-implementation-plan.md) | **Accepted** |
+| [Implementation Plan](./cap4-implementation-plan.md) | **Done** |
 | [Capability Ledger](./capability-ledger.md) | Cap history (not current status) |
 
-| Slice | Status | Notes |
-|-------|--------|-------|
-| Cap4.1 AuthShell chrome | ▶ next | Golden Route `/login` → Pilot Freeze |
-| Cap4.2 Form theme binding | pending | No new Button public props |
-| Cap4.3 Validation | pending | Autofill + browser matrix + `/login` screenshot baseline |
+| Slice | Status | PR |
+|-------|--------|-----|
+| Cap4.1 AuthShell chrome | ✅ Pilot Freeze | [web #113](https://github.com/roamkit-net/roamkit-web/pull/113) |
+| Cap4.2 Form theme binding | ✅ staging `bb79f90` | [web #114](https://github.com/roamkit-net/roamkit-web/pull/114) |
+| Cap4.3 Validation | ✅ | Cap4.3 suite (this close) |
+| **Cap4 (Auth Polish)** | **CLOSED** | Cap4.1–4.3 |
 
-Then Cap5 Quality Pass (incl. tabs / stepper / avatar Visual Debt), Cap6 Consistency Review.
+### Cap4 close note
 
-Brand Design System **FOUNDATION COMPLETE** (Cap1–Cap3). Cap4 = Auth visual polish only.
+| Stop-rule criterion | Result |
+|---------------------|--------|
+| AuthShell via `--auth-*` | ✅ Cap4.1 — staging Pilot Freeze on `/login` (`41bd98e`) |
+| Form primary / focus / remember-me via `--auth-*` | ✅ Cap4.2 — staging `bb79f90` (`var(--auth-primary)` in client chunks; no `bg-cyan-500`) |
+| Canonical Cap2 primitives (`tone="auth"`) | ✅ No new public props |
+| Landing `/` unchanged | ✅ `--landing-ink` / `landing-cta`; no `auth-page-bg` |
+| AppShell `/plans` unchanged | ✅ `--app-chrome-text`; no AuthShell |
+| Validation | ✅ Cap4.3 suite + five auth routes HTTP 200 on staging `bb79f90` |
+
+```text
+AuthShell             ✅
+Auth theme            ✅
+Canonical primitives  ✅
+Landing unchanged     ✅
+AppShell unchanged    ✅
+Validation passed     ✅
+```
+
+Brand primary CTA contrast (`#22d3ee` on dark auth chrome): **11.16:1** (same brand primary as Cap3).
+
+**Visual Debt (Cap5):** PlansStore tabs, setup stepper, UserMenu avatar — out of Cap4 scope.
+
+## Next
+
+**Cap5 — Quality Pass** (tabs / stepper / avatar Visual Debt, then Cap6 Consistency Review).
+
+Brand Design System: Cap1–Cap4 closed. Cap5 may open.
 
 ## Inventory
 
