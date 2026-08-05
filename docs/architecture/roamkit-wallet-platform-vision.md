@@ -340,8 +340,9 @@ Saying “but it was in the vision doc” is not sufficient to skip an ADR.
 1. Review and accept this document as **Draft / Vision** (direction only).
 2. Keep production money path on **ADR 010** until cutover ADRs exist.
 3. Freeze work that assumes exchange-as-SoT or silent multi-chain billing.
-4. When ready: draft **RoamKit Wallet Platform** ADR (first normative slice).
-5. Only then open capabilities and implementation PRs.
+4. Review and iterate **[RFC 003 — Wallet Domain & Ownership Model](../rfcs/003-wallet-domain-ownership-model.md)** (domain language before keys/funding/detection).
+5. Then: Wallet Sandbox (isolated PoCs) → RFC 004–006 → first **RoamKit Wallet Platform** ADR.
+6. Only after Accepted ADRs: capabilities and implementation PRs.
 
 ---
 

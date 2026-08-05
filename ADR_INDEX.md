@@ -55,6 +55,8 @@ every **6 months** (Architecture Decision Review: still valid?).
 |-----|-------|--------|
 | [001](./docs/rfcs/001-self-service-esim-flow.md) | Self-service eSIM purchase and top-up flow | Draft |
 | [002](./docs/rfcs/002-post-purchase-onboarding.md) | Post-purchase eSIM onboarding | Accepted |
+| [003](./docs/rfcs/003-wallet-domain-ownership-model.md) | Wallet Domain & Ownership Model | Draft |
+| [TEMPLATE (Wallet)](./docs/rfcs/TEMPLATE-wallet.md) | Shared structure for Wallet RFCs 003+ | — |
 
 ## Architecture reference
 
