@@ -103,7 +103,7 @@ This is a **pure visual** capability.
 | Google OAuth / Turnstile product behaviour | Keep; visual chrome only if already in shell |
 | Cap2 public API changes | API Freeze — never drive-by |
 | New primitives | Cap2 closed |
-| Visual debt: tabs, steppers, avatar | **Cap5 Quality Pass** — not Cap4 |
+| Visual debt: tabs, steppers, avatar | **Cap5 Design Consistency Polish** — not Cap4 |
 | Iconography / illustrations / hero art | Cap5; Auth forbids marketing hero |
 | Light/dark theme toggle | Not Cap4 (ADR 016) |
 

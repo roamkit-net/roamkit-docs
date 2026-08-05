@@ -281,7 +281,7 @@ Staging SHA `bb79f90` (Cap4.2). Cap4.3 suite locks source boundaries.
 
 - Cap3 AppShell reopen
 - Landing marketing redesign
-- Visual debt: tabs, steppers, avatar (**Cap5**)
+- Visual debt: tabs, steppers, avatar (**Cap5 — Design Consistency Polish**)
 - Auth product logic, Turnstile/Google behaviour changes
 - New npm dependencies
 - New Cap2 variants / sizes / tones
@@ -306,4 +306,4 @@ Staging SHA `bb79f90` (Cap4.2). Cap4.3 suite locks source boundaries.
 | Accepted | Closed — Cap4.1–4.2 shipped |
 | **Done** | **Current** — Cap4.3 closed Cap4 |
 
-**Cap4 CLOSED.** Next: Cap5 Quality Pass (do not reopen Cap4).
+**Cap4 CLOSED.** Next: Cap5 Design Consistency Polish (do not reopen Cap4).
