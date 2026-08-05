@@ -76,15 +76,14 @@ Cap2 Merge leftovers remain migration backlog.
 | Doc | Status |
 |-----|--------|
 | [Design Lock](./cap4-auth-design-lock.md) | **Accepted** |
-| [Implementation Plan](./cap4-implementation-plan.md) | **Draft — awaiting acceptance** |
+| [Implementation Plan](./cap4-implementation-plan.md) | **Accepted** |
+| [Capability Ledger](./capability-ledger.md) | Cap history (not current status) |
 
 | Slice | Status | Notes |
 |-------|--------|-------|
-| Cap4.1 AuthShell chrome | pending | Golden Route `/login` → Pilot Freeze |
+| Cap4.1 AuthShell chrome | ▶ next | Golden Route `/login` → Pilot Freeze |
 | Cap4.2 Form theme binding | pending | No new Button public props |
-| Cap4.3 Validation | pending | Autofill + `/login` screenshot baseline |
-
-**No Cap4.1 code until Implementation Plan Accepted.**
+| Cap4.3 Validation | pending | Autofill + browser matrix + `/login` screenshot baseline |
 
 Then Cap5 Quality Pass (incl. tabs / stepper / avatar Visual Debt), Cap6 Consistency Review.
 
@@ -92,4 +91,5 @@ Brand Design System **FOUNDATION COMPLETE** (Cap1–Cap3). Cap4 = Auth visual po
 
 ## Inventory
 
-[component-inventory.md](./component-inventory.md) (Cap2b — historical)
+[component-inventory.md](./component-inventory.md) (Cap2b — historical)  
+[capability-ledger.md](./capability-ledger.md) (Cap1–CapN PR index)

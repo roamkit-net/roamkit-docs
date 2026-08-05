@@ -2,22 +2,23 @@
 
 | Field | Value |
 |-------|-------|
-| Status | **Draft — awaiting acceptance** |
+| Status | **Accepted** |
 | Date | 2026-08 |
+| Accepted | 2026-08-05 |
 | Prerequisite | [Design Lock](./cap4-auth-design-lock.md) = **Accepted** |
-| Related | [ADR 016](../adr/016-web-design-tokens.md), [status.md](./status.md) |
-| Repo | `roamkit-web` (code, later), this doc in `roamkit-docs` |
+| Related | [ADR 016](../adr/016-web-design-tokens.md), [status.md](./status.md), [capability-ledger.md](./capability-ledger.md) |
+| Repo | `roamkit-web` (code), this doc in `roamkit-docs` |
 
 **Discipline:** One slice = one goal. Design Lock is **closed** — no new design decisions.  
 **Cap2 API Freeze holds.** No new primitives, Button public props, or layout shells until Cap4 closes.
 
 ```text
 Design Lock ✅ Accepted
-  → Implementation Plan (this doc) — Draft until Accepted
+  → Implementation Plan ✅ Accepted (this doc)
     → Cap4.1 (Golden Route /login) → Pilot Freeze → Cap4.2 → Cap4.3
 ```
 
-**No Cap4.1 code until this Implementation Plan is Accepted.**
+**Cap4.1 may start.** Do not reopen Design Lock decisions.
 
 ---
 
@@ -261,6 +262,7 @@ Same rule for Field / Input public props.
 - [ ] Cap2 API Freeze held
 - [ ] `prefers-reduced-motion` still respected for `.auth-shell-enter`
 - [ ] **Autofill:** Chrome + Safari autofill do not lose contrast or readability on auth fields
+- [ ] **Browser matrix (spot-check):** Chrome, Safari, Firefox — autofill, focus ring, and card contrast look expected (not full cross-browser QA)
 - [ ] **Screenshot baseline `/login`:** desktop + tablet + mobile (manual before/after)
 - [ ] Lint / typecheck / tests green
 - [ ] Short Cap4 close note in [status.md](./status.md)
@@ -297,8 +299,8 @@ Same rule for Field / Input public props.
 
 | State | Meaning |
 |-------|---------|
-| **Draft — awaiting acceptance** | **Current** — accept before Cap4.1 code |
-| Accepted | Cap4.1 may start |
+| Draft — awaiting acceptance | Closed |
+| **Accepted** | **Current** — Cap4.1 may start |
 | Done | Cap4.3 closed Cap4 |
 
-**Next after Accepted:** Cap4.1 AuthShell chrome (Golden Route `/login`) → Pilot Freeze → Cap4.2 → Cap4.3.
+**Next:** Cap4.1 AuthShell chrome (Golden Route `/login`) → Pilot Freeze → Cap4.2 → Cap4.3.
