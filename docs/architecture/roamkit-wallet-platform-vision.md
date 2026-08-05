@@ -2,12 +2,15 @@
 
 | Field | Value |
 |-------|-------|
-| Status | **Draft / Vision** (non-normative) |
+| Status | **Architecture Frozen** (2026-08) — non-normative until Wallet ADR |
 | Date | 2026-08 |
 | Audience | Product + Engineering |
 | Related | [ADR 010](../adr/010-polygon-usdt-prepaid-credits.md) (Accepted — current production money path) |
+| Freeze | [Wallet Architecture Freeze](./wallet-architecture-freeze.md) |
 
 > **This document is intentionally non-normative. No implementation may rely on this vision until the relevant ADR is accepted.**
+>
+> **Architecture Freeze:** further modifications require evidence from subsequent research tracks or a new ADR proposal.
 
 Today’s production deposits and credits remain governed by **ADR 010**. This vision describes a long-term **RoamKit 2.0** direction: a Wallet **funding** layer, a clear **conversion** into Credits, and a business layer that runs entirely on the Credits ledger.
 
@@ -238,9 +241,9 @@ Platform DR for deposit-key material / index rebuild — not user seed-phrase UX
 
 | Item | Scope |
 |------|--------|
-| [RFC 003](../rfcs/003-wallet-domain-ownership-model.md) | Domain & ownership |
-| Wallet Sandbox | Isolated PoCs |
-| **RFC 004 — Platform Wallet Key Management** | Platform Deposit Keys / sweeps (if needed) |
+| [RFC 003](../rfcs/003-wallet-domain-ownership-model.md) | Domain & ownership — **Frozen** |
+| Wallet Sandbox | Isolated PoCs — framework **Frozen** |
+| [RFC 004 — Platform Wallet Infrastructure](../rfcs/004-platform-wallet-infrastructure.md) | HD + Index Registry + allocation — **Frozen** |
 | RFC 005 | Funding Provider interface |
 | RFC 006 | Deposit Detection |
 | ADRs | Wallet Platform, Funding, Credits Engine |

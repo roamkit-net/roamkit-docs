@@ -8,7 +8,11 @@
 
 > The Sandbox converts **unknowns into decisions**. It is not a place to grow production code or to bypass ADRs.
 
-After this document is accepted as the framework, treat **Vision**, **RFC 003**, **Conversion Boundary**, and **this Sandbox framework** as **frozen**. New ideas go through: Research Track → Evidence → Decision → RFC amendment or new ADR.
+After this document is accepted as the framework, treat **Vision**, **RFC 003**, **Conversion Boundary**, **RFC 004**, and **this Sandbox framework** as **frozen**. See [Wallet Architecture Freeze](./wallet-architecture-freeze.md).
+
+> **Further modifications require evidence from subsequent research tracks or a new ADR proposal.**
+
+New ideas go through: Research Track → Evidence → Decision → RFC amendment (005+) or new ADR.
 
 ---
 
@@ -140,7 +144,9 @@ Lightweight place to record risks found while researching (expand as tracks run)
 |-------|----------|--------|------|------|
 | Exchange-as-SoT (e.g. broker credits without Wallet deposit) | *Not current platform direction* | See Vision Funding Boundary. **Any change requires a new ADR.** Sandbox may still research exchanges as Funding Providers. | 2026-08 | [Vision](./roamkit-wallet-platform-vision.md) |
 | Etherscan / explorer APIs | Deferred (adapter candidate) | Useful as detection/ops adapter; not Credits SoT | | |
-| Platform Deposit Keys | Feed RFC 004 | Infrastructure for receive/sweep if self-issued addresses | | [RFC 004 intent](#relationship-to-rfc-004) |
+| WalletAddress Assignment (Track 1) | In-house HD Preferred; Index Registry platform state | Exit Artifact | 2026-08 | [Track 1](./wallet-sandbox-artifacts/01-wallet-address-assignment.md) |
+| Platform Wallet Infrastructure (RFC 004) | Architecture Review Passed / Frozen | Allocation policy + ownership complete; no blocking infra gaps | 2026-08 | [RFC 004](../rfcs/004-platform-wallet-infrastructure.md), [Freeze](./wallet-architecture-freeze.md) |
+| Wallet foundation freeze | Vision + Conversion Boundary + RFC 003 + RFC 004 frozen | Discipline: no change without research evidence or ADR proposal | 2026-08 | [Freeze](./wallet-architecture-freeze.md) |
 
 Add rows as Exit Artifacts close. Always fill **Reason**.
 
@@ -152,35 +158,38 @@ What this framework has **not** answered yet (prioritized for sequencing RFC wor
 
 | Unknown | Priority |
 |---------|----------|
-| Whether / how Platform Deposit Keys are held (in-house vs Address Provider) | High |
-| Authoritative deposit event source (RPC vs indexer vs hybrid) | High |
-| Address materialization policy (eager / lazy / HD / per-payment) | High |
-| Funding Provider shortlist and hard limits | Medium |
+| Funding Provider interface and hard limits (how value reaches a RoamKit `WalletAddress`) | High → **RFC 005** |
+| Authoritative deposit event source (RPC vs indexer vs hybrid) | High → RFC 006 / research |
+| Sweep policy and treasury destination (ADR detail under RFC 004) | Medium |
 | Multi-chain beyond Polygon | Medium |
 | On-chain Withdraw to user | Low |
 | Card on-ramp vendor choice | Low |
+
+**Answered by Track 1 / RFC 004 (removed from unknowns):** Platform Wallet Infrastructure ownership; address materialization (HD + Index Registry); Funding Providers never define WalletIdentity.
 
 Update this table as tracks close; move answered items into the Decision Register.
 
 ---
 
-## Relationship to RFC 004
+## Relationship to RFC 004 / 005
 
-After Key Management (and related) tracks produce Exit Artifacts, draft:
+[RFC 004 — Platform Wallet Infrastructure](../rfcs/004-platform-wallet-infrastructure.md) is **Architecture Review Passed / Frozen**.
 
-**RFC 004 — Platform Wallet Key Management**
+Next proposal when product prioritizes funding arrival:
 
-In scope: Platform Deposit Keys, sweep keys, platform signing API for *infrastructure*, keystore, HSM roadmap, rotation, audit, backup.
+**RFC 005 — Funding Provider Interface**
 
-**Out of scope:** User Spending Keys, on-chain auto renew, Credits mutations.
+In scope: pluggable adapters that help value reach a RoamKit-owned `WalletAddress`; never define `WalletIdentity`; never Credits SoT.
 
-Then RFC 005 (Funding Provider Interface), RFC 006 (Deposit Detection), then the first Wallet Platform ADR.
+Then Deposit Detection research / RFC 006, then the first Wallet Platform ADR (cutover from ADR 010).
 
 ---
 
 ## Related
 
+- [Wallet Architecture Freeze](./wallet-architecture-freeze.md)
 - [RoamKit Wallet Platform Vision](./roamkit-wallet-platform-vision.md)
 - [Wallet Conversion Boundary](./wallet-conversion-boundary.md)
 - [RFC 003 — Wallet Domain & Ownership Model](../rfcs/003-wallet-domain-ownership-model.md)
+- [RFC 004 — Platform Wallet Infrastructure](../rfcs/004-platform-wallet-infrastructure.md)
 - [ADR 010](../adr/010-polygon-usdt-prepaid-credits.md)
