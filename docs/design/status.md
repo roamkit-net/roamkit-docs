@@ -71,9 +71,16 @@ Cap2 Merge leftovers remain migration backlog.
 
 ## Next
 
-**Cap4 — Auth Polish**, then Cap5 Quality, Cap6 Consistency Review.
+**Cap4 — Auth Polish**
 
-Brand Design System is functionally complete for the **application core** (tokens → primitives → AppShell).
+| Doc | Status |
+|-----|--------|
+| [Design Lock](./cap4-auth-design-lock.md) | **Draft — awaiting acceptance** |
+| Implementation Plan | — (after Design Lock Accepted) |
+
+Then Cap5 Quality Pass (incl. tabs / stepper / avatar Visual Debt), Cap6 Consistency Review.
+
+Brand Design System **FOUNDATION COMPLETE** (Cap1–Cap3). Cap4 is the next visual capability — Auth only.
 
 ## Inventory
 
