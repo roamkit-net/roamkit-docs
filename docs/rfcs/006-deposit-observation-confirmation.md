@@ -8,6 +8,7 @@
 | Parent | [RoamKit Wallet Platform Vision](../architecture/roamkit-wallet-platform-vision.md) |
 | Depends on | [RFC 003](./003-wallet-domain-ownership-model.md) (Frozen), [RFC 004](./004-platform-wallet-infrastructure.md) (Frozen), [RFC 005](./005-funding-provider-interface.md) (Frozen) |
 | Freeze context | [Wallet Architecture Freeze](../architecture/wallet-architecture-freeze.md) |
+| Index | [Wallet Architecture Index](../architecture/wallet-architecture-index.md) |
 | Template | [TEMPLATE-wallet.md](./TEMPLATE-wallet.md) |
 
 > This RFC is a proposal. It does **not** amend [ADR 010](../adr/010-polygon-usdt-prepaid-credits.md). No implementation may treat this document as normative until a related ADR is Accepted.
@@ -26,6 +27,7 @@ Without observation & confirmation rules:
 - Funding Provider status or exchange history risks becoming a second SoT.
 - Chain reorganizations can double-credit or credit then reverse incorrectly.
 - Adapters (RPC, indexer, explorer) leak into the domain as authority.
+- Multiple Transfer logs in one EVM transaction are mistaken for one deposit.
 
 The question this RFC answers:
 
@@ -37,23 +39,26 @@ Not: how to call Polygon RPC. Not: how Etherscan works. Not: how MEXC `hisrec` w
 
 ## Goals
 
-- Define **observation** vs **confirmation** as distinct responsibilities.
-- Align with RFC 003 Deposit state machine (`Detected` → `Confirming` → `Confirmed` → `Credited`).
-- State what is **authoritative** for confirmation (rules), vs what is an **adapter** (sources).
-- Define when **`CreditGranted` / convert** may be triggered.
-- Require **idempotent** confirmation and credit handoff.
+- Define an **Observation State Machine** (full lifecycle, not only Confirmed).
+- Define **Observation Identity** (stable, idempotent key for one inbound value event).
+- Define **Confirmation Policy** as a chain-agnostic abstraction (not “Polygon = N”).
+- Define **Observation Window** lifecycle (observe → timeout → archive) without hardcoding durations.
+- Lock **Credit Conversion Trigger** = **Confirmed Observation** only.
+- Require **idempotent** handling of duplicate observations across adapters/retries.
 - State reorg / rollback behavior at policy level.
 - Keep Funding Providers and Credits ledger boundaries intact.
 
 ## Non-goals
 
 - Choosing RPC vs indexer vs explorer as the production stack (research / ADR).
-- Implementing any specific vendor SDK.
+- Numeric confirmation depths per chain (→ Chain Policy / Wallet ADR).
+- Implementing any specific vendor SDK (Alchemy, Infura, Etherscan, MEXC, …).
 - Funding Provider buy/withdraw UX (RFC 005).
 - Address allocation (RFC 004).
-- Amount matching / mismatch UX policy beyond “confirmation does not bypass Billing/`CreditService` rules.”
+- Amount matching / mismatch UX beyond “confirmation does not bypass Billing/`CreditService` rules.”
 - Sweep / gas / treasury ops.
 - Amending frozen RFC 003–005.
+- Terminology cleanup of Vision/Sandbox legacy labels (deferred until this RFC is frozen).
 - ADR 010 cutover details.
 
 ---
@@ -71,116 +76,232 @@ Not: how to call Polygon RPC. Not: how Etherscan works. Not: how MEXC `hisrec` w
 
 | Concept | Meaning |
 |---------|---------|
-| **Observation** | Evidence that value *may* have arrived at a watched `WalletAddress` (candidate deposit). |
-| **Confirmation** | Policy decision that evidence is **sufficient** for the Deposit to become **Confirmed** (eligible for convert). |
-| **Credit Conversion** | Billing step `Confirmed` → `Credited` (outside Wallet adapters; emits / consumes platform events). |
+| **Observation** | A domain record that inbound value *may* have arrived at a watched `WalletAddress`, keyed by Observation Identity. |
+| **Confirmation** | Policy decision that an Observation is **sufficient** → state **Confirmed** (eligible for Credit Conversion). |
+| **Credit Conversion** | Billing step started only from a **Confirmed Observation** → eventually **Credited**. |
 
 ```text
-Observation adapters          Confirmation policy           Billing
-(RPC / indexer / explorer /…)  (this RFC)                    (CreditService)
+Observation adapters          Confirmation Policy           Billing
+(RPC / indexer / explorer /…)  (this RFC + Chain Policy)     (CreditService)
         │                              │                           │
         ▼                              ▼                           ▼
-   DepositDetected  →  Confirming  →  Confirmed  →  CreditGranted / Credited
+   Observed → Pending Confirmation → Confirmed → Conversion Started → Credited
 ```
 
-### Authoritative event (logical)
+### Observation Identity
 
-The **authoritative outcome** for Wallet→Credits handoff is:
+What uniquely identifies one deposit observation (domain model):
 
-> Deposit reaches **Confirmed** under platform confirmation policy.
+```text
+Observation Identity  =  Chain  +  TxHash  +  LogIndex
+```
 
-Observation adapters produce **candidates** and **signals**. They do **not** grant Credits. Funding Provider status does **not** grant Credits.
+| Component | Why |
+|-----------|-----|
+| **Chain** | Same tx hash can exist in different network contexts; Chain scopes the event. |
+| **TxHash** | On-chain transaction identifier. |
+| **LogIndex** | On EVM, one transaction may emit **multiple** Transfer (or similar) logs — each is a distinct value movement. |
 
-### Deposit lifecycle (confirmation focus)
+Rules:
 
-Inherited from RFC 003; this RFC owns the meaning of the middle states:
+- Observation Identity is the **idempotency key** for Detected/Confirmed/Credited handoff.
+- Two adapter signals with the same identity **must** collapse into the **same** Observation.
+- TxHash alone is **not** sufficient on EVM-class chains.
 
-| State | Meaning under this RFC |
-|-------|------------------------|
-| **Detected** | At least one observation signal associated a transfer with a RoamKit `WalletAddress`. |
-| **Confirming** | Policy is accumulating / waiting for sufficiency (e.g. depth, finality heuristic). |
-| **Confirmed** | Policy accepts the deposit as eligible for Credit Conversion. |
-| **Credited** | Billing has completed conversion (Wallet does not own ledger rows). |
-| **Failed / Expired** | Observation abandoned or rejected under policy (no credit). |
+Non-EVM chains may map an equivalent triple (or documented substitute) in a future Chain Adapter ADR — the RFC requires a **stable per-transfer identity**, not EVM forever.
 
-### Confirmation policy requirements
+### Observation State Machine
 
-RFC 006 requires a confirmation policy to define (concrete numbers → ADR / ops):
+Happy path:
 
-1. **Sufficiency** — what makes a deposit Confirmed (e.g. confirmations depth, finality tag, dual-source agreement).
-2. **Attribution** — deposit must map to exactly one active or watchable (retired) `WalletAddress` in the Index Registry / domain.
-3. **Asset + Chain** — observed asset/chain must match an accepted deposit pair for that address.
-4. **Amount handling** — confirmation does not invent Credits rules; amount acceptance remains Billing / product policy (ADR 010 today; future Wallet ADR).
-5. **Idempotency key** — stable identity for the on-chain (or equivalent) transfer so Detected/Confirmed/Credited cannot double-apply.
+```text
+Observed
+    ↓
+Pending Confirmation
+    ↓
+Confirmed
+    ↓
+Credit Conversion Started
+    ↓
+Credited
+```
+
+Alternate paths:
+
+```text
+Observed → Rejected
+Observed → Expired
+Pending Confirmation → Rejected
+Pending Confirmation → Expired
+```
+
+| State | Meaning |
+|-------|---------|
+| **Observed** | At least one adapter signal created/updated an Observation for a valid Observation Identity attributed to a RoamKit `WalletAddress`. |
+| **Pending Confirmation** | Confirmation Policy is evaluating sufficiency (waiting on Chain Policy inputs). |
+| **Confirmed** | Policy accepts the Observation as eligible for Credit Conversion. |
+| **Credit Conversion Started** | Billing/`CreditService` convert has been requested for this Observation Identity (not yet necessarily ledger-final). |
+| **Credited** | Billing completed conversion; Wallet does not own ledger rows. |
+| **Rejected** | Policy or attribution rejected the Observation (wrong asset/address/rules); no credit. |
+| **Expired** | Observation Window ended without reaching Confirmed (or abandoned under policy); no credit. |
+
+Mapping to RFC 003 Deposit states (compatible, not a reopen):
+
+| RFC 006 | RFC 003 (approx.) |
+|---------|-------------------|
+| Observed | Detected |
+| Pending Confirmation | Confirming |
+| Confirmed | Confirmed |
+| Credit Conversion Started | (between Confirmed and Credited) |
+| Credited | Credited |
+| Rejected | Failed |
+| Expired | Expired |
+
+### Confirmation Policy (chain-agnostic)
+
+RFC 006 does **not** say “Polygon = N confirmations.”
+
+It defines a model:
+
+```text
+Chain Policy
+    ↓
+Confirmation Policy
+    ↓
+Confirmed
+```
+
+| Layer | Responsibility |
+|-------|----------------|
+| **Chain Policy** | Per-chain parameters (depth, finality tag, reorg assumptions) — supplied by Chain Adapter / ADR. |
+| **Confirmation Policy** | Platform rules that consume Chain Policy + Observation evidence and decide **Pending Confirmation → Confirmed** (or Rejected). |
+
+Confirmation Policy must specify (concrete numbers → ADR / Chain Policy, not this RFC):
+
+1. **Sufficiency** — when evidence is enough (using Chain Policy inputs).
+2. **Attribution** — maps to exactly one active or watchable (retired) `WalletAddress` (Index Registry / domain).
+3. **Asset + Chain** — accepted deposit pair for that address.
+4. **Amount handling** — does not invent Credits rules; Billing / ADR 010 (today) / future Wallet ADR.
+5. **Identity** — uses Observation Identity for all transitions.
+
+### Observation Window
+
+Lifecycle concern (durations are ADR/ops, not this RFC):
+
+| Phase | Meaning |
+|-------|---------|
+| **Observe** | Accept new/updated signals for an Observation Identity. |
+| **Pending** | Inside Confirmation Policy evaluation. |
+| **Timeout** | Window elapsed → may transition to **Expired** if not Confirmed. |
+| **Archive** | Terminal Observations retained for audit; no longer active for confirmation. |
+
+Retired `WalletAddress` watch windows (RFC 004) interact with this window but are parameterized elsewhere.
+
+### Credit Conversion Trigger
+
+What starts Credit Conversion / `CreditGranted` (or equivalent)?
+
+> **A Confirmed Observation.**
+
+| May trigger convert? | |
+|----------------------|--|
+| Confirmed Observation | **Yes** (only path) |
+| RPC / indexer / explorer signal alone | **No** |
+| Funding Provider status / webhook | **No** |
+| WalletIdentity / address allocation | **No** |
+| Pending Confirmation / Observed | **No** |
+
+Handoff requirements:
+
+1. Observation is **Confirmed**, and  
+2. Observation Identity has not already started/completed credit, and  
+3. Billing/`CreditService` accepts the convert request.
+
+Adapters **must not** call `CreditService` directly.
+
+### Duplicate Observation (idempotency)
+
+If the same underlying event arrives via:
+
+- RPC and Indexer, or  
+- RPC retry, or  
+- Webhook retry, or  
+- Explorer fallback  
+
+…it **must** resolve to the **same** Observation (same Observation Identity).
+
+| Rule | Requirement |
+|------|-------------|
+| Idempotent ingest | Same identity → one Observation row / aggregate |
+| Idempotent confirm | Confirming twice does not create two Confirmed outcomes |
+| Idempotent credit | One Credited (or Conversion Started) per Observation Identity |
 
 ### Reorganization and rollback
 
 | Situation | Required behavior |
 |-----------|-------------------|
-| Signal later invalidated (reorg, dropped tx) while **Confirming** | Do not Confirmed; may Failed or remain Confirming per policy. |
-| Reorg after **Confirmed** but before **Credited** | Must not Credited; revert or hold Deposit out of Confirmed. |
-| Reorg discovered after **Credited** | **Must not silently rewrite ledger history.** Escalate as incident; remediation via Billing/ops playbooks — Wallet outage may delay *new* credits, never corrupt past Credits (RFC 003 invariant). |
+| Signal invalidated while **Pending Confirmation** | Do not Confirmed; may Rejected or remain Pending per policy. |
+| Reorg after **Confirmed** but before **Credited** | Must not complete Credited; move out of Confirmed / hold Conversion Started. |
+| Reorg after **Credited** | **Must not silently rewrite ledger history.** Incident + Billing remediation; Wallet may delay *new* credits only (RFC 003). |
 
-Prefer confirmation thresholds that make post-credit reorg vanishingly rare for the chosen Chain.
-
-### CreditGranted handoff
-
-`CreditGranted` (or equivalent convert trigger) may fire **only when**:
-
-1. Deposit is **Confirmed**, and  
-2. Idempotency key has not already produced a credit, and  
-3. Billing/`CreditService` accepts the convert request.
-
-Observation adapters **must not** call `CreditService` directly. They emit observation signals into the Wallet deposit pipeline.
+Chain Policy should make post-credit reorg vanishingly rare for production chains.
 
 ### Observation adapters (pluggable, non-authoritative alone)
 
 | Adapter class | Role |
 |---------------|------|
-| Chain RPC | Primary candidate source |
-| Indexer | Scale / reliability candidate source |
-| Explorer API | Ops / fallback signal — not Credits SoT |
+| Chain RPC | Candidate source |
+| Indexer | Candidate source |
+| Explorer API | Ops / fallback — not Credits SoT |
 | Funding Provider webhook/status | UX/ops only — **never** confirmation authority |
 
-Selecting which adapter is primary is **out of scope** for this RFC (research track / ADR).
+Primary adapter choice is **out of scope** (research / ADR).
 
 ### Invariants
 
-1. Confirmation authority is **platform policy**, not a vendor API.
-2. Funding Provider status ≠ Confirmed ≠ Credited.
-3. Confirmation and credit handoff are **idempotent** on a stable transfer identity.
-4. Adapters do not mutate Credits.
-5. Post-credit ledger integrity outranks Wallet availability (RFC 003).
+1. Confirmation authority is **Confirmation Policy** (+ Chain Policy inputs), not a vendor API.
+2. Credit Conversion Trigger = **Confirmed Observation** only.
+3. Observation Identity = `Chain + TxHash + LogIndex` (or chain-equivalent).
+4. Duplicate signals collapse to one Observation (idempotent).
+5. Funding Provider status ≠ Confirmed ≠ Credited.
+6. Adapters do not mutate Credits.
+7. Post-credit ledger integrity outranks Wallet availability (RFC 003).
 
 ---
 
 ## Open Questions
 
-1. Exact confirmation depth / finality rule for Polygon USDT (ADR / ops).
-2. Primary vs secondary observation adapter topology (research Exit Artifact).
+1. Concrete Chain Policy for Polygon USDT (depth/finality) — Wallet ADR / ops.
+2. Primary vs secondary observation adapter topology — research Exit Artifact.
 3. Whether dual-source agreement is required before Confirmed.
-4. Watch window for **retired** addresses (ties to RFC 004 open question).
-5. Mapping of ADR 010 exact-amount rules into Confirmed→Credited under Wallet cutover.
+4. Observation Window / retired-address watch durations.
+5. Mapping ADR 010 amount rules into Confirmed → Credit Conversion Started.
+6. Exact event names (`CreditGranted` vs internal convert request) in implementation.
 
 ## Exit Criteria
 
-This RFC is ready to close / promote toward an ADR when:
+This RFC is ready for Architecture Review / freeze when:
 
-- [ ] Observation vs Confirmation vs Credit Conversion accepted.
-- [ ] Authoritative outcome = Deposit **Confirmed** under policy accepted.
+- [ ] Observation State Machine accepted.
+- [ ] Observation Identity (`Chain + TxHash + LogIndex`) accepted.
+- [ ] Confirmation Policy as chain-agnostic abstraction accepted.
+- [ ] Observation Window lifecycle accepted (without hardcoded durations).
+- [ ] Credit Conversion Trigger = Confirmed Observation accepted.
+- [ ] Duplicate Observation / idempotency accepted.
 - [ ] Reorg behavior before/after Credited accepted.
-- [ ] Idempotent handoff to `CreditService` accepted.
-- [ ] Adapters listed as non-SoT (including Funding Provider status) accepted.
+- [ ] Adapters listed as non-SoT accepted.
 - [ ] Open questions deferred to research/ADR without blocking the rules.
 - [ ] Frozen RFC 003–005 unchanged except via freeze process.
 
-**Next:** observation-adapter research Exit Artifact if needed; then Wallet ADR covering confirmation parameters + cutover from ADR 010 shared wallet.
+**Next after freeze:** **Wallet ADR** (implementable architecture + Chain Policy parameters + cutover from ADR 010). Optional terminology cleanup PR (Vision/Sandbox “Deposit Key” / “Deposit Detection”) only after this RFC is frozen. No further Wallet RFCs required for this cycle.
 
 ---
 
 ## Related
 
+- [Wallet Architecture Index](../architecture/wallet-architecture-index.md)
 - [Wallet Architecture Freeze](../architecture/wallet-architecture-freeze.md)
+- [Cross-RFC Consistency Review](../architecture/wallet-sandbox-artifacts/02-cross-rfc-consistency-review.md)
 - [RFC 003 — Deposit state machine](./003-wallet-domain-ownership-model.md)
 - [RFC 004 — Platform Wallet Infrastructure](./004-platform-wallet-infrastructure.md)
 - [RFC 005 — Funding Provider Interface](./005-funding-provider-interface.md)
