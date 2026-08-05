@@ -36,7 +36,15 @@ Colocated mirror: `roamkit-web/components/ui/README.md`.
 
 ## Next
 
-**Cap3 — AppShell Variant A** (after this freeze). Remaining Merge leftovers = migration backlog (see Cap2 Review), not Cap2 reopen.
+**Cap3 — AppShell Variant A**
+
+| Doc | Status |
+|-----|--------|
+| [Design Lock](./cap3-appshell-design-lock.md) | **Accepted** |
+| [Implementation Plan](./cap3-implementation-plan.md) | Draft — awaiting acceptance |
+
+After Implementation Plan Accepted → Cap3.1 (shell tokens + background) only.  
+No Cap3 code until the plan is Accepted. Cap2 Merge leftovers = migration backlog, not Cap3.
 
 ## Inventory
 

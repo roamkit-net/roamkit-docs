@@ -109,3 +109,4 @@ Inventory live doc: [component-inventory.md](../design/component-inventory.md).
 - `roamkit-web/app/globals.css`
 - Landing PR2 (scoped `--landing-*`, Design Lock)
 - AppShell PR (`components/AppShell.tsx`)
+- Cap3 Design Lock: [cap3-appshell-design-lock.md](../design/cap3-appshell-design-lock.md)
