@@ -188,6 +188,7 @@ Then Wallet Platform ADR (cutover from ADR 010) when implementing.
 
 ## Related
 
+- [Wallet Architecture Index](./wallet-architecture-index.md)
 - [Wallet Architecture Freeze](./wallet-architecture-freeze.md)
 - [RoamKit Wallet Platform Vision](./roamkit-wallet-platform-vision.md)
 - [Wallet Conversion Boundary](./wallet-conversion-boundary.md)
