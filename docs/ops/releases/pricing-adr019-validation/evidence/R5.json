@@ -1,0 +1,43 @@
+{
+  "scenario": "R5_refund",
+  "timestamp_utc": "2026-08-05T22:02:47.131821+00:00",
+  "PRICING_PROFILES_ENABLED": true,
+  "order_id": "190",
+  "order_status": "fulfilled",
+  "account_id": "5cc46dd3-cd33-4488-84bd-9e3ebd0bc19a",
+  "package_external_id": "discover-in-180days-10gb-px",
+  "list_price_usd": "57.00",
+  "retail_price_usd": "54.15",
+  "net_price_usd": "50.00",
+  "pricing_profile_slug": "family",
+  "pricing_profile_version": 3,
+  "pricing_profile_id": "3af82ac5-cd50-4c96-83ef-5502fca1715d",
+  "pricing_reason": "pricing_profile",
+  "pricing_context_hash": "3a86748992165fb107c8fd584e9a085010f034a85ace5a4477297e8c5b4dbd58",
+  "quote_fingerprint": "3af82ac5-cd50-4c96-83ef-5502fca1715d|3|3a86748992165fb107c8fd584e9a085010f034a85ace5a4477297e8c5b4dbd58",
+  "snapshot_schema_version": 1,
+  "idempotency_key": "pricing-r5-1785967363-12420",
+  "ledger_entry_id": "f18a44f2-4f5c-4a4d-aa2c-c564f813bfdf",
+  "ledger_debits": [
+    {
+      "ledger_entry_id": "f18a44f2-4f5c-4a4d-aa2c-c564f813bfdf",
+      "delta": "-54.150000",
+      "created_at": "2026-08-05T22:02:44.067909+00:00"
+    }
+  ],
+  "ledger_refunds": [
+    {
+      "ledger_entry_id": "b4711d44-ca4a-4b17-b64e-5ff5eaccb993",
+      "delta": "54.150000",
+      "created_at": "2026-08-05T22:02:47.129040+00:00"
+    }
+  ],
+  "charged_amount": "54.15",
+  "expected_legacy_L": "57.00",
+  "expected_family_5pct_C": "54.15",
+  "refund_ledger_id": "b4711d44-ca4a-4b17-b64e-5ff5eaccb993",
+  "refund_amount": "54.150000",
+  "hypothetical_live_resolve": "57.00",
+  "snapshot_used": "54.15",
+  "refund_path": "ops_credit_from_snapshot"
+}

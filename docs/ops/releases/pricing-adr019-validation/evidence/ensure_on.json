@@ -1,0 +1,9 @@
+{
+  "scenario": "ensure_on",
+  "pricing_profile_id": "3af82ac5-cd50-4c96-83ef-5502fca1715d",
+  "pricing_profile_slug": "family",
+  "pricing_profile_version": 1,
+  "discount": "5.00",
+  "account_id": "5cc46dd3-cd33-4488-84bd-9e3ebd0bc19a",
+  "PRICING_PROFILES_ENABLED": true
+}

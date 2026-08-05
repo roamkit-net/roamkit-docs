@@ -1,0 +1,9 @@
+{
+  "scenario": "R5_archive",
+  "pricing_profile_slug": "family",
+  "pricing_profile_id": "3af82ac5-cd50-4c96-83ef-5502fca1715d",
+  "archived_at": "2026-08-05T22:02:46.042419+00:00",
+  "is_active": false,
+  "PRICING_PROFILES_ENABLED": true,
+  "timestamp_utc": "2026-08-05T22:02:46.044449+00:00"
+}

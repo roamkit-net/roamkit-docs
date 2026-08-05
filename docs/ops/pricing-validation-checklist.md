@@ -174,13 +174,15 @@ Working notes while executing may still use the table below:
 
 | Scenario | Result | Evidence ref |
 |----------|--------|--------------|
-| 1 Family 5% purchase | | |
-| 2 Profile changed after purchase | | |
-| 3 Profile archived after purchase | | |
-| 4 Flag OFF legacy | | |
-| 5 Flag ON discount | | |
-| 6 Replay | | |
+| 1 Family 5% purchase | PASS | Report R2 → `evidence/R2.json` |
+| 2 Profile changed after purchase | PASS | Report R3/R4 → `evidence/R3_R4.json` |
+| 3 Profile archived after purchase | PASS | Report R5 → `evidence/R5.json` |
+| 4 Flag OFF legacy | PASS | Report R1 → `evidence/R1.json` |
+| 5 Flag ON discount | PASS | Report R2 (same math) |
+| 6 Replay | PASS | Report R6 → `evidence/R6.json` |
 | 7 Deterministic preview | BLOCKED until PR4 | |
+
+Authoritative Results + Decision: **[pricing-validation-report.md](./pricing-validation-report.md)**.
 
 ### GO rule
 
@@ -190,24 +192,25 @@ FAIL  = any of 1–6 FAIL  →  PR4 remains BLOCKED (treat as backend defect)
 BLOCKED = staging unavailable / cannot collect Evidence
 ```
 
-READY FOR SURFACE is granted **only** when Outcome = **PASS**.
+READY FOR SURFACE is granted **only** when Report Decision Outcome = **PASS** and formal sign-off is recorded.
 
 ### Decision
 
 | Field | Value |
 |-------|-------|
-| Outcome | `PASS` / `FAIL` / `BLOCKED` (fill after execution) |
-| Engine status after decision | `READY FOR SURFACE` only if Outcome = PASS; else unchanged |
-| Date (UTC) | |
-| Signed off by | |
-| Evidence pack location | |
-| Notes | |
-| Unlocks | PR4 (API + internal preview) when Outcome = **PASS** |
+| Outcome | `PASS` |
+| Engine status after decision | `READY FOR SURFACE` |
+| Date (UTC) | 2026-08-05 |
+| Signed off by | Ante Vrcan |
+| Technical review | ChatGPT (OpenAI) — evidence summary GO |
+| Evidence pack location | `docs/ops/releases/pricing-adr019-validation/evidence/` |
+| Notes | Staging image `764cb1a`; package `discover-in-180days-10gb-px` |
+| Unlocks | PR4, PR5, PR6 |
 
 ```text
-Decision Outcome: _______________
-Pricing Engine: NOT READY FOR SURFACE  |  READY FOR SURFACE
-PR4: NOT AUTHORIZED until Outcome = PASS and Evidence attached
+Decision Outcome: PASS — READY FOR SURFACE
+Pricing Engine: READY FOR SURFACE
+PR4–PR6: UNLOCKED
 ```
 ---
 
