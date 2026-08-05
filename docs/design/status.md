@@ -106,7 +106,7 @@ Validation passed     ✅
 
 Brand primary CTA contrast (`#22d3ee` on dark auth chrome): **11.16:1** (same brand primary as Cap3).
 
-**Visual Debt (Cap5):** PlansStore tabs, setup stepper, UserMenu avatar — out of Cap4 scope.
+**Visual Debt (was Cap5):** PlansStore tabs, setup stepper, UserMenu avatar — **cleared in Cap5**.
 
 ## Design System v1.0 — FOUNDATION COMPLETE
 
@@ -125,72 +125,52 @@ FOUNDATION + APP + AUTH COMPLETE
 
 After Cap4 the system is **polished and finished**, not redesigned. Cap5+ is consistency polish and audit — not new architecture.
 
-## Next
-
-**Cap5 — Design Consistency Polish**
+## Cap5 — Design Consistency Polish — **CLOSED**
 
 | Doc | Status |
 |-----|--------|
 | [Design Lock](./cap5-design-consistency-lock.md) | **Accepted** |
-| [Implementation Plan](./cap5-implementation-plan.md) | **Accepted** |
+| [Implementation Plan](./cap5-implementation-plan.md) | **Done** |
+| [Capability Ledger](./capability-ledger.md) | Cap history (not current status) |
 
-| Slice | Status | Notes |
-|-------|--------|-------|
-| Cap5.1 Tabs (pilot) | ✅ **PILOT FROZEN** | staging `a1c6dea` — [web #116](https://github.com/roamkit-net/roamkit-web/pull/116) |
-| Cap5.2 Stepper | ✅ **PILOT FROZEN** | staging `db051f7` — [web #117](https://github.com/roamkit-net/roamkit-web/pull/117) |
-| Cap5.3 Avatar | ▶ Cap5.3 | Trigger chrome only |
-| Cap5.4 Validation | pending | Matrix + Legacy Chrome Audit |
+| Slice | Status | PR |
+|-------|--------|-----|
+| Cap5.1 Tabs (pilot) | ✅ Pilot Freeze `a1c6dea` | [web #116](https://github.com/roamkit-net/roamkit-web/pull/116) |
+| Cap5.2 Stepper | ✅ Pilot Freeze `db051f7` | [web #117](https://github.com/roamkit-net/roamkit-web/pull/117) |
+| Cap5.3 Avatar | ✅ staging `d405263` | [web #118](https://github.com/roamkit-net/roamkit-web/pull/118) |
+| Cap5.4 Validation | ✅ | [web #119](https://github.com/roamkit-net/roamkit-web/pull/119) |
+| **Cap5 (Consistency Polish)** | **CLOSED** | Cap5.1–5.4 |
 
-### Cap5.2 Stepper inventory (precondition)
+### Cap5 close note
 
-| Surface | Role | Cap5.2? |
-|---------|------|---------|
-| `app/me/esims/[id]/setup/page.tsx` pill `<ol>` | Cap3.5 allowlisted stepper | **Yes** — theme only |
-| `components/landing/LandingSections.tsx` How-it-works | Landing STEPS | **No** (Landing closed) |
-| `components/ui/Stepper` | — | **Does not exist** |
-
-No shared Stepper primitive; no checkout/onboarding forks. Theme-only change is safe.
-
-### Cap5.1 Pilot Freeze (staging `a1c6dea`)
-
-| Check | Result |
-|-------|--------|
-| `/plans` HTTP 200 + `--app-primary` tab chrome | ✅ |
-| No `bg-sky-700` on PlansStore tabs | ✅ |
-| `--app-chrome-text-muted` / `--app-focus-ring` / `--app-border-chrome` | ✅ |
-| `/croatia-esim` ServiceTab `--app-*` | ✅ |
-| `SegmentButton` still `bg-slate-900` (out of scope) | ✅ |
-| Landing `/` / Auth `/login` unchanged | ✅ |
-| Cap3.5 allowlist: `PlansStore` removed | ✅ |
+| Stop-rule criterion | Result |
+|---------------------|--------|
+| Tabs → `--app-*` | ✅ Cap5.1 Pilot Freeze |
+| Stepper → `--app-*` | ✅ Cap5.2 Pilot Freeze |
+| Avatar trigger → `--app-*` | ✅ Cap5.3 — staging `d405263` |
+| Cap3.5 `SKY700_ALLOWLIST` empty | ✅ |
+| No new tokens / primitives / layouts | ✅ |
+| Landing + Auth untouched | ✅ |
+| Validation | ✅ Cap5.4 suite + staging smoke `d405263` |
 
 ```text
-Cap5.1
-
-STATUS:
-
-PILOT FROZEN
+Tabs                ✅
+Stepper             ✅
+Avatar              ✅
+Legacy chrome       ✅
+Chrome consistency  ✅
+Validation          ✅
 ```
 
-### Cap5.2 Pilot Freeze (staging `db051f7`)
+Chrome consistency matrix: Button / Input / Alert / Card / Tabs / Stepper / Avatar — all green.
 
-| Check | Result |
-|-------|--------|
-| Setup chunk: active/completed/inactive → `--app-*` | ✅ |
-| No `bg-sky-700` on stepper pills | ✅ |
-| Spacing / DOM unchanged (`rounded-full px-3 py-1 …`) | ✅ |
-| Landing How-it-works (`landing-accent`) unchanged | ✅ |
-| Cap5.1 `/plans` tabs unchanged | ✅ |
-| Cap3.5 allowlist: setup removed | ✅ |
+## Next
 
-```text
-Cap5.2
+**Cap6 — Cross-Route Consistency Review** (audit only — not a feature capability).
 
-STATUS:
+Scope: leftover `text-sky-*` links/eyebrows, old card/focus/spacing chrome; small follow-up PRs only if needed. Do not reopen Cap1–Cap5.
 
-PILOT FROZEN
-```
-
-**Next:** Cap5.3 Avatar → Cap5.4 Validation. Do not reopen Cap1–Cap4.
+Cap6 starts with a short audit brief when GO’d (no Cap5 reopen).
 
 ## Inventory
 

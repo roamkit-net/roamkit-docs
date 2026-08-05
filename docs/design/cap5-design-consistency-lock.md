@@ -273,7 +273,7 @@ Cap5.4  Validation + Legacy Chrome Audit + close
 | State | Meaning |
 |-------|---------|
 | Draft — awaiting acceptance | Closed |
-| **Accepted** | **Current** — Implementation Plan may proceed |
-| Done | Cap5.N closed Cap5 |
+| **Accepted** | Closed — Cap5 shipped |
+| **Done** | **Current** — Cap5 CLOSED |
 
-**Next:** Cap5.1 Tabs pilot — then Pilot Freeze before Cap5.2.
+**Cap5 CLOSED.** Next: Cap6 Cross-Route Consistency Review (do not reopen Cap5).
