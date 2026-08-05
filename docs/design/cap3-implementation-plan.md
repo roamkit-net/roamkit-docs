@@ -357,13 +357,22 @@ Propagate only when scorecard + smoke are green (**Pilot Freeze** then applies).
 | `ListSkeleton` | Duplicates elevated chrome (`rounded-xl`) instead of composing `Card` | Later debt / Cap3.3b if needed |
 | `AppPageHeader` | Still uses literal `mb-8` (not spacing SoT alias) | Cap3 close / layout debt |
 | Header actions | `DepositCta` secondary sky outline; Cap2 secondary ring-offset not tokenized on all CTAs | Cap3.4 / Cap2 backlog — do not polish in Cap3.3a |
-| Other 5 AppShell routes | Page headers still `text-slate-*` / `text-sky-700` on dark shell | Cap3.3b propagate |
+| Other 5 AppShell routes | Page headers still `text-slate-*` / `text-sky-700` on dark shell | **Cap3.3b** (in progress) |
+| PlansStore / LocationDetail tabs | `border-slate-200` tab chrome sits on dark shell (not elevated) | Cap3.5 / Tabs Replace — do not invent in Cap3.3b |
+| Setup stepper pills | Domain chrome on shell (`bg-sky-700` / slate) | Cap2 Stepper Replace / Cap3.4 — leave |
 
 ### Cap3.3b — Propagate
 
-**Done when (pilot):** Cap3.3a scorecard green + Pilot Freeze.
+**Done when (pilot):** Cap3.3a scorecard green + Pilot Freeze (**Accepted** 2026-08-05).
 
 Then apply the **same** Golden Route pattern to the remaining five routes (one PR or small sequential follow-ups). Still no CTA theme work (Cap3.4).
+
+**Pattern to copy (only):**
+
+- Page header eyebrow / title / description → `--app-chrome-text` / `--app-chrome-text-muted`
+- Shell-adjacent summary chrome (e.g. `CoveragesSummary`) → same tokens
+- Elevated Card / ListRow / Alert body text stays slate on light panels
+- No TopBar / nav IA change; no landing / auth; no Cap2 API; no cyan CTA sweep
 
 **Out of Cap3.3:** `sky-700` → cyan CTA sweep; Cap2 Review backlog Buttons on setup pages (unless shell chrome only); AuthShell; PlanCard redesign.
 
