@@ -2,7 +2,7 @@
 
 | Field | Value |
 |-------|-------|
-| Status | Draft (feeds Cap2) |
+| Status | Draft (feeds Cap2) — **Cap2 CLOSED**; see [status.md](./status.md) and `roamkit-web` Cap2 Review |
 | Date | 2026-08 |
 | Related | [ADR 016](../adr/016-web-design-tokens.md) |
 | Scope | Doc only — no UI code |
@@ -26,8 +26,9 @@ Each row has a **Status**:
 
 ```text
 Cap1 Brand Tokens     ✅
-Cap2b Inventory       ← this doc
-Cap2 Shared UI Primitives
+Cap2b Inventory       ✅ (this doc — historical)
+Cap2 Shared UI Primitives  ✅ CLOSED (API Freeze)
+Cap2 Review           ✅ quality gate
 Cap3 AppShell Variant A
 …
 ```
@@ -153,3 +154,5 @@ Take highest return / conflict surface first; stabilize before cards:
 - there are no new duplicated style variants for Button / Card / Input / Alert.
 
 Cap2 remains architecture-only: **no intentional visual change** (same stop rule as Cap1). Visual redesign is Cap3+.
+
+**Closed:** Cap2 Review quality gate + API Freeze — see [status.md](./status.md). Remaining leftovers are migration backlog, not Cap2 reopen. Cap3 must not change Cap2 APIs.
