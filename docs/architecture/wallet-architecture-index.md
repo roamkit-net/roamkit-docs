@@ -26,7 +26,7 @@ RFC 005 (Funding Interface) 🔒
     ↓
 RFC 006 (Observation)      🔒
     ↓
-ADR 017 (Wallet Platform)  Proposed
+ADR 017 (Wallet Platform)  **Accepted**
 ```
 
 | Document | Status | One-line job |
@@ -37,7 +37,7 @@ ADR 017 (Wallet Platform)  Proposed
 | [RFC 004 — Platform Wallet Infrastructure](../rfcs/004-platform-wallet-infrastructure.md) | Frozen | How addresses are allocated/recovered (HD + Index Registry) |
 | [RFC 005 — Funding Provider Interface](../rfcs/005-funding-provider-interface.md) | Frozen | How value is guided to a RoamKit WalletAddress |
 | [RFC 006 — Deposit Observation & Confirmation](../rfcs/006-deposit-observation-confirmation.md) | **Frozen** | When a deposit is Confirmed enough for Credit Conversion |
-| [ADR 017 — RoamKit Wallet Platform](../adr/017-roamkit-wallet-platform.md) | **Proposed** | Normative adoption + Failure Domains + cutover stance vs ADR 010 |
+| [ADR 017 — RoamKit Wallet Platform](../adr/017-roamkit-wallet-platform.md) | **Accepted — Architecture Complete** | Constitution for capabilities; cutover from ADR 010 still explicit follow-on |
 | [Architecture Freeze](./wallet-architecture-freeze.md) | Active | Change control for frozen set |
 | [Sandbox framework](./wallet-sandbox.md) | Frozen (process) | Research tracks → Exit Artifacts |
 | [Funding Provider Interface Contract](./funding-provider-interface-contract.md) | Appendix | Logical `deposit` / `status` / `metadata` |
@@ -58,7 +58,7 @@ ADR 017 (Wallet Platform)  Proposed
 
 ## Next
 
-- Accept / refine **[ADR 017](../adr/017-roamkit-wallet-platform.md)** (Wallet Platform).  
-- Then capabilities and implementation; Chain Policy numbers and cutover as follow-on ADRs/PRs.  
-- Do not reopen RFC 003–006 without [freeze](./wallet-architecture-freeze.md) evidence.  
-- Optional: terminology cleanup PR (legacy Vision/Sandbox labels).
+- Implement **small capabilities** under milestone Wallet Platform v1 (Address Allocation first).  
+- Review each PR against **ADR 017** (not against inventing new RFCs).  
+- Do not reopen RFC 003–006 / Vision without [freeze](./wallet-architecture-freeze.md) evidence.  
+- Optional later: terminology cleanup; ADR 010 cutover plan.

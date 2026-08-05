@@ -36,10 +36,11 @@ Architecture Freeze does **not** mean “never change.” It means **no change w
 
 ## What is not frozen
 
+- [ADR 017 — RoamKit Wallet Platform](../adr/017-roamkit-wallet-platform.md) (**Accepted**)
 - Technical appendices (e.g. [Funding Provider Interface Contract](./funding-provider-interface-contract.md))
 - [Wallet Architecture Index](./wallet-architecture-index.md) (navigation — update freely)
 - Sandbox **Exit Artifacts** and Decision Register rows
-- [ADR 017 — RoamKit Wallet Platform](../adr/017-roamkit-wallet-platform.md) (Proposed) and future ADRs
+- Future ADRs only when implementation evidence requires them
 - Implementation in `roamkit-api` / `roamkit-web`
 - Optional terminology cleanup (legacy “Platform Deposit Key” / “Deposit Detection”) — separate small PR when convenient
 
@@ -47,11 +48,11 @@ Architecture Freeze does **not** mean “never change.” It means **no change w
 
 Do **not** keep reviewing frozen RFCs for incremental rules. Review:
 
-- research evidence and Exit Artifacts,
-- ADR proposals (starting with ADR 017),
-- implementation PRs against Normative Sources.
+- implementation PRs: **Is this consistent with ADR 017?**
+- research evidence only if a real gap appears,
+- new ADRs when deviation is required.
 
-**RFC cycle for this Wallet foundation is complete.** New ideas → Research Track → Evidence → new ADR or capability — not RFC 007 for the same scope.
+**RFC cycle for this Wallet foundation is complete. Architecture phase closed.** Capabilities next.
 
 ## Related
 

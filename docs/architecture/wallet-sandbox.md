@@ -150,7 +150,7 @@ Lightweight place to record risks found while researching (expand as tracks run)
 | Funding Provider Interface (RFC 005) | Architecture Review Passed / Frozen | Generic adapter contract; destination = WalletAddress; never Credits SoT | 2026-08 | [RFC 005](../rfcs/005-funding-provider-interface.md), [Freeze](./wallet-architecture-freeze.md) |
 | Cross-RFC Consistency Review | **PASS** | Vocabulary/authority/deps aligned; legacy “Deposit Key/Detection” labels only | 2026-08 | [Review](./wallet-sandbox-artifacts/02-cross-rfc-consistency-review.md), [Index](./wallet-architecture-index.md) |
 | Deposit Observation (RFC 006) | Architecture Review Passed / Frozen | Observation SM, Identity, Confirmation Policy, Confirmed→Credits | 2026-08 | [RFC 006](../rfcs/006-deposit-observation-confirmation.md) |
-| Wallet Platform (ADR 017) | Proposed | Adopts RFC 003–006; Failure Domains; Normative Sources | 2026-08 | [ADR 017](../adr/017-roamkit-wallet-platform.md) |
+| Wallet Platform (ADR 017) | **Accepted — Architecture Complete** | Ratifies RFC 003–006; capabilities next; cutover still follow-on | 2026-08 | [ADR 017](../adr/017-roamkit-wallet-platform.md) |
 
 Add rows as Exit Artifacts close. Always fill **Reason**.
 
@@ -177,9 +177,7 @@ Update this table as tracks close; move answered items into the Decision Registe
 
 ## Relationship to RFC / ADR
 
-RFC 003–006 are **Architecture Review Passed / Frozen**. [ADR 017](../adr/017-roamkit-wallet-platform.md) is **Proposed** as the implementable Wallet Platform adoption.
-
-Then capability/implementation work and cutover from ADR 010 — not RFC 007 for the same foundation.
+RFC 003–006 are **Architecture Review Passed / Frozen**. [ADR 017](../adr/017-roamkit-wallet-platform.md) is **Accepted — Architecture Complete**. Next: small capabilities (not RFC 007).
 
 ---
 
