@@ -2,14 +2,15 @@
 
 | Field | Value |
 |-------|-------|
-| Status | **Draft — awaiting acceptance** |
+| Status | **Accepted** |
 | Date | 2026-08 |
+| Accepted | 2026-08-05 |
 | Capability | Cap4 — Auth Polish (visual only) |
-| Related | [ADR 016](../adr/016-web-design-tokens.md), [status.md](./status.md), Cap2 Review (`roamkit-web/components/ui/CAP2_REVIEW.md`), [Cap3 Design Lock](./cap3-appshell-design-lock.md) (CLOSED) |
+| Related | [ADR 016](../adr/016-web-design-tokens.md), [status.md](./status.md), Cap2 Review (`roamkit-web/components/ui/CAP2_REVIEW.md`), [Cap3 Design Lock](./cap3-appshell-design-lock.md) (CLOSED), [Implementation Plan](./cap4-implementation-plan.md) |
 | Pattern | Same as Landing / Cap3: **Design Lock → Implementation Plan → code** |
 
 This document locks Cap4 decisions so implementation does not wander.  
-**Do not reopen locked decisions after Accepted.** Execution detail lives in the Implementation Plan (not written until this lock is Accepted).
+**Do not reopen locked decisions.** Execution detail lives in the Implementation Plan.
 
 Cap1–Cap3 remain **CLOSED**. Cap4 must not reopen them except for a true production regression.
 
@@ -269,14 +270,14 @@ Cap4 must **not**:
 Not started. Locked as the **preferred PR shape** after Implementation Plan Accepted:
 
 ```text
-Cap4.1  AuthShell polish (theme / frame / card surface)
-Cap4.2  Forms (Field / Input / Button tone=auth binding)
-Cap4.3  Validation (all five auth routes + Landing/App isolation)
+Cap4.1  AuthShell chrome (Golden Route: /login) → Pilot Freeze
+Cap4.2  Form theme binding (Field / Input / Button tone=auth; no new props)
+Cap4.3  Validation (five auth routes + Landing/App isolation)
 ```
 
 No Cap4 code until:
 
-1. This Design Lock is **Accepted**
+1. This Design Lock is **Accepted** ✅
 2. Cap4 Implementation Plan is **Accepted**
 
 ---
@@ -313,8 +314,8 @@ Anything beyond this is Cap5+ or a separate backlog PR.
 
 Before first Cap4 implementation PR:
 
-- [ ] This Design Lock **Accepted**
-- [ ] Implementation Plan **Accepted** (to be written after this lock)
+- [x] This Design Lock **Accepted**
+- [ ] Implementation Plan **Accepted** ([cap4-implementation-plan.md](./cap4-implementation-plan.md))
 - [ ] Explicit: zero Cap2 API edits in Cap4 PRs
 - [ ] Explicit: Landing + AppShell out of diff
 - [ ] Explicit: no auth flow / validation / API / copy changes
@@ -325,8 +326,8 @@ Before first Cap4 implementation PR:
 
 | State | Meaning |
 |-------|---------|
-| **Draft — awaiting acceptance** | **Current** — review and accept before Implementation Plan |
-| Accepted | Do not reopen; Implementation Plan next |
+| Draft — awaiting acceptance | Closed |
+| **Accepted** | **Current** — do not reopen; Implementation Plan next |
 | Superseded | Only via explicit redesign decision (new lock) |
 
-**Do not start Cap4.1 until Accepted + Implementation Plan Accepted.**
+**Do not start Cap4.1 until Implementation Plan Accepted.**
