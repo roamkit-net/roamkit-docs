@@ -28,7 +28,7 @@ RFC 006 (Observation)      🔒
     ↓
 ADR 017 (Wallet Platform)  **Accepted**
     ↓
-ADR 018 (Product Activation) **Proposed**
+ADR 018 (Product Activation) **Accepted**
 ```
 
 | Document | Status | One-line job |
@@ -40,7 +40,7 @@ ADR 018 (Product Activation) **Proposed**
 | [RFC 005 — Funding Provider Interface](../rfcs/005-funding-provider-interface.md) | Frozen | How value is guided to a RoamKit WalletAddress |
 | [RFC 006 — Deposit Observation & Confirmation](../rfcs/006-deposit-observation-confirmation.md) | **Frozen** | When a deposit is Confirmed enough for Credit Conversion |
 | [ADR 017 — RoamKit Wallet Platform](../adr/017-roamkit-wallet-platform.md) | **Accepted — Architecture Complete** | Constitution for capabilities |
-| [ADR 018 — Wallet Product Activation](../adr/018-wallet-product-activation-strategy.md) | **Proposed** | How to activate Wallet as production intake (shadow, flags, rollback, legacy) |
+| [ADR 018 — Wallet Product Activation](../adr/018-wallet-product-activation-strategy.md) | **Accepted** | How to activate Wallet as production intake (shadow, flags, rollback, legacy) |
 | [Architecture Freeze](./wallet-architecture-freeze.md) | Active | Change control for frozen set |
 | [Sandbox framework](./wallet-sandbox.md) | Frozen (process) | Research tracks → Exit Artifacts |
 | [Funding Provider Interface Contract](./funding-provider-interface-contract.md) | Appendix | Logical `deposit` / `status` / `metadata` |
@@ -61,8 +61,7 @@ ADR 018 (Product Activation) **Proposed**
 
 ## Next
 
-- Wallet Platform v1 capabilities are **complete**.  
-- Accept [ADR 018](../adr/018-wallet-product-activation-strategy.md) (Architecture + Ops + Product GO), then implement milestone **Wallet Product v1** / capability **Wallet Cutover**.  
+- Implement milestone **Wallet Product v1** / [#116 Wallet Cutover](https://github.com/roamkit-net/roamkit-docs/issues/116) in small PRs.  
 - Review cutover PRs against **ADR 017 + ADR 018**.  
 - Do not reopen RFC 003–006 / Vision without [freeze](./wallet-architecture-freeze.md) evidence.  
 - Do **not** open ADR 019 / Wallet v2 / multi-chain in this cycle.

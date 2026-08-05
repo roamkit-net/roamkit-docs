@@ -1,6 +1,6 @@
 # Wallet Product Activation
 
-Ops companion to [ADR 018 — Wallet Product Activation Strategy](../adr/018-wallet-product-activation-strategy.md) (**Proposed** until Architecture + Ops + Product GO).
+Ops companion to [ADR 018 — Wallet Product Activation Strategy](../adr/018-wallet-product-activation-strategy.md) (**Accepted**).
 
 Implements:
 
@@ -15,7 +15,7 @@ This is **release engineering**, not new Wallet architecture. ADR 017 remains th
 
 | Phase | ADR 010 | ADR 018 |
 |-------|---------|---------|
-| Phase 0–2 | **Primary** | Proposed / shadowing |
+| Phase 0–2 | **Primary** | Accepted (shadowing) |
 | Phase 3 | Shared (legacy) | **Primary** for new deposits |
 | Phase 4 | Legacy only | **Primary** |
 | Phase 5 | **Superseded** for new deposits | **Primary** |
@@ -79,7 +79,9 @@ Exact cohort definitions are ops parameters; do not invent new domain rules.
 
 **Phase 3 activation requires all three approvals.**
 
-Current ADR 018 review status: Architecture **PASS** · Ops **Pending** · Product **Pending**.
+Current ADR 018 review status: Architecture **PASS** · Ops **PASS** · Product **APPROVED** · ADR **Accepted**.
+
+Cutover capability [#116](https://github.com/roamkit-net/roamkit-docs/issues/116) is **READY FOR IMPLEMENTATION** (small PRs). Phase 3 still needs live Readiness Gate evidence + all three GO Authority approvals at activation time.
 
 ## Evidence of Gate (required artifacts)
 

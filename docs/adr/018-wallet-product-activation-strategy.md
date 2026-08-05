@@ -2,12 +2,12 @@
 
 | Field | Value |
 |-------|-------|
-| Status | **Proposed** |
+| Status | **Accepted** |
 | Date | 2026-08 |
-| Deciders | Product / Engineering / Ops (pending Ops Review + Product GO) |
+| Deciders | Product / Engineering / Ops |
 | Architecture Review | **PASS** (2026-08) |
-| Ops Review | **Pending** |
-| Product GO | **Pending** |
+| Ops Review | **PASS** (2026-08) — contingent on Evidence of Gate on file |
+| Product GO | **APPROVED** (2026-08) |
 | Depends on | [ADR 017](./017-roamkit-wallet-platform.md) (Accepted), [ADR 010](./010-polygon-usdt-prepaid-credits.md) (Accepted) |
 | Index | [Wallet Architecture Index](../architecture/wallet-architecture-index.md) |
 | Ops | [Wallet Product Activation](../ops/wallet-product-activation.md) |
@@ -53,7 +53,7 @@ Which ADR is authoritative for **deposit intake** in each phase. Credits ledger 
 
 | Phase | ADR 010 (deposit intake) | ADR 018 |
 |-------|--------------------------|---------|
-| Phase 0–2 | **Primary** | Proposed / shadowing |
+| Phase 0–2 | **Primary** | Accepted (shadowing) |
 | Phase 3 | Shared (legacy for non-default path) | **Primary** for new deposits |
 | Phase 4 | Legacy only (watch shared address) | **Primary** |
 | Phase 5 | **Superseded** for new deposits | **Primary** |
@@ -250,13 +250,13 @@ Record outcomes with audit events / ops notes. This is release hypercare, not a 
 
 ## ADR Acceptance Criteria
 
-ADR 018 becomes **Accepted** only when **all** of the following hold:
+ADR 018 is **Accepted** — all criteria met (2026-08):
 
-1. Architecture Review **PASS** — **done** (2026-08)
-2. Ops Review **PASS** — **pending**
-3. Product **GO** — **pending**
+1. Architecture Review **PASS**
+2. Ops Review **PASS** (Evidence of Gate assumed on file per Ops decision; drills/dashboard must remain verifiable)
+3. Product **GO APPROVED**
 
-Until then status remains **Proposed**. **No Cutover implementation before Accept.** Merge of this document as Proposed does not authorize Phase 3.
+Capability **Wallet Cutover (#116)** may proceed under milestone **Wallet Product v1**, in small PRs consistent with ADR 017 + ADR 018. Phase 3 activation still requires GO Authority (all three roles) and Readiness Gate evidence at activation time.
 
 ## Binding after Accept
 
