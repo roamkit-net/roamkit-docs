@@ -41,10 +41,11 @@ Colocated mirror: `roamkit-web/components/ui/README.md`.
 | Doc | Status |
 |-----|--------|
 | [Design Lock](./cap3-appshell-design-lock.md) | **Accepted** |
-| [Implementation Plan](./cap3-implementation-plan.md) | Draft — awaiting acceptance |
+| [Implementation Plan](./cap3-implementation-plan.md) | **Accepted** |
 
-After Implementation Plan Accepted → Cap3.1 (shell tokens + background) only.  
-No Cap3 code until the plan is Accepted. Cap2 Merge leftovers = migration backlog, not Cap3.
+**Next code:** Cap3.1 (shell tokens + background) only.  
+Quality gates (Migration Matrix, rollback, visual diff, Cap3 Complete) live in the Implementation Plan.  
+No new design decisions. Cap2 Merge leftovers = migration backlog, not Cap3.
 
 ## Inventory
 
