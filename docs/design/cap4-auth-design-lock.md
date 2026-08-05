@@ -315,7 +315,7 @@ Anything beyond this is Cap5+ or a separate backlog PR.
 Before first Cap4 implementation PR:
 
 - [x] This Design Lock **Accepted**
-- [ ] Implementation Plan **Accepted** ([cap4-implementation-plan.md](./cap4-implementation-plan.md))
+- [x] Implementation Plan **Accepted** ([cap4-implementation-plan.md](./cap4-implementation-plan.md))
 - [ ] Explicit: zero Cap2 API edits in Cap4 PRs
 - [ ] Explicit: Landing + AppShell out of diff
 - [ ] Explicit: no auth flow / validation / API / copy changes
@@ -327,7 +327,7 @@ Before first Cap4 implementation PR:
 | State | Meaning |
 |-------|---------|
 | Draft — awaiting acceptance | Closed |
-| **Accepted** | **Current** — do not reopen; Implementation Plan next |
+| **Accepted** | **Current** — do not reopen; Cap4.1 may proceed under Implementation Plan |
 | Superseded | Only via explicit redesign decision (new lock) |
 
-**Do not start Cap4.1 until Implementation Plan Accepted.**
+**Cap4.1 may start** (Implementation Plan Accepted).
