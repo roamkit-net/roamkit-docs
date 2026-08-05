@@ -75,12 +75,20 @@ Cap2 Merge leftovers remain migration backlog.
 
 | Doc | Status |
 |-----|--------|
-| [Design Lock](./cap4-auth-design-lock.md) | **Draft — awaiting acceptance** |
-| Implementation Plan | — (after Design Lock Accepted) |
+| [Design Lock](./cap4-auth-design-lock.md) | **Accepted** |
+| [Implementation Plan](./cap4-implementation-plan.md) | **Draft — awaiting acceptance** |
+
+| Slice | Status | Notes |
+|-------|--------|-------|
+| Cap4.1 AuthShell chrome | pending | Golden Route `/login` → Pilot Freeze |
+| Cap4.2 Form theme binding | pending | No new Button public props |
+| Cap4.3 Validation | pending | Autofill + `/login` screenshot baseline |
+
+**No Cap4.1 code until Implementation Plan Accepted.**
 
 Then Cap5 Quality Pass (incl. tabs / stepper / avatar Visual Debt), Cap6 Consistency Review.
 
-Brand Design System **FOUNDATION COMPLETE** (Cap1–Cap3). Cap4 is the next visual capability — Auth only.
+Brand Design System **FOUNDATION COMPLETE** (Cap1–Cap3). Cap4 = Auth visual polish only.
 
 ## Inventory
 
