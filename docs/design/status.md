@@ -36,10 +36,15 @@ Colocated mirror: `roamkit-web/components/ui/README.md`.
 
 ## Next
 
-**Cap3 — AppShell Variant A** — [Design Lock](./cap3-appshell-design-lock.md) (**Ready for acceptance**).
+**Cap3 — AppShell Variant A**
 
-Layout + `--app-*` values locked. After **Accepted** → Implementation Plan → Cap3.1+.  
-Cap2 API Freeze holds. Remaining Cap2 Merge leftovers = migration backlog, not Cap3.
+| Doc | Status |
+|-----|--------|
+| [Design Lock](./cap3-appshell-design-lock.md) | **Accepted** |
+| [Implementation Plan](./cap3-implementation-plan.md) | Draft — awaiting acceptance |
+
+After Implementation Plan Accepted → Cap3.1 (shell tokens + background) only.  
+No Cap3 code until the plan is Accepted. Cap2 Merge leftovers = migration backlog, not Cap3.
 
 ## Inventory
 
