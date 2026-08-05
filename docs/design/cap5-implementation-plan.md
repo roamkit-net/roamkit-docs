@@ -2,8 +2,9 @@
 
 | Field | Value |
 |-------|-------|
-| Status | **Draft — awaiting acceptance** |
+| Status | **Accepted** |
 | Date | 2026-08 |
+| Accepted | 2026-08-05 |
 | Prerequisite | [Design Lock](./cap5-design-consistency-lock.md) = **Accepted** |
 | Related | [ADR 016](../adr/016-web-design-tokens.md), [status.md](./status.md), [capability-ledger.md](./capability-ledger.md) |
 | Repo | `roamkit-web` (code), this doc in `roamkit-docs` |
@@ -13,11 +14,11 @@
 
 ```text
 Design Lock ✅ Accepted
-  → Implementation Plan (this doc) — Draft → Accepted
+  → Implementation Plan ✅ Accepted (this doc)
     → Cap5.1 Tabs (pilot) → Pilot Freeze → Cap5.2 → Cap5.3 → Cap5.4
 ```
 
-**Do not open `roamkit-web` Cap5 code until this Plan is Accepted.**
+**Cap5.1 may start.** Do not reopen Design Lock decisions.
 
 ---
 
@@ -72,7 +73,8 @@ Cap5.3  Avatar
 Cap5.4  Validation + close
 ```
 
-> **If `/plans` tab chrome staging smoke is not green, Cap5.2 does not open.**  
+> **Cap5.2 (Stepper) does not start until the Tabs pilot is confirmed on staging with no visual regressions.**  
+> If `/plans` tab chrome staging smoke is not green, Cap5.2 does not open.  
 > Stepper and avatar must not be touched until tabs are visually confirmed.
 
 ### 3. Acceptance gate (leave Cap5.1)
@@ -240,6 +242,15 @@ On Cap5 surfaces (`/plans`, LocationDetail tabs, setup stepper, UserMenu trigger
 - [ ] Old border/radius chrome for tabs / stepper / avatar that bypasses `--app-*`
 - [ ] Local chrome styles that bypass Cap2 primitives + `--app-*` for those three elements
 
+Cap5.4 close table (must all read Cleared):
+
+| Legacy element | Status |
+|----------------|--------|
+| Tabs | ☐ Cleared |
+| Stepper | ☐ Cleared |
+| Avatar | ☐ Cleared |
+| Cap3.5 sky allowlist | ☐ Cleared |
+
 Cap3.5 `SKY700_ALLOWLIST` must be **empty** (or removed) after Cap5.4 — those three files no longer exempt.
 
 ### Isolation smoke
@@ -286,8 +297,8 @@ Cap3.5 `SKY700_ALLOWLIST` must be **empty** (or removed) after Cap5.4 — those 
 
 | State | Meaning |
 |-------|---------|
-| **Draft — awaiting acceptance** | **Current** |
-| Accepted | Cap5.1 may start |
+| Draft — awaiting acceptance | Closed |
+| **Accepted** | **Current** — Cap5.1 may start |
 | Done | Cap5.4 closed Cap5 |
 
-**Next after Accept:** Cap5.1 Tabs pilot (Golden Route `/plans`) → Pilot Freeze → Cap5.2 → Cap5.3 → Cap5.4.
+**Next:** Cap5.1 Tabs pilot (Golden Route `/plans`) → Pilot Freeze → Cap5.2 → Cap5.3 → Cap5.4.

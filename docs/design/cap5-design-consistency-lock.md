@@ -276,4 +276,4 @@ Cap5.4  Validation + Legacy Chrome Audit + close
 | **Accepted** | **Current** — Implementation Plan may proceed |
 | Done | Cap5.N closed Cap5 |
 
-**Next:** Cap5 Implementation Plan acceptance — then Cap5.1 (no web code until Plan Accepted).
+**Next:** Cap5.1 Tabs pilot — then Pilot Freeze before Cap5.2.
