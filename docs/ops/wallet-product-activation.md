@@ -182,6 +182,7 @@ Once exposed via `/deposit-info`, a `WalletAddress` must not silently change. Ro
 
 - [ADR 018](../adr/018-wallet-product-activation-strategy.md)
 - [ADR 017](../adr/017-roamkit-wallet-platform.md)
+- [Phase 2 Validation Report](./wallet-phase-2-validation.md)
 - [Wallet Operations](./wallet-operations.md)
 - [Launch Gates](./launch-gates.md) (general; this doc is Wallet-specific activation)
 - [SLO targets](./slo.md)
