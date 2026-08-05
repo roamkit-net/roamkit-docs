@@ -134,30 +134,59 @@ Evidence: staging `/version` `fb86a52…`; no Cap6.1 **REGRESSION**.
 
 ## Cap6.2 — Tokens + Accessibility + Legacy
 
-### Tokens / legacy matrix
+**Executed:** 2026-08-05 · Source on `develop` @ `fb86a52` (+ Cap5.4 locks) · Staging same SHA as Cap6.1.
 
-| Audit | Result | Finding class | Notes |
-|-------|--------|---------------|-------|
-| Legacy colors | ☐ | | e.g. leftover `text-sky-*` (Cap6 note ≠ Cap5 pill allowlist) |
-| Legacy radius | ☐ | | |
-| Legacy spacing | ☐ | | |
-| Legacy shadows | ☐ | | |
-| Hardcoded chrome | ☐ | | Bypass of `--app-*` / `--auth-*` / `--landing-*` on Cap1–Cap5 surfaces |
+Audit order inside Cap6.2: **Tokens → Accessibility → Legacy**.
 
-### Accessibility (consistency spot-check)
+### Tokens
 
 | Check | Result | Finding class | Notes |
 |-------|--------|---------------|-------|
-| Focus rings on Cap2 + Cap5 chrome | ☐ | | |
-| Keyboard on tabs / auth / avatar trigger | ☐ | | |
-| Contrast expectations (brand primary / elevated) | ☐ | | |
-| `prefers-reduced-motion` escapes still present | ☐ | | |
+| Semantic theme aliases | ✅ | **PASS** | `--landing-*` / `--app-*` / `--auth-*` bind brand (`--color-primary`, etc.) in `globals.css` |
+| Cap1–Cap5 surfaces use theme aliases | ✅ | **PASS** | Cap3–Cap5 chrome + Cap2 primary tones; Cap5.4 suite locks boundaries |
+| No new Cap6 tokens / primitives | ✅ | **PASS** | None introduced |
+
+### Accessibility (consistency spot-check — not full WCAG)
+
+| Check | Result | Finding class | Notes |
+|-------|--------|---------------|-------|
+| Focus rings on Cap2 primary + Cap5 chrome | ✅ | **PASS** | `--app-focus-ring` / `--auth-focus-ring` on Button primary, tabs, avatar, ServiceTab |
+| Keyboard affordances (tabs / auth / avatar) | ✅ | **PASS** | `role="tablist"` / `aria-*` / avatar `aria-haspopup`; Cap6.1 route probes green |
+| Contrast (brand primary) | ✅ | **PASS** | Documented **11.16:1** (`#22d3ee` on dark shell) — Cap3/Cap4 close notes |
+| `prefers-reduced-motion` | ✅ | **PASS** | ≥3 reduce blocks in `globals.css` (shell / landing / auth) |
+
+| Check | Result | Finding class | Notes |
+|-------|--------|---------------|-------|
+| App Button secondary/ghost still `ring-sky-500` | ✅ noted | **MINOR** | Cap2 freeze held; not Cap5 REGRESSION — optional follow-up / Cap2 debt |
+
+### Legacy
+
+| Audit | Result | Finding class | Notes |
+|-------|--------|---------------|-------|
+| Cap3.5 `SKY700_ALLOWLIST` | ✅ | **PASS** | Empty (Cap5.3/5.4) |
+| `bg-sky-700` in non-test source | ✅ | **PASS** | **0** hits — Cap5 CTA/pill debt cleared |
+| Legacy colors (`text-sky-700`, `text-cyan-700`, occasional `bg-cyan-500`) | ✅ noted | **MINOR** | Deposit links, PlanCard eyebrows, some auth text links / reset CTA — **out of Cap5**; document for backlog (not Cap6 redesign) |
+| Legacy radius | ✅ | **PASS** | No Cap1–Cap5 shell radius regression; ad hoc `rounded-*` on product chrome accepted |
+| Legacy spacing | ✅ | **PASS** | App/Auth spacing SoT aliases intact |
+| Legacy shadows | ✅ noted | **MINOR** | e.g. UserMenu panel `shadow-lg` — Cap5 avatar **out of scope**; accepted as-is or tiny follow-up |
+| Hardcoded chrome on Cap5 surfaces | ✅ | **PASS** | Tabs / stepper / avatar trigger token-bound |
+
+### Cap6.2 disposition summary
+
+| Finding class | Count | Disposition |
+|---------------|-------|-------------|
+| PASS | majority | Close |
+| MINOR | 3 themes | Document in Cap6.3 review; optional tiny follow-ups — **not** Cap6 code |
+| MAJOR | 0 | — |
+| REGRESSION | 0 | — |
 
 ### Cap6.2 done when
 
-- [ ] Token + a11y + legacy rows filled
-- [ ] Findings dispositioned
-- [ ] REGRESSION (if any) filed as separate bugfix — not Cap6 polish
+- [x] Token + a11y + legacy rows filled
+- [x] Findings dispositioned
+- [x] REGRESSION (if any) filed as separate bugfix — **none**
+
+**Cap6.2 result:** **PASS** overall (with documented **MINOR** legacy/link debt). No REGRESSION. No `roamkit-web` PR. Proceed to Cap6.3 (review doc + close).
 
 ---
 
@@ -258,7 +287,8 @@ Avoid:
 |-------|---------|
 | Draft — awaiting acceptance | Closed |
 | **Accepted** | Closed — Cap6.1 executed |
-| Cap6.1 done | **Current** — Cap6.2 next |
+| Cap6.1 done | Closed |
+| Cap6.2 done | **Current** — Cap6.3 next |
 | Done | Cap6.3 closed Cap6 |
 
-**Next:** Cap6.2 Tokens + Accessibility + Legacy matrices.
+**Next:** Cap6.3 Documentation review + `design-system-v1-review.md` + Cap6 CLOSE.
