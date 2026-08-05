@@ -43,8 +43,18 @@ Colocated mirror: `roamkit-web/components/ui/README.md`.
 | [Design Lock](./cap3-appshell-design-lock.md) | **Accepted** |
 | [Implementation Plan](./cap3-implementation-plan.md) | **Accepted** |
 
-**Next code:** Cap3.3a Golden Route — `/me/esims` surface migration (then smoke → Cap3.3b propagate).  
-Cap3.1 + Cap3.2 merged. No new infra PRs; no new design decisions. Cap2 API Freeze holds.
+| Slice | Status | PR |
+|-------|--------|-----|
+| Cap3.1 Shell tokens + background | ✅ | [web #103](https://github.com/roamkit-net/roamkit-web/pull/103) |
+| Cap3.2 TopBar + nav chrome | ✅ | [web #104](https://github.com/roamkit-net/roamkit-web/pull/104) |
+| Cap3.3a Pilot `/me/esims` | ✅ merged | [web #105](https://github.com/roamkit-net/roamkit-web/pull/105) |
+| Cap3.3b Propagate | blocked on pilot staging accept | — |
+| Cap3.4 CTA theme | after 3.3b | — |
+| Cap3.5 Validation | last | — |
+
+**Gates:** Cap3.3b only after `/me/esims` pilot accepted on staging; any surface-token fix lands once before propagate.  
+Cap3.3a Golden Route ops / Visual Debt Register: see Implementation Plan companions.  
+Cap2 Merge leftovers = migration backlog, not Cap3.
 
 ## Inventory
 
