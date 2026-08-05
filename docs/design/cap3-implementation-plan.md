@@ -141,7 +141,18 @@ Do **not** introduce `--app-shell` as a fourth surface color. If TopBar needs a 
 
 **Contrast:** AA for chrome text on `--app-background` and body text on `--app-surface-elevated`.
 
-**Cap3.1 wiring:** `AppShell` outer frame uses `--app-background` + chrome text tokens (via CSS vars / theme classes). Do **not** migrate cards or Button in Cap3.1.
+Spacing SoT — add Cap3.1 aliases (same pixel values as today; no rhythm redesign):
+
+| Alias | Value |
+|-------|--------|
+| `--app-gutter-x` | `1.5rem` |
+| `--app-page-padding-y` | `4rem` |
+| `--app-header-gap` | `2rem` |
+| `--app-content-max` | `56rem` |
+| `--app-content-max-mid` | `48rem` |
+| `--app-content-max-narrow` | `42rem` |
+
+**Cap3.1 wiring:** `AppShell` outer frame uses `--app-background` + chrome text + spacing tokens (via `.app-shell*` utilities). Do **not** migrate cards or Button in Cap3.1. **No DOM hierarchy change.**
 
 Baseline to replace in `AppShell.tsx`:
 
@@ -149,22 +160,61 @@ Baseline to replace in `AppShell.tsx`:
 min-h-screen bg-slate-50 px-6 py-16 text-slate-900
 ```
 
-Spacing SoT (`px-6`, `py-16`, `mt-8`, `maxWidth`) stays unless a tiny rhythm tweak is required for contrast — **no DOM hierarchy change**.
-
 ---
 
 ## Cap3.1 — Shell tokens + background
 
 **Files (expected):** `app/globals.css`, `components/AppShell.tsx`, `AppShell` tests if class assertions exist.
 
-**Done when:**
+### Ownership (locked)
 
-- `--app-*` values match the table above (plus chrome text aliases)
-- All AppShell routes show dark shell background (cards may still look “old light-on-light” until Cap3.3 — acceptable interim)
-- Landing + auth CSS/pages unchanged
-- Lint/tests green
+> **AppShell owns layout; pages own content.**
 
-**Out:** TopBar retint beyond inheriting shell text; Card migration; Button CTA.
+AppShell owns: width, spacing, shell background, TopBar slot, chrome text color.  
+Pages own: what they render inside `page-content`. Never the reverse.
+
+### Cap3.1 forbidden
+
+- New design tokens beyond the locked Cap3.1 table (+ spacing SoT aliases below)
+- New primitives
+- Local layout helpers / page-level AppShell forks
+- Inline layout spacing that bypasses `--app-*` (use spacing tokens)
+- Cap2 API changes
+- TopBar visual redesign beyond inheriting chrome text (Cap3.2)
+- Card / Button migration (Cap3.3 / Cap3.4)
+
+### Cap3.1 Definition of Done
+
+- [ ] `AppShell` is the only layout entry point for the six store/account routes
+- [ ] No new local layout wrappers introduced
+- [ ] TopBar remains composition-only (no new primitives; Cap3.2 for contrast polish)
+- [ ] Layout spacing uses `--app-*` spacing aliases (not ad-hoc `px-6` / `py-16` / `mt-8` literals in TSX)
+- [ ] `--app-*` color values match the locked table
+- [ ] All six AppShell routes show dark shell background (interim: page chrome text may sit on dark canvas until Cap3.3)
+- [ ] Landing + auth unchanged
+- [ ] Lint / tests green
+- [ ] Cap2 public API untouched
+
+### Layout Debt Register
+
+Record “later” findings here — not in code comments. Delete table when empty after Cap3 Complete.
+
+| Route | Debt | Planned capability |
+|-------|------|--------------------|
+| — | — | — |
+
+### Smoke checklist (Cap3.1 — shell frame only)
+
+| Route | Visual | Responsive | Keyboard | Dark shell |
+|-------|--------|------------|----------|------------|
+| `/plans` | ☐ | ☐ | ☐ | ☐ |
+| `/me/esims` | ☐ | ☐ | ☐ | ☐ |
+| `/me/esims/[id]` | ☐ | ☐ | ☐ | ☐ |
+| `/me/esims/[id]/setup` | ☐ | ☐ | ☐ | ☐ |
+| `/me/deposit` | ☐ | ☐ | ☐ | ☐ |
+| `/[slug]-esim` | ☐ | ☐ | ☐ | ☐ |
+
+**Out of Cap3.1 code:** TopBar retint beyond inheriting shell text; Card migration; Button CTA.
 
 ---
 
@@ -243,14 +293,14 @@ Prefer **two PRs** inside Cap3.3: `Cap3.3a` pilot, `Cap3.3b` propagate (after pi
 
 ### Smoke matrix
 
-| Route | Desktop | Mobile (~390) | Notes |
-|-------|---------|---------------|--------|
-| `/plans` | ☐ | ☐ | |
-| `/[slug]-esim` | ☐ | ☐ | one location |
-| `/me/esims` | ☐ | ☐ | loading + empty + list if possible |
-| `/me/esims/[id]` | ☐ | ☐ | |
-| `/me/esims/[id]/setup` | ☐ | ☐ | |
-| `/me/deposit` | ☐ | ☐ | |
+| Route | Visual | Responsive | Keyboard | Dark shell | Desktop | Mobile (~390) | Notes |
+|-------|--------|------------|----------|------------|---------|---------------|--------|
+| `/plans` | ☐ | ☐ | ☐ | ☐ | ☐ | ☐ | |
+| `/[slug]-esim` | ☐ | ☐ | ☐ | ☐ | ☐ | ☐ | one location |
+| `/me/esims` | ☐ | ☐ | ☐ | ☐ | ☐ | ☐ | loading + empty + list if possible |
+| `/me/esims/[id]` | ☐ | ☐ | ☐ | ☐ | ☐ | ☐ | |
+| `/me/esims/[id]/setup` | ☐ | ☐ | ☐ | ☐ | ☐ | ☐ | |
+| `/me/deposit` | ☐ | ☐ | ☐ | ☐ | ☐ | ☐ | |
 
 ### Checklist
 
