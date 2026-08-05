@@ -81,7 +81,15 @@ Exact cohort definitions are ops parameters; do not invent new domain rules.
 
 Current ADR 018 review status: Architecture **PASS** · Ops **PASS** · Product **APPROVED** · ADR **Accepted**.
 
-Cutover capability [#116](https://github.com/roamkit-net/roamkit-docs/issues/116) is **READY FOR IMPLEMENTATION** (small PRs). Phase 3 still needs live Readiness Gate evidence + all three GO Authority approvals at activation time.
+Cutover capability [#116](https://github.com/roamkit-net/roamkit-docs/issues/116) is **in implementation** (small PRs).
+
+```text
+PR1–PR4: done (flags → backfill → shadow → limited traffic cohort)
+Phase 2: ACTIVE — fill [Phase 2 Validation Report](./wallet-phase-2-validation.md)
+PR5 (Default WalletAddress): NOT YET APPROVED until Phase 2 Recommendation = Proceed
+```
+
+Phase 3 still needs live Readiness Gate evidence + all three GO Authority approvals at activation time.
 
 ## Evidence of Gate (required artifacts)
 
@@ -92,8 +100,15 @@ Cutover capability [#116](https://github.com/roamkit-net/roamkit-docs/issues/116
 | Data Migration Validation | Validation report |
 | Flags | Deploy / env evidence |
 | Support Readiness | Briefing / sign-off |
+| **Phase 2 Limited Traffic** | [Phase 2 Validation Report](./wallet-phase-2-validation.md) (KPI table + Recommendation) |
 
 File under Evidence of Gate / release notes when closing the readiness window. See [evidence-of-gate.md](./evidence-of-gate.md).
+
+## Phase 2 Validation Gate (before PR5)
+
+Limited Traffic is an **operational gate**, not a formality. Do not start Cutover PR5 until the [Phase 2 Validation Report](./wallet-phase-2-validation.md) records **Proceed to Phase 3**.
+
+Required KPI evidence (staging window): `shadow_match_rate`, Critical divergence = 0, duplicate credits = 0, empty-cohort rollback PASS, backfill validation PASS.
 
 ## Production Freeze (pre–Phase 3)
 
@@ -129,8 +144,8 @@ After Phase 3, mandatory checkpoints at **24 h**, **72 h**, and **7 days**:
 
 - [ ] Phase 0 Preparation (flags off; migration gate)
 - [ ] Phase 1 Shadow (Critical = 0 for GO window)
-- [ ] Phase 2 Limited traffic
-- [ ] Phase 3 Default WalletAddress (**Readiness Gate + Support**)
+- [ ] Phase 2 Limited traffic + **[Phase 2 Validation Report](./wallet-phase-2-validation.md) PASS**
+- [ ] Phase 3 Default WalletAddress (**Readiness Gate + Support** — only after Phase 2 Proceed)
 - [ ] Phase 4 Shared wallet legacy watch
 - [ ] **Legacy Retirement Review** then Phase 5 retirement
 

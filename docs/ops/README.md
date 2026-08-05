@@ -21,6 +21,7 @@ ship safely — Launch Gates, cutover discipline, incidents, and maturity tracki
 | [Incident runbook](./incident-runbook.md) | First response trees (not only deploy rollback) |
 | [Wallet Operations](./wallet-operations.md) | ADR 017 Failure Domains recovery + wallet drills |
 | [Wallet Product Activation](./wallet-product-activation.md) | ADR 018 cutover phases, flags, readiness, rollback |
+| [Phase 2 Validation Report](./wallet-phase-2-validation.md) | Limited Traffic KPI gate before PR5 / Phase 3 |
 | [SLO targets](./slo.md) | Lightweight availability / billing targets |
 | [Production retrospective](./production-retrospective.md) | Post-hypercare lessons learned template |
 | [Billing dashboard](./billing-dashboard.md) | Operator metrics after cutover |
