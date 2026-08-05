@@ -137,8 +137,8 @@ After Cap4 the system is **polished and finished**, not redesigned. Cap5+ is con
 | Slice | Status | Notes |
 |-------|--------|-------|
 | Cap5.1 Tabs (pilot) | ✅ **PILOT FROZEN** | staging `a1c6dea` — [web #116](https://github.com/roamkit-net/roamkit-web/pull/116) |
-| Cap5.2 Stepper | ▶ Cap5.2 | Inventory: single call site (`setup/page`); theme-only GO |
-| Cap5.3 Avatar | pending | |
+| Cap5.2 Stepper | ✅ **PILOT FROZEN** | staging `db051f7` — [web #117](https://github.com/roamkit-net/roamkit-web/pull/117) |
+| Cap5.3 Avatar | ▶ Cap5.3 | Trigger chrome only |
 | Cap5.4 Validation | pending | Matrix + Legacy Chrome Audit |
 
 ### Cap5.2 Stepper inventory (precondition)
@@ -171,9 +171,26 @@ STATUS:
 PILOT FROZEN
 ```
 
-**Cap5.2 does not start until explicit GO.** Do not reopen Cap1–Cap4.
+### Cap5.2 Pilot Freeze (staging `db051f7`)
 
-Then **Cap6 — Cross-Route Consistency Review** (audit only).
+| Check | Result |
+|-------|--------|
+| Setup chunk: active/completed/inactive → `--app-*` | ✅ |
+| No `bg-sky-700` on stepper pills | ✅ |
+| Spacing / DOM unchanged (`rounded-full px-3 py-1 …`) | ✅ |
+| Landing How-it-works (`landing-accent`) unchanged | ✅ |
+| Cap5.1 `/plans` tabs unchanged | ✅ |
+| Cap3.5 allowlist: setup removed | ✅ |
+
+```text
+Cap5.2
+
+STATUS:
+
+PILOT FROZEN
+```
+
+**Next:** Cap5.3 Avatar → Cap5.4 Validation. Do not reopen Cap1–Cap4.
 
 ## Inventory
 

@@ -43,7 +43,7 @@ Cap5 is done when all Design Lock stop rules hold, including:
 | Element | Surfaces | Old | New | Smoke | Status |
 |---------|----------|-----|-----|-------|--------|
 | Tabs | `PlansStore` (`/plans`); `LocationDetail` service tabs | ✓ | ✓ | ✓ | **PILOT FROZEN** Cap5.1 (`a1c6dea`) |
-| Stepper | `/me/esims/[id]/setup` pills | ✓ | ✓ | ⏳ | Cap5.2 (theme-only; single call site) |
+| Stepper | `/me/esims/[id]/setup` pills | ✓ | ✓ | ✓ | **PILOT FROZEN** Cap5.2 (`db051f7`) |
 | Avatar | `UserMenu` trigger | ⏳ | ⏳ | ⏳ | Cap5.3 |
 
 Legend: Old = pre-Cap5 baseline · New = `--app-*` chrome · Smoke = staging green.
@@ -191,10 +191,10 @@ Cap5.4  Validation + close Cap5
 
 ### Cap5.2 done when
 
-- [ ] Three visual states token-bound
-- [ ] No step logic / spacing / DOM change
-- [ ] Spot-check setup route on staging
-- [ ] Cap3.5 allowlist: setup page removed (avatar remains)
+- [x] Three visual states token-bound
+- [x] No step logic / spacing / DOM change
+- [x] Spot-check setup route on staging (`db051f7`)
+- [x] Cap3.5 allowlist: setup page removed (avatar remains until Cap5.3)
 
 ---
 
@@ -217,8 +217,9 @@ Cap5.4  Validation + close Cap5
 ### Cap5.3 done when
 
 - [ ] Trigger chrome on `--app-*` (no `sky-700` / `sky-500` on avatar button)
-- [ ] Dropdown behaviour unchanged
+- [ ] Dropdown behaviour / panel styles unchanged
 - [ ] Spot-check TopBar account menu on staging
+- [ ] Cap3.5 `SKY700_ALLOWLIST` empty
 
 ---
 
