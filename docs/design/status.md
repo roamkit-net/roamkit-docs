@@ -132,13 +132,20 @@ After Cap4 the system is **polished and finished**, not redesigned. Cap5+ is con
 | Doc | Status |
 |-----|--------|
 | [Design Lock](./cap5-design-consistency-lock.md) | **Accepted** |
-| [Implementation Plan](./cap5-implementation-plan.md) | **Draft — awaiting acceptance** |
+| [Implementation Plan](./cap5-implementation-plan.md) | **Accepted** |
+
+| Slice | Status | Notes |
+|-------|--------|-------|
+| Cap5.1 Tabs (pilot) | ▶ next | Golden Route `/plans` → Pilot Freeze |
+| Cap5.2 Stepper | pending | After Pilot Freeze |
+| Cap5.3 Avatar | pending | |
+| Cap5.4 Validation | pending | Matrix + Legacy Chrome Audit |
 
 ```text
 Cap5.1 Tabs (pilot) → Pilot Freeze → Cap5.2 Stepper → Cap5.3 Avatar → Cap5.4 Validation
 ```
 
-No `roamkit-web` Cap5 code until Implementation Plan is Accepted. Do not reopen Cap1–Cap4.
+Do not reopen Cap1–Cap4. Cap5.2 does not start until Tabs Pilot Freeze is green.
 
 Then **Cap6 — Cross-Route Consistency Review** (audit only).
 
