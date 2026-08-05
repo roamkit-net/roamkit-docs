@@ -108,11 +108,39 @@ Brand primary CTA contrast (`#22d3ee` on dark auth chrome): **11.16:1** (same br
 
 **Visual Debt (Cap5):** PlansStore tabs, setup stepper, UserMenu avatar — out of Cap4 scope.
 
+## Design System v1.0 — FOUNDATION COMPLETE
+
+Internal milestone (not a marketing label / git tag). Cap1–Cap4 closed the build phase:
+
+```text
+Design System v1.0
+
+✅ Tokens          Cap1
+✅ Primitives      Cap2
+✅ AppShell        Cap3
+✅ Auth            Cap4
+
+FOUNDATION + APP + AUTH COMPLETE
+```
+
+After Cap4 the system is **polished and finished**, not redesigned. Cap5+ is consistency polish and audit — not new architecture.
+
 ## Next
 
-**Cap5 — Quality Pass** (tabs / stepper / avatar Visual Debt, then Cap6 Consistency Review).
+**Cap5 — Design Consistency Polish** (was “Quality Pass”)
 
-Brand Design System: Cap1–Cap4 closed. Cap5 may open.
+Narrow scope only:
+
+- tabs
+- stepper pills
+- avatar / profile chrome
+- remaining legacy chrome
+
+No new layouts, tokens, or Cap2 primitives. Visual debt stays here — do not reopen Cap1–Cap4.
+
+Then **Cap6 — Cross-Route Consistency Review** (audit, not a feature capability): leftover `sky-*`, old card/focus/spacing chrome; small follow-up PRs only if needed.
+
+Cap5 starts with Design Lock → Implementation Plan (same Cap1–Cap4 pattern). Do not invent Cap5 in code first.
 
 ## Inventory
 
