@@ -2,17 +2,14 @@
 
 | Field | Value |
 |-------|-------|
-| Status | **Draft — awaiting acceptance** |
+| Status | **Ready for acceptance** (values locked below) |
 | Date | 2026-08 |
-| Capability | Cap3 — AppShell Variant A (visual chrome only) |
-| Related | [ADR 016](../adr/016-web-design-tokens.md), [status.md](./status.md), Cap2 Review (`roamkit-web/components/ui/CAP2_REVIEW.md`) |
-| Pattern | Same as Landing PR2: **Design Lock → Implementation Plan → code** |
+| Capability | Cap3 — AppShell Variant A (**layout + chrome only**) |
+| Related | [ADR 016](../adr/016-web-design-tokens.md), [status.md](./status.md), Cap2 Review |
+| Pattern | Design Lock → Implementation Plan → code |
 
-This document locks Cap3 decisions so implementation does not wander.  
 **Do not write Cap3 code until this lock is Accepted.**  
-**Do not start the Implementation Plan until this lock is Accepted.**
-
-Cap2 remains **CLOSED**. Cap3 must not reopen Cap2 except for a true visual regression.
+Cap2 remains **CLOSED** (API Freeze). Cap3 must not change Cap2 primitive APIs.
 
 ---
 
@@ -20,7 +17,7 @@ Cap2 remains **CLOSED**. Cap3 must not reopen Cap2 except for a true visual regr
 
 > **Dark shell + light elevated surfaces.**
 
-Nothing else. Not “modern”. Not “prettier”. This sentence is the acceptance lens for every Cap3 PR.
+Acceptance lens for every Cap3 PR.
 
 ---
 
@@ -28,236 +25,166 @@ Nothing else. Not “modern”. Not “prettier”. This sentence is the accepta
 
 | Gate | Lock |
 |------|------|
-| **Shell scope** | background, TopBar, nav chrome, shell spacing, surfaces, cards-as-chrome placement — **not** PlanCard, deposit banners, dialogs, popovers, tabs, or marketing pages |
-| **Vizualni cilj** | Dark shell + light elevated surfaces |
-| **Surface model** | Background → Surface → Elevated Surface (**max 3 token levels**) |
-| **CTA** | Store primary `sky-700` → brand cyan **only** via `--app-*` theme aliases |
-| **Layout** | No DOM hierarchy change; no navigation structure change |
-| **Primitive policy** | Cap2 primitives only; no new local Button / Card / Input style systems |
-| **Theme policy** | Only `--app-*` / theme aliases in Cap3 chrome; **no** direct brand-token use in components |
-| **Performance** | No new JS dependencies; CSS-only where possible |
-| **Stop rule** | AppShell on Variant A theme; Cap2 API untouched; layout structure same; landing + auth untouched |
+| Scope | AppShell, TopBar, nav chrome (visual), spacing SoT, `--app-*` surfaces |
+| Out | Cap2 APIs, wallet/billing/auth, icons, new nav features, landing |
+| Theme | Only `--app-*` in Cap3 chrome; no brand tokens in TSX |
+| Cap2 | API Freeze holds |
+| Performance | No new JS deps |
 
 ---
 
-## Acceptance criteria (locked)
+## 1. Surface palette (locked `--app-*`)
 
-### 1. Canonical chrome only
+Canonical names follow Cap1 (`--app-background`, not `--app-bg`).
 
-Cap3 may change **only** chrome:
+| Token | Locked value | Role |
+|-------|--------------|------|
+| `--app-background` | `var(--color-background)` → `#05070a` | Page canvas (dark) |
+| `--app-shell` | `var(--color-surface)` → `#0d1117` | Shell chrome band (TopBar strip / subtle frame) |
+| `--app-surface` | `#ffffff` | Default light panel |
+| `--app-surface-elevated` | `#ffffff` | Raised cards (same fill; elevation via shadow) |
+| `--app-border` | `#e2e8f0` (slate-200) | Borders on light surfaces / Cap2 Card |
+| `--app-border-shell` | `color-mix(in srgb, #fff 10%, transparent)` | Divider on dark shell only |
 
-- page / shell background
-- TopBar
-- navigation chrome (visual only)
-- surfaces
-- card **placement** on surfaces (using existing `ui/Card` / `ListRow`)
+### Text & action (on surfaces)
 
-Cap3 must **not** change page content, copy, domain UI, or feature behaviour.
+| Token | Locked value | Use on |
+|-------|--------------|--------|
+| `--app-text` | `#0f172a` | Light elevated surfaces |
+| `--app-text-muted` | `#475569` | Light elevated surfaces |
+| `--app-text-shell` | `#f0f4f8` | Dark background / shell |
+| `--app-text-shell-muted` | `#94a3b8` | Dark background / shell |
+| `--app-primary` | `var(--color-primary)` → `#22d3ee` | Store CTA (sky → cyan) |
+| `--app-primary-hover` | `var(--color-primary-hover)` → `#67e8f9` | |
+| `--app-primary-foreground` | `var(--color-primary-foreground)` → `#020617` | |
+| `--app-focus-ring` | `var(--focus-ring)` | Focus on both contexts |
 
-### 2. Zero feature work
-
-Cap3 must not include:
-
-- new product features
-- new API calls
-- new hooks
-- new navigation destinations or IA
-
-This is a **pure visual** capability.
+**Forbidden:** inventing `--app-page`, `--app-section`, or further color layers beyond this table.
 
 ---
 
-## What is “shell” (in / out)
+## 2. Elevation (locked — two levels max)
 
-### In scope
+| Level | Token | Shadow |
+|-------|-------|--------|
+| Normal | `--app-surface` | none |
+| Elevated | `--app-surface-elevated` | `var(--shadow-sm)` |
 
-| Area | Notes |
-|------|--------|
-| `AppShell` | Outer frame: background, padding, max-width, content gap |
-| `TopBar` | Existing grid chrome (left nav slot / right account slot) |
-| Navigation chrome | Visual treatment of existing `nav` / `rightSlot` only |
-| Shell spacing | Horizontal padding, vertical page padding, header→content gap — **owned by AppShell** |
-| Surfaces | Restyle `--app-*` for Variant A; wire chrome to aliases |
-| Cards as surfaces | Elevated light panels on dark shell via Cap2 `ui/Card` / existing card chrome |
+No third elevation. No per-page shadow knobs. Cap2 `ui/Card` chrome binds to elevated + `--app-border` in Cap3 wiring (internals only — **no Card API change**).
 
-**AppShell routes (full surface — 6):**
+---
+
+## 3. Width & spacing (SoT in AppShell)
+
+| Token | Locked value | Notes |
+|-------|--------------|-------|
+| `--app-content-max` | `56rem` (Tailwind `max-w-4xl`) | Default content width |
+| `--app-content-max-narrow` | `42rem` (`max-w-2xl`) | Existing `maxWidth="2xl"` |
+| `--app-content-max-mid` | `48rem` (`max-w-3xl`) | Existing `maxWidth="3xl"` |
+| `--app-gutter-x` | `1.5rem` | Horizontal padding (`px-6` today) |
+| `--app-page-padding-y` | `4rem` | Vertical page padding (`py-16` today) |
+| `--app-header-gap` | `2rem` | TopBar → page-content (`mt-8` today) |
+
+Pages must not redefine these basics outside `AppShell` / `maxWidth` prop.
+
+---
+
+## 4. TopBar (locked)
+
+| Decision | Lock |
+|----------|------|
+| Structure | Keep grid `1fr / auto` — `nav` left, `rightSlot` right |
+| Height | Content-driven; **no fixed height** in Cap3 |
+| Sticky | **No** (not sticky) — revisit only in a later capability |
+| Shell / content boundary | `border-b` using `--app-border-shell` under TopBar |
+| z-index | `var(--z-header)` if/when sticky is ever added; unused while static |
+
+---
+
+## 5. Contrast audit (locked targets)
+
+| Pair | Requirement |
+|------|-------------|
+| `--app-text-shell` on `--app-background` / `--app-shell` | WCAG AA ≥ 4.5:1 (body) |
+| `--app-text` on `--app-surface-elevated` | WCAG AA ≥ 4.5:1 |
+| `--app-primary` + foreground on buttons | AA for UI text / large text as applicable |
+| Focus | Visible `focus-visible` ring via `--app-focus-ring` on shell links and elevated controls |
+| Hover | Shell nav: lighten muted → shell text; elevated CTAs: `--app-primary-hover` |
+
+Smoke: desktop + mobile on pilot routes with dark shell surrounding white cards — no washed-out borders, no low-contrast muted text.
+
+---
+
+## 6. Motion (locked — one pair)
+
+| Token | Value |
+|-------|-------|
+| `--app-motion-duration` | `var(--motion-normal)` → `200ms` |
+| `--app-motion-ease` | `var(--motion-ease)` → `ease-out` |
+
+If AppShell introduces enter/transition: **only** this duration + easing.  
+`prefers-reduced-motion: reduce` → no animation.  
+No second duration, no custom curves.
+
+---
+
+## Surface hierarchy (composition)
+
+```text
+--app-background          (page)
+  └─ --app-shell          (optional chrome band / TopBar strip)
+       └─ Page column     (max-width + gutters)
+            └─ --app-surface-elevated  (Card)
+                 └─ Section            (CardSection)
+```
+
+Do not skip (e.g. full-bleed white page as shell).
+
+---
+
+## Explicitly not locked (later)
+
+Icons · illustrations · wallet UI · billing page layouts · dashboard grids · AuthShell (Cap4).
+
+---
+
+## AppShell routes (6)
 
 | Route | Component |
 |-------|-----------|
-| `/plans` | `PlansStore` |
-| `/[slug]-esim` | `LocationDetail` |
+| `/plans` | PlansStore |
+| `/[slug]-esim` | LocationDetail |
 | `/me/esims` | list |
 | `/me/esims/[id]` | detail |
 | `/me/esims/[id]/setup` | setup |
 | `/me/deposit` | deposit |
 
-### Explicitly out of scope
-
-| Area | Why |
-|------|-----|
-| Marketing landing (`/`) | Cap1/PR2; Cap3 does not touch |
-| AuthShell / auth pages | Cap4 |
-| PlanCard density / catalog tile redesign | Cap2 Reuse / backlog |
-| Deposit banners, wallet/CEX panels, voucher chrome | Domain; Cap2 intentional exceptions |
-| Dialogs, popovers, dropdowns, tabs, steppers | Not shell |
-| Cap2 migration backlog (raw Button/Input leftovers) | Separate small PRs; not Cap3 |
-| Cap2 public API changes | API Freeze — never drive-by in Cap3 |
-| New primitives | Cap2 closed; Cap5+ if needed |
-| Iconography / illustrations | Cap5 |
-| Light/dark theme toggle | Not Cap3 (ADR 016) |
+Landing + auth = out of Cap3.
 
 ---
 
-## Surface model (locked — max 3)
+## Implementation order (after Acceptance)
 
-Semantic theme levels only:
-
-```text
-Background          (--app-background)     dark shell canvas
-  ↓
-Surface             (--app-surface)        default panel / content well
-  ↓
-Elevated Surface    (--app-surface-elevated) light cards / raised chrome
-```
-
-**Rules:**
-
-- Do **not** invent a fourth token level (no `--app-shell`, `--app-page`, `--app-section` as color layers).
-- Composition (TopBar, page content, Card, section) **maps onto** these three — it does not add token tiers.
-- Cards remain Cap2 containers; Cap3 places them on Elevated Surface and ensures contrast against Background.
-- No skipping for identity (e.g. full-page elevated white pretending to be the shell).
-
-### Token direction (values chosen in Implementation Plan)
-
-| Alias | Cap3 direction | Cap1 today (baseline) |
-|-------|----------------|------------------------|
-| `--app-background` | Dark shell (brand-adjacent ink / surface family) | `#f8fafc` (slate-50) |
-| `--app-surface` | Mid / content well as needed for hierarchy | `#ffffff` |
-| `--app-surface-elevated` | **Light** elevated cards | `#ffffff` |
-| `--app-text` / `--app-text-muted` | Readable on dark shell **and** on light cards (context-appropriate) | slate-900 / slate-600 |
-| `--app-primary` | **Brand cyan** (`var(--color-primary)`) | sky-700 temporary |
-| `--app-primary-hover` | Brand primary hover | sky-800 |
-| `--app-border` | Compatible with dark shell + light cards | slate-200 |
-
-Exact hex / contrast pairs are fixed in the **Implementation Plan**, not reopened as new goals. Contrast must meet WCAG AA for text on both shell and elevated cards.
-
----
-
-## CTA migration (locked)
-
-```text
-sky-700 (store primary today)
-  ↓
-brand cyan
-```
-
-**Only** through `--app-primary` / `--app-primary-hover` (and Cap2 primitives / chrome that consume app theme).
-
-Forbidden:
-
-- Hand-scattered `bg-cyan-500` / `bg-sky-700` replacements as Cap3 “design”
-- Direct brand token references in components (`var(--color-primary)` in TSX/CSS of pages)
-- Changing Button/Card/Input **public props** to force cyan
-
-Allowed:
-
-- Restyle `--app-*` values
-- Bind AppShell chrome (and Cap2 `tone="app"` **internals**) to theme aliases without API changes
-
----
-
-## Layout lock
-
-Baseline today (`AppShell`):
-
-```text
-min-h-screen bg-slate-50 px-6 py-16 text-slate-900
-  main max-w-{2xl|3xl|4xl}
-    TopBar (grid 1fr / auto)
-    page-content mt-8
-      children
-```
-
-Cap3 may change **visual tokens and spacing values** owned by the shell.
-
-Cap3 must **not**:
-
-- Change DOM order or TopBar grid contract (`nav` left, `rightSlot` right)
-- Add sidebars, bottom tabs, or new nav IA
-- Move account chrome out of `rightSlot`
-- Fork a second AppShell for “dark” vs “light” pages
-
-AuthShell already approximates dark frame + light card — Cap3 brings that **hierarchy** to store/account; it does not merge AuthShell into AppShell.
-
----
-
-## Primitive & theme policy
-
-1. **Cap2 API Freeze holds.** Cap3 PRs must not edit Cap2 public APIs. Internal theme binding without prop changes is allowed when required for CTA/surface.
-2. **No parallel style systems.** No new `app-button`, `shell-card`, or one-off CTA classes that bypass `ui/*`.
-3. **Theme only.** Cap3 chrome consumes `--app-*`. Brand tokens stay behind theme aliases (ADR 016).
-4. **Migration leftovers** from Cap2 Review stay backlog — do not fold into Cap3 slices.
-
----
-
-## Performance
-
-- No new npm / client JS dependencies for Cap3.
-- Prefer CSS variables + existing Tailwind / utilities.
-- Motion (if any): respect `prefers-reduced-motion`; do not gate navigation or CTAs on animation.
-
----
-
-## Proposed implementation slices (outline only)
-
-Not started. Locked as the **preferred PR shape** after Implementation Plan:
-
-```text
-Cap3.1  Shell tokens + background
-Cap3.2  TopBar + navigation chrome
-Cap3.3  Surface migration (elevated cards on dark shell)
-Cap3.4  CTA theme migration (sky → cyan via --app-*)
-Cap3.5  Validation + consistency (all 6 AppShell routes)
-```
-
-Pilot preference (to confirm in Implementation Plan): `/plans` + `/me/esims` (+ one detail) before full route sweep.
+1. Shell infrastructure (`globals.css` `--app-*` + `AppShell` / `TopBar`)
+2. `/plans`
+3. `/me/esims`
+4. One detail (`/me/esims/[id]` or setup)
+5. Smoke (desktop / tablet / mobile / fold)
+6. Remaining three AppShell surfaces
+7. Cap3 close review
 
 ---
 
 ## Stop rule
 
-Cap3 is **CLOSED** when all are true:
+Cap3 CLOSED when:
 
-1. All six AppShell routes use Variant A chrome (dark shell + light elevated surfaces).
-2. Store primary CTAs that are in shell/theme scope resolve through `--app-primary` (cyan), not ad-hoc sky for that chrome path.
-3. Cap2 primitive **APIs** unchanged (Freeze held).
-4. DOM / nav structure unchanged.
-5. Landing and auth **untouched**.
-6. No new features, API calls, hooks, or nav destinations.
-7. Staging smoke on the six routes passes (desktop + mobile breakpoints).
-
-Anything beyond this is Cap4+ or a separate backlog PR.
-
----
-
-## Explicitly unchanged (do not reopen in Cap3)
-
-- Cap2 primitive public APIs and composition rules
-- Cap2 Review intentional exceptions (PlanCard, deposit domain banners, etc.)
-- Landing marketing Design Lock / PR2
-- Auth flows and AuthShell (Cap4)
-- Product copy, pricing, deposit logic, eSIM flows
-
----
-
-## Entry checklist
-
-Before first Cap3 implementation PR:
-
-- [ ] This Design Lock **Accepted** (status flipped below)
-- [ ] Implementation Plan written (token hex + Cap3.1–3.5 detail + pilot routes)
-- [ ] Explicit: zero Cap2 API edits in Cap3 PRs
-- [ ] Explicit: landing + auth out of diff
+1. All six AppShell routes use Variant A chrome.
+2. Spacing SoT owned by AppShell; no local layout hacks for basics.
+3. Cap2 APIs unchanged.
+4. No visual regressions outside this planned redesign.
+5. Landing + auth untouched.
+6. Contrast + reduced-motion checks pass on pilots.
 
 ---
 
@@ -265,10 +192,10 @@ Before first Cap3 implementation PR:
 
 | State | Meaning |
 |-------|---------|
-| **Draft — awaiting acceptance** | Current |
-| Accepted | Safe to write Implementation Plan |
-| Superseded | Only via explicit redesign decision (new lock) |
+| Draft | Superseded by values below |
+| **Ready for acceptance** | **Current** — reply **Accepted** / **GO** to flip |
+| Accepted | Safe to write Implementation Plan, then Cap3.1 code |
+| Superseded | Only via explicit redesign (new lock) |
 
-**Acceptance:** reply GO / Accepted on this document (or merge PR with status → Accepted).  
-**Next after Accepted:** Cap3 Implementation Plan (still no code).  
-**Next after Implementation Plan Accepted:** Cap3.1 first PR.
+**Acceptance:** reply Accepted / GO.  
+**Next:** short Implementation Plan (wire map), then Cap3.1 shell PR.
