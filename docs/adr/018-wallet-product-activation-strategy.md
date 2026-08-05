@@ -4,7 +4,10 @@
 |-------|-------|
 | Status | **Proposed** |
 | Date | 2026-08 |
-| Deciders | Product / Engineering / Ops (pending Architecture + Ops + Product GO) |
+| Deciders | Product / Engineering / Ops (pending Ops Review + Product GO) |
+| Architecture Review | **PASS** (2026-08) |
+| Ops Review | **Pending** |
+| Product GO | **Pending** |
 | Depends on | [ADR 017](./017-roamkit-wallet-platform.md) (Accepted), [ADR 010](./010-polygon-usdt-prepaid-credits.md) (Accepted) |
 | Index | [Wallet Architecture Index](../architecture/wallet-architecture-index.md) |
 | Ops | [Wallet Product Activation](../ops/wallet-product-activation.md) |
@@ -185,6 +188,47 @@ Required before Phase 2+ advancement and before **Phase 3 GO**:
 
 **Support Readiness is mandatory before Phase 3.**
 
+### GO Authority
+
+| Gate | Owner |
+|------|-------|
+| Architecture Review | Architecture |
+| Ops Review | Operations |
+| Product GO | Product Owner |
+
+**Phase 3 activation requires all three approvals.** No single role may authorize default WalletAddress intake alone.
+
+### Evidence of Gate (Wallet Readiness)
+
+Checkboxes alone are insufficient. Each Readiness item must retain **evidence** (link, report, screenshot, or run ID) under ops notes / Evidence of Gate pack:
+
+| Check | Evidence (examples) |
+|-------|---------------------|
+| Shadow Critical mismatch = 0 | Dashboard / metrics export for the GO window |
+| Rollback drill | Runbook reference + dated drill note |
+| Data Migration Validation | Validation report (dry-run + sampled checks) |
+| Flags | Deployment / env evidence for intended flag matrix |
+| Support Readiness | Briefing note or checklist sign-off |
+
+### Production Freeze (pre–Phase 3)
+
+After a successful Wallet Readiness Gate and until Phase 3 activation completes (or is explicitly aborted):
+
+> **No unrelated Wallet changes may be deployed between successful Readiness Gate and Phase 3 activation.**
+
+Cutover-only changes (flags, monitoring, documented hotfixes required for the gate) are allowed. Unrelated Wallet / billing intake features wait.
+
+### Post-Cutover Review (mandatory after Phase 3)
+
+Operational release reviews at **24 h**, **72 h**, and **7 days** after Phase 3 activation. At each checkpoint review at least:
+
+- Critical / Warning shadow or production divergences
+- Duplicate credits (must remain 0)
+- Support tickets related to deposit / address / funding
+- Rollback decision (hold / L1–L3 / continue)
+
+Record outcomes with audit events / ops notes. This is release hypercare, not a new architecture track.
+
 ## Consequences
 
 **Positive**
@@ -192,11 +236,13 @@ Required before Phase 2+ advancement and before **Phase 3 GO**:
 - Explicit authority table for ADR 010 vs ADR 018 by phase.
 - Safer activation via shadow, flags, and graded rollback.
 - Clear freeze: no ADR 019 / Wallet v2 / multi-chain in this cycle.
+- Named GO owners and evidence requirements before Phase 3.
 
 **Negative / cost**
 
 - Dual-path and legacy watch operational burden for a defined window.
 - Cutover capability implementation work after Accept.
+- Production freeze window constrains unrelated Wallet deploys.
 
 **Neutral**
 
@@ -206,17 +252,17 @@ Required before Phase 2+ advancement and before **Phase 3 GO**:
 
 ADR 018 becomes **Accepted** only when **all** of the following hold:
 
-1. Architecture Review **PASS**
-2. Ops Review **PASS**
-3. Product **GO**
+1. Architecture Review **PASS** — **done** (2026-08)
+2. Ops Review **PASS** — **pending**
+3. Product **GO** — **pending**
 
-Until then status remains **Proposed**. Implementation of production cutover must not begin as “Accepted by merge alone.”
+Until then status remains **Proposed**. **No Cutover implementation before Accept.** Merge of this document as Proposed does not authorize Phase 3.
 
 ## Binding after Accept
 
 - Cutover PRs: **Is this consistent with ADR 017 + ADR 018?**
 - Capability work only under milestone **Wallet Product v1**.
-- **Do not expand this ADR’s scope** after Accept; new product ideas wait for a future cycle.
+- **Do not expand this ADR’s scope** after Accept (or after this pre-Accept ops-gates amendment); new product ideas wait for a future cycle.
 
 ## Explicit non-goals (locked)
 
@@ -230,6 +276,7 @@ Until then status remains **Proposed**. Implementation of production cutover mus
 - [ADR 010 — Polygon USDT prepaid credits](./010-polygon-usdt-prepaid-credits.md)
 - [ADR 012 — Billing extensibility](./012-billing-extensibility-rules.md)
 - [Wallet Product Activation (ops)](../ops/wallet-product-activation.md)
+- [Evidence of Gate](../ops/evidence-of-gate.md)
 - [Wallet Operations](../ops/wallet-operations.md)
 - [Wallet Architecture Index](../architecture/wallet-architecture-index.md)
 - [Wallet Architecture Freeze](../architecture/wallet-architecture-freeze.md)

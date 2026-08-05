@@ -28,7 +28,7 @@ every **6 months** (Architecture Decision Review: still valid?).
 | [015](./docs/adr/015-google-oauth-gis.md) | Google OAuth via GIS ID token | Accepted | 2026-07 |
 | [016](./docs/adr/016-web-design-tokens.md) | RoamKit web design tokens | Accepted | 2026-08 |
 | [017](./docs/adr/017-roamkit-wallet-platform.md) | RoamKit Wallet Platform (architecture adoption) | Accepted — Architecture Complete | 2026-08 |
-| [018](./docs/adr/018-wallet-product-activation-strategy.md) | Wallet Product Activation Strategy | **Proposed** | 2026-08 |
+| [018](./docs/adr/018-wallet-product-activation-strategy.md) | Wallet Product Activation Strategy | **Proposed** (Architecture PASS; Ops/Product pending) | 2026-08 |
 
 ## Billing ADR hierarchy
 

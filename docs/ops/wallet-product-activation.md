@@ -69,6 +69,43 @@ Exact cohort definitions are ops parameters; do not invent new domain rules.
 - [ ] L2 `deposit-info` → shared wallet
 - [ ] L3 Observation / Conversion v2 off → ADR 010 verify
 
+## GO Authority
+
+| Gate | Owner |
+|------|-------|
+| Architecture Review | Architecture |
+| Ops Review | Operations |
+| Product GO | Product Owner |
+
+**Phase 3 activation requires all three approvals.**
+
+Current ADR 018 review status: Architecture **PASS** · Ops **Pending** · Product **Pending**.
+
+## Evidence of Gate (required artifacts)
+
+| Check | Evidence |
+|-------|----------|
+| Shadow Critical mismatch = 0 | Dashboard / metrics export |
+| Rollback drill | Runbook ref + dated note ([wallet-operations.md](./wallet-operations.md)) |
+| Data Migration Validation | Validation report |
+| Flags | Deploy / env evidence |
+| Support Readiness | Briefing / sign-off |
+
+File under Evidence of Gate / release notes when closing the readiness window. See [evidence-of-gate.md](./evidence-of-gate.md).
+
+## Production Freeze (pre–Phase 3)
+
+After successful Readiness Gate until Phase 3 activation completes or aborts: **no unrelated Wallet deploys**. Cutover-only changes allowed.
+
+## Post-Cutover Review
+
+After Phase 3, mandatory checkpoints at **24 h**, **72 h**, and **7 days**:
+
+- [ ] Divergences (Critical / Warning)
+- [ ] Duplicate credits = 0
+- [ ] Support tickets (deposit / address / funding)
+- [ ] Rollback decision recorded
+
 ## Data Migration Validation checklist
 
 - [ ] Dry-run backfill report reviewed
