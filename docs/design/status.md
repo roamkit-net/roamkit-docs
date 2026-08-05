@@ -168,40 +168,26 @@ Chrome consistency matrix: Button / Input / Alert / Card / Tabs / Stepper / Avat
 
 ## Next
 
-**Cap6 — Cross-Route Consistency Review** (audit-only capability)
+**Cap6 — Cross-Route Consistency Review** (**governance / audit**)
 
-> **Prove the system is consistent — do not make it different.**
+| Doc | Status |
+|-----|--------|
+| [Design Lock](./cap6-consistency-review-lock.md) | **Draft — awaiting acceptance** |
+| Implementation Plan | not started |
+| Close artifact | `docs/design/design-system-v1-review.md` (at Cap6 close) |
+
+> **Verify the completed Design System, not redesign it.**
 
 | In | Out |
 |----|-----|
-| Cross-route / legacy / a11y / token / primitive audit | New tokens, primitives, layouts, UX, capabilities |
-| Docs PR + tiny follow-ups if needed | Big-bang polish / redesign PR |
+| Cross-route / primitive / token / a11y / legacy / docs audit | New tokens, primitives, layouts, UX, capabilities |
+| Evidence + review doc; zero `roamkit-web` change OK | Cap6 mega-refactor / “just one more polish” |
 
-**Finding rule (locked intent):** every Cap6 finding is either (1) accepted as-is, or (2) spun into a **separate small follow-up** — never absorbed into a Cap6 mega-refactor. Cap6 may close with **zero production code change**.
+**Finding classes:** PASS · MINOR · MAJOR · REGRESSION  
 
-Planned audit matrices (fill when Cap6 runs):
+**Close gate:** Architecture / Operations / Product / Audit **PASS** (not “merge”).
 
-| Area | Status |
-|------|--------|
-| Landing | ☐ |
-| Auth | ☐ |
-| Plans | ☐ |
-| eSIM detail | ☐ |
-| Setup | ☐ |
-| Deposit | ☐ |
-| Account | ☐ |
-
-| Primitive | Status |
-|-----------|--------|
-| Button / Input / Alert / Card | ☐ |
-| Tabs / Stepper / Avatar | ☐ |
-
-| Token audit | Result |
-|-------------|--------|
-| Legacy colors / radius / spacing / shadows | ☐ |
-| Hardcoded chrome | ☐ |
-
-Cap6 starts with a Design Lock / audit brief when GO’d. Do not reopen Cap1–Cap5. Do not open `roamkit-web` Cap6 work until that brief is Accepted.
+Do not reopen Cap1–Cap5. Do not draft Implementation Plan until Design Lock is Accepted. Do not open Cap6 code work except dispositioned REGRESSION bugfixes.
 
 ## Inventory
 
