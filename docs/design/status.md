@@ -47,13 +47,13 @@ Colocated mirror: `roamkit-web/components/ui/README.md`.
 |-------|--------|-----|
 | Cap3.1 Shell tokens + background | ✅ | [web #103](https://github.com/roamkit-net/roamkit-web/pull/103) |
 | Cap3.2 TopBar + nav chrome | ✅ | [web #104](https://github.com/roamkit-net/roamkit-web/pull/104) |
-| Cap3.3a Pilot `/me/esims` | ✅ Pilot Freeze Accepted | [web #105](https://github.com/roamkit-net/roamkit-web/pull/105) |
-| Cap3.3b Propagate | ▶ in progress | remaining five AppShell routes |
-| Cap3.4 CTA theme | after 3.3b | — |
+| Cap3.3a Pilot `/me/esims` | ✅ Pilot Freeze | [web #105](https://github.com/roamkit-net/roamkit-web/pull/105) |
+| Cap3.3b Propagate | ✅ staging smoke `eaf4c0c` | [web #110](https://github.com/roamkit-net/roamkit-web/pull/110) |
+| **Cap3.3 (surfaces)** | **CLOSED** | 3.3a + 3.3b |
+| Cap3.4 CTA theme | ▶ next | `--app-primary` cyan; no layout |
 | Cap3.5 Validation | last | — |
 
-**Gates:** Cap3.3b copies Golden Route only (chrome text + elevated Cap2 panels). No Cap3.4 CTA. No new surface levels. Landing + auth untouched.  
-Cap3.3a Golden Route ops / Visual Debt Register: see Implementation Plan companions.  
+**Cap3.3 closed:** Golden Route propagated; tabs/steppers remain Visual Debt; landing + auth untouched; CTA still sky until Cap3.4.  
 Cap2 Merge leftovers = migration backlog, not Cap3.
 
 ## Inventory
