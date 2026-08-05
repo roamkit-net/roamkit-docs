@@ -172,22 +172,19 @@ Chrome consistency matrix: Button / Input / Alert / Card / Tabs / Stepper / Avat
 
 | Doc | Status |
 |-----|--------|
-| [Design Lock](./cap6-consistency-review-lock.md) | **Draft — awaiting acceptance** |
-| Implementation Plan | not started |
+| [Design Lock](./cap6-consistency-review-lock.md) | **Accepted** |
+| [Implementation Plan](./cap6-implementation-plan.md) | **Draft — awaiting acceptance** |
 | Close artifact | `docs/design/design-system-v1-review.md` (at Cap6 close) |
 
-> **Verify the completed Design System, not redesign it.**
+```text
+Cap6.1 Routes + Primitives
+  → Cap6.2 Tokens + A11y + Legacy
+    → Cap6.3 Docs review + design-system-v1-review.md + CLOSE
+```
 
-| In | Out |
-|----|-----|
-| Cross-route / primitive / token / a11y / legacy / docs audit | New tokens, primitives, layouts, UX, capabilities |
-| Evidence + review doc; zero `roamkit-web` change OK | Cap6 mega-refactor / “just one more polish” |
+Audit order: Routes → Primitives → Tokens → Accessibility → Legacy → Documentation.
 
-**Finding classes:** PASS · MINOR · MAJOR · REGRESSION  
-
-**Close gate:** Architecture / Operations / Product / Audit **PASS** (not “merge”).
-
-Do not reopen Cap1–Cap5. Do not draft Implementation Plan until Design Lock is Accepted. Do not open Cap6 code work except dispositioned REGRESSION bugfixes.
+Do not start Cap6.1 until Implementation Plan is Accepted. `roamkit-web` only for dispositioned **REGRESSION**.
 
 ## Inventory
 

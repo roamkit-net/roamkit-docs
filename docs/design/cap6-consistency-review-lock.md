@@ -2,15 +2,16 @@
 
 | Field | Value |
 |-------|-------|
-| Status | **Draft — awaiting acceptance** |
+| Status | **Accepted** |
 | Date | 2026-08 |
+| Accepted | 2026-08-05 |
 | Capability | Cap6 — Cross-Route Consistency Review (**governance / audit only**) |
-| Related | [ADR 016](../adr/016-web-design-tokens.md), [status.md](./status.md), Cap2 Review (`roamkit-web/components/ui/CAP2_REVIEW.md`), Cap1–Cap5 Design Locks (**CLOSED**), [design-system-v1-review.md](./design-system-v1-review.md) (Cap6 close artifact — created at close) |
+| Related | [ADR 016](../adr/016-web-design-tokens.md), [status.md](./status.md), Cap2 Review (`roamkit-web/components/ui/CAP2_REVIEW.md`), Cap1–Cap5 Design Locks (**CLOSED**), [Implementation Plan](./cap6-implementation-plan.md), [design-system-v1-review.md](./design-system-v1-review.md) (Cap6 close artifact — created at close) |
 | Pattern | Same process skeleton: **Design Lock → Implementation Plan → execute → close** — but “execute” means **audit**, not product code |
 | Prerequisite | Design System v1.0 **IMPLEMENTATION COMPLETE** (Cap1–Cap5 CLOSED) |
 
 This document locks Cap6 decisions so the review does not wander into redesign.  
-**Do not reopen locked decisions.** Audit execution detail lives in the Implementation Plan (not yet drafted).
+**Do not reopen locked decisions.** Audit execution detail lives in the Implementation Plan.
 
 Cap1–Cap5 remain **CLOSED**. Cap6 must not reopen them except to document a true **REGRESSION** finding (then fix via a separate bugfix PR — not inside Cap6 redesign).
 
@@ -244,8 +245,8 @@ Cap6.3  Findings disposition + review doc + close
 
 | State | Meaning |
 |-------|---------|
-| **Draft — awaiting acceptance** | **Current** |
-| Accepted | Cap6 Implementation Plan (audit execution) may be drafted |
+| Draft — awaiting acceptance | Closed |
+| **Accepted** | **Current** — Implementation Plan may proceed |
 | Done | Cap6 closed; `design-system-v1-review.md` published |
 
-**Next after Accept:** Cap6 Implementation Plan draft — audit how/when/evidence, still preferably **no** `roamkit-web` code until a classified REGRESSION demands a separate fix PR.
+**Next:** Cap6 Implementation Plan acceptance — then Cap6.1 audit (no web polish; REGRESSION-only code).
