@@ -127,20 +127,25 @@ After Cap4 the system is **polished and finished**, not redesigned. Cap5+ is con
 
 ## Next
 
-**Cap5 — Design Consistency Polish** (was “Quality Pass”)
+**Cap5 — Design Consistency Polish**
 
-Narrow scope only:
+| Doc | Status |
+|-----|--------|
+| [Design Lock](./cap5-design-consistency-lock.md) | **Draft — awaiting acceptance** |
+| Implementation Plan | not started |
+
+Narrow scope (locked in Design Lock draft):
 
 - tabs
 - stepper pills
 - avatar / profile chrome
-- remaining legacy chrome
+- Cap2/Cap3 registered legacy chrome only
 
-No new layouts, tokens, or Cap2 primitives. Visual debt stays here — do not reopen Cap1–Cap4.
+No new layouts, tokens, or Cap2 primitives. Do not reopen Cap1–Cap4.
 
-Then **Cap6 — Cross-Route Consistency Review** (audit, not a feature capability): leftover `sky-*`, old card/focus/spacing chrome; small follow-up PRs only if needed.
+Then **Cap6 — Cross-Route Consistency Review** (audit only).
 
-Cap5 starts with Design Lock → Implementation Plan (same Cap1–Cap4 pattern). Do not invent Cap5 in code first.
+**Do not open `roamkit-web` Cap5 code** until Design Lock + Implementation Plan are Accepted.
 
 ## Inventory
 
