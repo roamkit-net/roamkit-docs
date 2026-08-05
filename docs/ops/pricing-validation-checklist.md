@@ -8,10 +8,15 @@ preview land.
 
 **PR4 (API + preview) is BLOCKED until Decision Outcome = PASS.**
 
+Any FAIL on scenarios **1–6** is a **blocker for PR4** — fix backend / re-run staging
+before opening surface PRs. Do not open PR4 while this checklist is only “ready”
+or partially filled.
+
 | Field | Value |
 |-------|-------|
 | Checklist status | **READY FOR STAGING** |
 | Report status | **AWAITING RESULTS** |
+| Engine status | **NOT READY FOR SURFACE** until Decision Outcome = PASS |
 | ADR | [019 — Account pricing profiles](../adr/019-account-pricing-profiles.md) |
 | Code (merged) | [roamkit-api#68](https://github.com/roamkit-net/roamkit-api/pull/68) (schema), [#69](https://github.com/roamkit-net/roamkit-api/pull/69) (service), [#70](https://github.com/roamkit-net/roamkit-api/pull/70) (charge path) |
 | Environment | staging (required) |
@@ -30,11 +35,63 @@ PR3 charge path (debit-from-snapshot): MERGED
 
 Pricing Validation Checklist: READY FOR STAGING
 Pricing Validation Report: AWAITING RESULTS
+Pricing Engine: NOT READY FOR SURFACE
 
-PR4 (API + preview): BLOCKED pending Report PASS
+PR4 (API + preview): BLOCKED pending Report PASS + Evidence attached
 PR5 (web dual price): BLOCKED pending PR4
 PR6 / PR1a: after surface PRs (or earlier if blocking)
 ```
+
+## READY FOR SURFACE (formal GO)
+
+Locked rule — do not weaken without an explicit Decision update:
+
+```text
+Pricing Engine
+
+Status:
+  READY FOR SURFACE
+
+Requirements:
+  ✓ PR1 merged (schema)
+  ✓ PR2 merged (PricingService + snapshots)
+  ✓ PR3 merged (charge path / debit-from-snapshot)
+  ✓ Validation checklist scenarios 1–6 PASS
+  ✓ Evidence artifacts attached (see below)
+
+Unlocks:
+  → PR4 (additive API + internal preview + leak guard)
+
+Does NOT unlock until the above:
+  → PR5 (web)
+  → Production enable of PRICING_PROFILES_ENABLED for real users
+```
+
+Scenario **7** (preview) is an **addendum after PR4**, not a requirement for READY FOR SURFACE.
+
+---
+
+## Required evidence artifacts
+
+Marking a scenario **PASS** without IDs is insufficient. For each of scenarios 1–6,
+capture at least:
+
+| Artifact | Where |
+|----------|--------|
+| `order_id` (or `topup_id`) | Django admin / DB |
+| `account_id` | Billing Account UUID |
+| `pricing_profile` slug + version (if flag ON) | PricingProfile admin |
+| Snapshot charged amount (`retail_price_usd` / Topup `amount`) | Order / Topup row |
+| Snapshot fingerprint fields (`pricing_context_hash`, profile id/version when set) | Order / Topup row |
+| Ledger entry id(s) + `delta` | `CreditLedgerEntry` |
+| Execution timestamp (UTC) | When the scenario was run |
+| Flag value (`PRICING_PROFILES_ENABLED`) | Staging env / settings |
+
+Store them in the Evidence column, an appendix under
+`docs/ops/releases/<release>/evidence/pricing-validation.md`, or linked internal notes.
+The Decision block must reference where the pack lives.
+
+---
 
 ## What is in scope now
 
@@ -123,26 +180,30 @@ under `docs/ops/releases/…/evidence/` or link staging admin / ticket IDs.
 ### GO rule
 
 ```text
-PASS  = Scenarios 1–6 all PASS (Scenario 7 deferred to post-PR4 addendum)
-FAIL  = any of 1–6 FAIL
+PASS  = Scenarios 1–6 all PASS + evidence artifacts attached for each
+FAIL  = any of 1–6 FAIL  →  PR4 remains BLOCKED (treat as backend defect)
 BLOCKED = staging unavailable / cannot collect Evidence
 ```
+
+READY FOR SURFACE is granted **only** when Outcome = **PASS**.
 
 ### Decision
 
 | Field | Value |
 |-------|-------|
 | Outcome | `PASS` / `FAIL` / `BLOCKED` (fill after execution) |
+| Engine status after decision | `READY FOR SURFACE` only if Outcome = PASS; else unchanged |
 | Date (UTC) | |
 | Signed off by | |
+| Evidence pack location | |
 | Notes | |
-| Unblocks | PR4 (API + internal preview) when Outcome = **PASS** |
+| Unlocks | PR4 (API + internal preview) when Outcome = **PASS** |
 
 ```text
 Decision Outcome: _______________
-PR4: NOT AUTHORIZED until Outcome = PASS
+Pricing Engine: NOT READY FOR SURFACE  |  READY FOR SURFACE
+PR4: NOT AUTHORIZED until Outcome = PASS and Evidence attached
 ```
-
 ---
 
 ## Related
