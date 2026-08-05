@@ -122,11 +122,13 @@ Record date + operator under `releases/` or a dated note when run in production.
 |---------|---------|
 | `wallet_ops_status` | Observation status counts, convert backlog, seed configured flag |
 | `wallet_resume_converts` | Resume Confirmed / Conversion Started → Credited (`--dry-run` / `--apply`) |
+| `wallet_metrics` | Allocation / observation / confirmation / convert counters (not Credits SoT) |
 
 Examples:
 
 ```bash
 python manage.py wallet_ops_status
+python manage.py wallet_metrics
 python manage.py wallet_resume_converts --dry-run
 python manage.py wallet_resume_converts --apply --limit 50
 ```
