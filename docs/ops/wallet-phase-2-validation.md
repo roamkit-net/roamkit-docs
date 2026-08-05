@@ -3,12 +3,14 @@
 Operational gate between **Cutover PR4 (Limited Traffic)** and **PR5 (Default WalletAddress)**.
 
 This is **not** a new ADR, RFC, or capability. It is the ADR 018 Phase 2 evidence pack:
-fill the tables from **staging** (or production Limited Traffic window), then record a
-recommendation. **PR5 must not start until Recommendation = Proceed to Phase 3.**
+fill **Result** from **staging** Limited Traffic, apply the GO rule below, then record
+**Decision**. Code review is closed for this gate — only operational evidence counts.
+
+**PR5 is BLOCKED until Decision Outcome = Proceed to Phase 3.**
 
 | Field | Value |
 |-------|-------|
-| Status | **ACTIVE** (awaiting KPI evidence) |
+| Report status | **AWAITING RESULTS** |
 | ADR | [018 — Wallet Product Activation](../adr/018-wallet-product-activation-strategy.md) |
 | Capability | [#116 Wallet Cutover](https://github.com/roamkit-net/roamkit-docs/issues/116) |
 | Code (PR4) | [roamkit-api#64](https://github.com/roamkit-net/roamkit-api/pull/64) |
@@ -20,13 +22,31 @@ recommendation. **PR5 must not start until Recommendation = Proceed to Phase 3.*
 | Reviewed by (Ops) | |
 | Reviewed by (Product) | |
 
-## Current cutover decision (governance)
+## Governance status
 
 ```text
+Architecture: COMPLETE
+Platform: COMPLETE
+
 PR4: ACCEPTED
-Phase 2: ACTIVE
-PR5: NOT YET APPROVED
+
+Phase 2: ACTIVE / RUNNING
+Phase 2 Validation Report: AWAITING RESULTS
+Evidence: PENDING
+
+PR5: BLOCKED pending Phase 2 PASS
+     (NOT AUTHORIZED until Decision = Proceed to Phase 3)
 ```
+
+## What is in scope now
+
+| Look at | Do not look at |
+|---------|----------------|
+| Staging Limited Traffic results | Code / new PRs |
+| KPI **Result** column | “feels fine” |
+| Formal Decision block | Subjective exceptions |
+
+---
 
 ## How to collect KPIs (api host)
 
@@ -60,13 +80,15 @@ Instant rollback drill (no deploy): set `WALLET_CUTOVER_COHORT_ACCOUNT_IDS=` emp
 
 ## KPI results (fill from live window)
 
-| KPI | Target | Result | PASS? |
-|-----|--------|--------|:-----:|
-| `shadow_match_rate` | ≈ 100% (known Warning exceptions classified) | | |
-| Critical divergence | **0** | | |
-| Duplicate credits | **0** | | |
-| Rollback drill (empty cohort → legacy) | **PASS** | | |
-| Backfill validation | **PASS** (no critical errors) | | |
+Report is ready for Decision **only when every Result cell is filled**.
+
+| KPI | Target | Result | Status |
+|-----|--------|--------|:------:|
+| `shadow_match_rate` | ≈ 100% (or documented ops threshold; Warnings classified) | | PASS / FAIL |
+| Critical divergence | **0** | | PASS / FAIL |
+| Duplicate credits | **0** | | PASS / FAIL |
+| Rollback drill (empty cohort → legacy) | **PASS** | | PASS / FAIL |
+| Backfill validation | **PASS** (no critical errors) | | PASS / FAIL |
 
 ### Evidence links
 
@@ -82,8 +104,8 @@ Instant rollback drill (no deploy): set `WALLET_CUTOVER_COHORT_ACCOUNT_IDS=` emp
 
 ## Checklist (PASS / FAIL)
 
-| Check | PASS? | Notes |
-|-------|:-----:|-------|
+| Check | Status | Notes |
+|-------|:------:|-------|
 | Shadow | | Critical = 0 for GO window; Warnings classified |
 | Cohort | | Allowlist-only; deposits complete via Wallet path |
 | Rollback | | Empty allowlist restores ADR 010 without deploy |
@@ -92,9 +114,23 @@ Instant rollback drill (no deploy): set `WALLET_CUTOVER_COHORT_ACCOUNT_IDS=` emp
 
 ---
 
-## Stop criteria (any Critical → remain in Phase 2)
+## GO rule (non-subjective)
 
-Do **not** recommend Phase 3 / PR5 if:
+```text
+If every Gate criterion above is PASS
+        ↓
+Recommendation / Decision Outcome:
+Proceed to Phase 3
+
+Else
+        ↓
+Recommendation / Decision Outcome:
+Remain in Phase 2
+```
+
+No exceptions. No “looks good enough.”
+
+### Stop criteria (any → Remain in Phase 2)
 
 - Critical shadow divergence > 0
 - Duplicate credit detected
@@ -104,26 +140,41 @@ Do **not** recommend Phase 3 / PR5 if:
 
 ---
 
-## Recommendation
+## Recommendation (derived from GO rule)
 
 ```text
-[ ] Proceed to Phase 3  →  GO PR5
+[ ] Proceed to Phase 3  →  unlocks GO PR5
 [ ] Remain in Phase 2
 ```
 
-**Decision (date UTC):**  
+---
 
-**Signed (Ops / Product):**  
+## Decision
 
-### Notes
+Final audit record for why Phase 2 closed (or stayed open).
 
--
+```text
+Decision
+
+Date (UTC):
+Owner (Ops / Product):
+
+Outcome:
+
+☐ Proceed to Phase 3
+☐ Remain in Phase 2
+
+Reason:
+```
+
+After Outcome = Proceed to Phase 3, set report header Status to **PASS** and unlock PR5.
+After Outcome = Remain in Phase 2, keep Status **AWAITING RESULTS** or set **FAIL — remain Phase 2** and continue the window.
 
 ---
 
 ## PR5 scope (locked — do not expand)
 
-When Recommendation = Proceed to Phase 3, PR5 may **only**:
+When Decision Outcome = Proceed to Phase 3, PR5 may **only**:
 
 | Allowed | Forbidden |
 |---------|-----------|
