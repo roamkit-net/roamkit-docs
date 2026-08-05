@@ -43,9 +43,8 @@ Colocated mirror: `roamkit-web/components/ui/README.md`.
 | [Design Lock](./cap3-appshell-design-lock.md) | **Accepted** |
 | [Implementation Plan](./cap3-implementation-plan.md) | **Accepted** |
 
-**Next code:** Cap3.1 (shell tokens + background) only.  
-Quality gates (Migration Matrix, rollback, visual diff, Cap3 Complete) live in the Implementation Plan.  
-No new design decisions. Cap2 Merge leftovers = migration backlog, not Cap3.
+**Next code:** Cap3.3a Golden Route — `/me/esims` surface migration (then smoke → Cap3.3b propagate).  
+Cap3.1 + Cap3.2 merged. No new infra PRs; no new design decisions. Cap2 API Freeze holds.
 
 ## Inventory
 
