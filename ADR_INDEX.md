@@ -27,6 +27,8 @@ every **6 months** (Architecture Decision Review: still valid?).
 | [014](./docs/adr/014-esim-lifecycle-install-telemetry.md) | eSIM lifecycle and install telemetry | Accepted | 2026-07 |
 | [015](./docs/adr/015-google-oauth-gis.md) | Google OAuth via GIS ID token | Accepted | 2026-07 |
 | [016](./docs/adr/016-web-design-tokens.md) | RoamKit web design tokens | Accepted | 2026-08 |
+| [017](./docs/adr/017-roamkit-wallet-platform.md) | RoamKit Wallet Platform (architecture adoption) | Accepted — Architecture Complete | 2026-08 |
+| [018](./docs/adr/018-wallet-product-activation-strategy.md) | Wallet Product Activation Strategy | **Proposed** | 2026-08 |
 
 ## Billing ADR hierarchy
 
@@ -35,6 +37,8 @@ every **6 months** (Architecture Decision Review: still valid?).
 | Foundation | [010](./docs/adr/010-polygon-usdt-prepaid-credits.md) | Money path (`CreditService`, ledger, Account ownership) |
 | Constitution | [012](./docs/adr/012-billing-extensibility-rules.md) | Rules every future credit source must obey |
 | First extension | [011](./docs/adr/011-credit-vouchers-gift-codes.md) | Vouchers / gift codes (must satisfy 012) |
+| Wallet constitution | [017](./docs/adr/017-roamkit-wallet-platform.md) | Wallet Platform (RFC 003–006); intake cutover via [018](./docs/adr/018-wallet-product-activation-strategy.md) |
+| Wallet activation | [018](./docs/adr/018-wallet-product-activation-strategy.md) | Product activation / ADR 010 shared-wallet cutover (**Proposed**) |
 
 ## Deploy ADR hierarchy
 

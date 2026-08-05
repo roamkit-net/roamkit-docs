@@ -20,6 +20,7 @@ ship safely — Launch Gates, cutover discipline, incidents, and maturity tracki
 | [Migration Ready](./migration-ready.md) | Pre-migrate gate (duration, locks, backup, rollback) |
 | [Incident runbook](./incident-runbook.md) | First response trees (not only deploy rollback) |
 | [Wallet Operations](./wallet-operations.md) | ADR 017 Failure Domains recovery + wallet drills |
+| [Wallet Product Activation](./wallet-product-activation.md) | ADR 018 cutover phases, flags, readiness, rollback |
 | [SLO targets](./slo.md) | Lightweight availability / billing targets |
 | [Production retrospective](./production-retrospective.md) | Post-hypercare lessons learned template |
 | [Billing dashboard](./billing-dashboard.md) | Operator metrics after cutover |

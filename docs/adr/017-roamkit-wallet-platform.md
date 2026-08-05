@@ -152,7 +152,8 @@ Binding from acceptance:
 - Normative Sources, standing rules, and Implementation Constraints apply to all Wallet PRs.
 - Review question for implementation: **Is this PR consistent with ADR 017?**
 - Prefer small capabilities (Address Allocation → Observation → Credit Conversion → Funding adapters), each with its own DoD.
-- Do not open RFC 007 / Vision v2 / ADR 018 for the same foundation without evidence of a real gap.
+- Do not open RFC 007 / Vision v2 for the same foundation without evidence of a real gap.
+- Production activation / ADR 010 shared-wallet cutover is **[ADR 018](./018-wallet-product-activation-strategy.md)** (Proposed) — not a reopening of this foundation.
 
 ### Wallet PR header (required)
 
@@ -169,16 +170,18 @@ Example: `Capability: Wallet Address Allocation` with `RFC 004`.
 
 ### ADR Exit Criteria
 
-ADR 017 remains Accepted as constitution. Operational “done” progress is tracked by capabilities under milestone **Wallet Platform v1**:
+ADR 017 remains Accepted as constitution. Operational platform “done” was tracked by capabilities under milestone **Wallet Platform v1** (complete).
 
 1. Wallet capabilities and related PRs **reference ADR 017**.
 2. Capabilities implement Normative Sources **without deviation** (or open a new ADR first).
-3. Production cutover from ADR 010 shared wallet remains an **explicit** follow-on plan/ADR — not implied by this acceptance alone.
+3. Production cutover from ADR 010 shared wallet is the explicit follow-on **[ADR 018 — Wallet Product Activation Strategy](./018-wallet-product-activation-strategy.md)** (Proposed until Architecture + Ops + Product GO) — not implied by ADR 017 acceptance alone.
 
 ## Related
 
 - [Wallet Architecture Index](../architecture/wallet-architecture-index.md)
 - [Wallet Architecture Freeze](../architecture/wallet-architecture-freeze.md)
+- [ADR 018 — Wallet Product Activation Strategy](./018-wallet-product-activation-strategy.md) (Proposed — cutover / activation)
+- [Wallet Product Activation (ops)](../ops/wallet-product-activation.md)
 - [RFC 003](../rfcs/003-wallet-domain-ownership-model.md) · [RFC 004](../rfcs/004-platform-wallet-infrastructure.md) · [RFC 005](../rfcs/005-funding-provider-interface.md) · [RFC 006](../rfcs/006-deposit-observation-confirmation.md)
 - [ADR 010](./010-polygon-usdt-prepaid-credits.md) · [ADR 012](./012-billing-extensibility-rules.md)
 - [Track 1 Exit Artifact](../architecture/wallet-sandbox-artifacts/01-wallet-address-assignment.md)
