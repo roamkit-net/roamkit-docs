@@ -192,24 +192,25 @@ FAIL  = any of 1–6 FAIL  →  PR4 remains BLOCKED (treat as backend defect)
 BLOCKED = staging unavailable / cannot collect Evidence
 ```
 
-READY FOR SURFACE is granted **only** when Report Decision Outcome = **PASS** and reviewer signed off.
+READY FOR SURFACE is granted **only** when Report Decision Outcome = **PASS** and formal sign-off is recorded.
 
 ### Decision
 
 | Field | Value |
 |-------|-------|
-| Outcome | `PASS` (draft — see Report; awaiting reviewer sign-off) |
-| Engine status after decision | `READY FOR SURFACE` after Report sign-off |
+| Outcome | `PASS` |
+| Engine status after decision | `READY FOR SURFACE` |
 | Date (UTC) | 2026-08-05 |
-| Signed off by | *(pending — Report)* |
+| Signed off by | Ante Vrcan |
+| Technical review | ChatGPT (OpenAI) — evidence summary GO |
 | Evidence pack location | `docs/ops/releases/pricing-adr019-validation/evidence/` |
 | Notes | Staging image `764cb1a`; package `discover-in-180days-10gb-px` |
-| Unlocks | PR4–PR6 when Report Decision signed PASS |
+| Unlocks | PR4, PR5, PR6 |
 
 ```text
-Decision Outcome: PASS (draft — reviewer sign-off on Report)
-Pricing Engine: READY FOR SURFACE (after sign-off)
-PR4: NOT AUTHORIZED until Report Signed off by is filled
+Decision Outcome: PASS — READY FOR SURFACE
+Pricing Engine: READY FOR SURFACE
+PR4–PR6: UNLOCKED
 ```
 ---
 

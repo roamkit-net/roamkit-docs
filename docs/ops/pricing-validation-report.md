@@ -3,12 +3,11 @@
 **Official decision record** that the account-pricing backend engine was verified on
 staging **before** public API / web / admin surface (PR4–PR6).
 
-Do **not** open PR4 until Decision Outcome = **PASS** and evidence is attached.
-Reviewer sign-off completes the Decision block below.
+Decision Outcome = **PASS** unlocks PR4–PR6. Formal sign-off is below.
 
 | Field | Value |
 |-------|-------|
-| Report status | **RESULTS FILLED — AWAITING REVIEWER SIGN-OFF** |
+| Report status | **PASS — READY FOR SURFACE** |
 | Checklist | [Pricing Validation Checklist](./pricing-validation-checklist.md) |
 | ADR | [019 — Account pricing profiles](../adr/019-account-pricing-profiles.md) |
 | Environment | staging (`api.staging.roamkit.net`) |
@@ -18,7 +17,8 @@ Reviewer sign-off completes the Decision block below.
 | Window end (UTC) | 2026-08-05T22:03:05Z |
 | Operator | Auto (staging evidence run) |
 | Test account | `pricing-val-20260805220203@example.com` / `account_id=5cc46dd3-cd33-4488-84bd-9e3ebd0bc19a` |
-| Reviewed by | *(pending)* |
+| Technical review | ChatGPT (OpenAI) — evidence summary assessment |
+| Signed off by | Ante Vrcan |
 | Evidence pack location | [releases/pricing-adr019-validation/evidence/](./releases/pricing-adr019-validation/evidence/) |
 
 ## Governance
@@ -28,8 +28,8 @@ Architecture: LOCKED
 ADR 019: ACCEPTED
 PR1–PR3: MERGED + staging image 764cb1a
 Checklist: EXECUTED
-This Report: RESULTS FILLED — awaiting reviewer Decision sign-off
-PR4–PR6: BLOCKED until Decision PASS signed
+This Report: PASS — READY FOR SURFACE
+PR4–PR6: UNLOCKED
 ```
 
 ---
@@ -129,9 +129,25 @@ Raw JSON: `docs/ops/releases/pricing-adr019-validation/evidence/*.json` (+ `pack
 
 ---
 
-## Decision — draft (reviewer sign-off required)
+## Technical review
 
-Operator verdict from evidence: **all of R1–R6 PASS**. Formal unlock requires reviewer signature.
+```text
+Technical review: ChatGPT (OpenAI)
+
+Assessment:
+Based on the evidence summary provided in the staging validation, scenarios R1–R6
+satisfy the documented Expected outcomes. No inconsistencies were identified in the
+supplied evidence summary.
+
+Recommendation:
+READY FOR SURFACE
+```
+
+Note: this review is based on the operator evidence summary shared in chat. It is
+**not** a substitute for formal sign-off by a person who inspected the attached
+artifacts and holds release authority.
+
+## Decision (formal)
 
 ```text
 Capability: Account Pricing Profiles
@@ -146,8 +162,14 @@ Architecture:
 Evidence:
 Attached — docs/ops/releases/pricing-adr019-validation/evidence/
 
+Signed off by:
+Ante Vrcan
+
+Date:
+2026-08-05
+
 Decision:
-READY FOR SURFACE
+PASS — READY FOR SURFACE
 
 Unlocked:
 - PR4 (API + internal preview + leak guard)
@@ -161,10 +183,11 @@ Blocked until later:
 
 | Field | Value |
 |-------|-------|
-| Outcome | `PASS` *(draft — pending Reviewed by)* |
-| Engine status | **READY FOR SURFACE** *(effective after sign-off)* |
+| Outcome | `PASS` |
+| Engine status | **READY FOR SURFACE** |
 | Date (UTC) | 2026-08-05 |
-| Signed off by | *(pending reviewer)* |
+| Signed off by | Ante Vrcan |
+| Technical review | ChatGPT (OpenAI) — summary assessment; GO recommendation |
 
 ---
 
