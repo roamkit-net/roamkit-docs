@@ -2,14 +2,17 @@
 
 | Field | Value |
 |-------|-------|
-| Status | Draft |
+| Status | **Architecture Review Passed / Frozen** (2026-08) |
 | Date | 2026-08 |
 | Authors | Product / Engineering |
 | Parent | [RoamKit Wallet Platform Vision](../architecture/roamkit-wallet-platform-vision.md) |
 | Also | [Wallet Conversion Boundary](../architecture/wallet-conversion-boundary.md) |
 | Template | [TEMPLATE-wallet.md](./TEMPLATE-wallet.md) |
+| Freeze | [Wallet Architecture Freeze](../architecture/wallet-architecture-freeze.md) |
 
 > This RFC is a proposal. It does **not** amend [ADR 010](../adr/010-polygon-usdt-prepaid-credits.md). No implementation may treat this document as normative until a related ADR is Accepted.
+>
+> **Architecture Freeze:** further modifications require evidence from subsequent research tracks or a new ADR proposal.
 
 ## Problem
 

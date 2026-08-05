@@ -2,11 +2,14 @@
 
 | Field | Value |
 |-------|-------|
-| Status | Draft / explanatory note (non-normative) |
+| Status | **Architecture Frozen** (2026-08) — explanatory note (non-normative) |
 | Date | 2026-08 |
 | Parent | [RoamKit Wallet Platform Vision](./roamkit-wallet-platform-vision.md) |
+| Freeze | [Wallet Architecture Freeze](./wallet-architecture-freeze.md) |
 
 > This note explains **why** the blockchain stops at credit conversion. It does not amend [ADR 010](../adr/010-polygon-usdt-prepaid-credits.md).
+>
+> **Architecture Freeze:** further modifications require evidence from subsequent research tracks or a new ADR proposal.
 
 ## The question everyone will ask
 

@@ -2,15 +2,18 @@
 
 | Field | Value |
 |-------|-------|
-| Status | Draft |
+| Status | **Architecture Review Passed / Frozen** (2026-08) |
 | Date | 2026-08 |
 | Authors | Product / Engineering |
 | Parent | [RoamKit Wallet Platform Vision](../architecture/roamkit-wallet-platform-vision.md) |
 | Also | [Wallet Conversion Boundary](../architecture/wallet-conversion-boundary.md), [RFC 003](./003-wallet-domain-ownership-model.md) |
 | Evidence | [Track 1 Exit Artifact — WalletAddress Assignment](../architecture/wallet-sandbox-artifacts/01-wallet-address-assignment.md) |
 | Template | [TEMPLATE-wallet.md](./TEMPLATE-wallet.md) |
+| Freeze | [Wallet Architecture Freeze](../architecture/wallet-architecture-freeze.md) |
 
 > This RFC is a proposal. It does **not** amend [ADR 010](../adr/010-polygon-usdt-prepaid-credits.md). No implementation may treat this document as normative until a related ADR is Accepted.
+>
+> **Architecture Freeze:** further modifications require evidence from subsequent research tracks or a new ADR proposal. No further rule accretion without that bar — remaining gaps belong to RFC 005+, research tracks, or ADRs.
 
 This RFC is driven **only** by Track 1 Architectural Consequences. It does not reopen Vision debates or introduce Deposit Detection / Funding Provider interface design (RFC 005–006).
 
@@ -215,32 +218,27 @@ Boundary rule:
 
 This RFC is ready to close / promote toward an ADR when:
 
-- [ ] Platform Wallet Infrastructure definition accepted (not “HSM RFC”).
-- [ ] Platform State Ownership table accepted.
-- [ ] HD + Index Registry recovery model accepted.
-- [ ] WalletAddress Allocation Policy accepted (including never-reuse).
-- [ ] Idempotent / concurrency-safe allocation accepted as architectural requirement.
-- [ ] One active address per Account + Chain accepted for v1.
-- [ ] Standing rule accepted: Funding Providers never define `WalletIdentity`.
-- [ ] Deferred custody/MPC paths recorded without blocking v1.
-- [ ] Open questions answered or explicitly deferred to ADR / RFC 005–006.
-- [ ] **Architecture Review** (below) completed with no blocking gaps.
-- [ ] No production code required to accept this RFC as Draft→Ready.
+- [x] Platform Wallet Infrastructure definition accepted (not “HSM RFC”).
+- [x] Platform State Ownership table accepted.
+- [x] HD + Index Registry recovery model accepted.
+- [x] WalletAddress Allocation Policy accepted (including never-reuse).
+- [x] Idempotent / concurrency-safe allocation accepted as architectural requirement.
+- [x] One active address per Account + Chain accepted for v1.
+- [x] Standing rule accepted: Funding Providers never define `WalletIdentity`.
+- [x] Deferred custody/MPC paths recorded without blocking v1.
+- [x] Open questions answered or explicitly deferred to ADR / RFC 005–006.
+- [x] **Architecture Review** completed with no blocking gaps (2026-08).
+- [x] No production code required to accept this RFC as Draft→Ready.
 
 ### Architecture Review (before RFC 005)
 
-Before opening RFC 005 (Funding Provider Interface) or Deposit Detection research, answer:
+**Result (2026-08): Passed — no blocking gaps on Platform Wallet Infrastructure.**
 
-> After RFC 004, is anything still unanswered about **Platform Wallet Infrastructure** itself?
+Remaining open questions in this RFC are **ADR/ops detail** (schema, rotation authority, watch window, sweep gas, seed ceremony, WalletIdentity timing, ADR 010 cutover), not missing infrastructure principles.
 
-| If | Then |
-|----|------|
-| **No** blocking gaps | Mark this RFC Ready for ADR intake; open RFC 005 / detection track only when product needs them |
-| **Yes** | Amend this RFC (or a focused research note) before expanding scope |
+Frozen docs are listed in [Wallet Architecture Freeze](../architecture/wallet-architecture-freeze.md).
 
-Remaining open questions above are **ADR/ops detail**, not missing infrastructure principles — unless review finds a principle gap.
-
-**Next after Architecture Review:** dedicated Wallet ADR (cutover from ADR 010) when implementing; RFC 005 and Deposit Detection / RFC 006 only when product prioritizes them — not automatically next.
+**Next:** RFC 005 (Funding Provider Interface) when product prioritizes funding arrival; Deposit Detection / RFC 006 separately. Dedicated Wallet ADR when implementing cutover from ADR 010.
 
 ---
 
