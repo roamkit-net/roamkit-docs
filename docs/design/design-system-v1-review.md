@@ -180,3 +180,7 @@ COMPLETE
 ```
 
 **Cap6 CLOSED.** Design System v1.0 program complete. Future UI work evolves on this foundation — not via a Cap7 mega-capability.
+
+### Ongoing maintenance rule
+
+> **Every new UI must use existing tokens and Cap2 primitives. If a feature needs a new token or a new primitive, that is a separate decision and a separate small capability — never a drive-by change inside a feature PR.**
