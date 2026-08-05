@@ -1,0 +1,12 @@
+{
+  "scenario": "R4_profile_change",
+  "pricing_profile_slug": "family",
+  "old": {
+    "version": 1,
+    "discount_percent": "5.00"
+  },
+  "pricing_profile_version": 2,
+  "new_discount_percent": "20.00",
+  "PRICING_PROFILES_ENABLED": true,
+  "timestamp_utc": "2026-08-05T22:02:41.003708+00:00"
+}

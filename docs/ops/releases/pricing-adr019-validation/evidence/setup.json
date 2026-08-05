@@ -1,0 +1,13 @@
+{
+  "scenario": "setup",
+  "account_id": "5cc46dd3-cd33-4488-84bd-9e3ebd0bc19a",
+  "balance": "500.000000",
+  "profile_id": "3af82ac5-cd50-4c96-83ef-5502fca1715d",
+  "pricing_profile_slug": "family",
+  "pricing_profile_version": 1,
+  "L": "57.00",
+  "N": "50.00",
+  "C_expected_5pct": "54.15",
+  "PRICING_PROFILES_ENABLED": false,
+  "timestamp_utc": "2026-08-05T22:02:20.351860+00:00"
+}

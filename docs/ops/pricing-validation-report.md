@@ -3,80 +3,135 @@
 **Official decision record** that the account-pricing backend engine was verified on
 staging **before** public API / web / admin surface (PR4–PR6).
 
-Fill this file (or a dated copy under `docs/ops/releases/<release>/evidence/`) **after**
-staging execution of
-[pricing-validation-checklist.md](./pricing-validation-checklist.md).
 Do **not** open PR4 until Decision Outcome = **PASS** and evidence is attached.
+Reviewer sign-off completes the Decision block below.
 
 | Field | Value |
 |-------|-------|
-| Report status | **TEMPLATE — AWAITING STAGING** |
+| Report status | **RESULTS FILLED — AWAITING REVIEWER SIGN-OFF** |
 | Checklist | [Pricing Validation Checklist](./pricing-validation-checklist.md) |
 | ADR | [019 — Account pricing profiles](../adr/019-account-pricing-profiles.md) |
-| Environment | staging |
-| Window start (UTC) | |
-| Window end (UTC) | |
-| Operator | |
-| Reviewed by | |
-| Evidence pack location | |
+| Environment | staging (`api.staging.roamkit.net`) |
+| API image | `ghcr.io/roamkit-net/roamkit-api:764cb1ae88ab5a1c6c1cda293a5e2e5e4770bf03` (PR3) |
+| Package | `discover-in-180days-10gb-px` — `L=57.00`, `N=50.00`, Family 5% → `C=54.15` |
+| Window start (UTC) | 2026-08-05T22:02:03Z |
+| Window end (UTC) | 2026-08-05T22:03:05Z |
+| Operator | Auto (staging evidence run) |
+| Test account | `pricing-val-20260805220203@example.com` / `account_id=5cc46dd3-cd33-4488-84bd-9e3ebd0bc19a` |
+| Reviewed by | *(pending)* |
+| Evidence pack location | [releases/pricing-adr019-validation/evidence/](./releases/pricing-adr019-validation/evidence/) |
 
-## Governance (before fill)
+## Governance
 
 ```text
 Architecture: LOCKED
 ADR 019: ACCEPTED
-PR1–PR3: MERGED
-Checklist: READY FOR STAGING
-This Report: AWAITING RESULTS
-PR4–PR6: BLOCKED
+PR1–PR3: MERGED + staging image 764cb1a
+Checklist: EXECUTED
+This Report: RESULTS FILLED — awaiting reviewer Decision sign-off
+PR4–PR6: BLOCKED until Decision PASS signed
 ```
-
-## Recommended staging order
-
-Execute in this order so a failure points at a layer:
-
-1. Flag OFF (legacy) → same as production charge path  
-2. Flag ON + Family 5% → discount + snapshot + ledger  
-3. Refund → snapshot amount  
-4. Profile changed after purchase → refund unchanged  
-5. Profile archived → refund / replay still work  
-6. Replay → same fingerprint + charged amount  
-7. Preview → **after PR4** only  
 
 ---
 
 ## Results table
 
-Map report rows to checklist scenarios. Fill after staging; leave blank until then.
-
 | Report # | Scenario | Checklist # | Result | Evidence | Notes |
 |----------|----------|-------------|--------|----------|-------|
-| R1 | Legacy (Flag OFF) | 4 | | `order_id`, `ledger_id`, timestamp, flag=OFF | Legacy charge verified |
-| R2 | Family 5% purchase | 1 | | `order_id`, fingerprint, snapshot, ledger | Discount applied correctly |
-| R3 | Refund uses snapshot | 2 or 3 (refund path) | | `refund_ledger_id`, original `C` | Snapshot amount used |
-| R4 | Profile changed → refund | 2 | | Original charge + refund; profile version after edit | No re-resolve |
-| R5 | Archived profile → refund | 3 | | Order snapshot + refund; `archived_at` | Snapshot independent of live profile |
-| R6 | Replay / retry | 6 | | Same `order_id`, idempotency key, single debit | Same fingerprint + charged amount |
-| R7 | Deterministic preview | 7 | **BLOCKED** until PR4 | Preview JSON + purchase snapshot | Complete in post-PR4 addendum |
+| R1 | Legacy (Flag OFF) | 4 | **PASS** | order `188`; ledger `18a845e6-…feb1`; charge `57.00`; flag=false; `2026-08-05T22:02:22Z` | Charged `L`; fingerprint unused (`-|-|-`) |
+| R2 | Family 5% purchase | 1 | **PASS** | order `189`; slug `family` v1; hash `2e385d16…cdc3`; fp `3af82ac5…\|1\|2e385d16…`; ledger `9c782f75-…7c22`; charge `54.15`; flag=true | `money_round(57×0.95)=54.15` |
+| R3 | Refund uses snapshot | 2 | **PASS** | same order `189`; `refund_ledger_id=aa5f7785-…ed49b`; refund `+54.15` | Ops credit from `Order.retail_price_usd` |
+| R4 | Profile changed → refund | 2 | **PASS** | profile → 20% v2; refund still `54.15`; live resolve hyp `50.00` (wholesale floor) | No re-resolve; hyp ≠ snapshot |
+| R5 | Archived profile → refund | 3 | **PASS** | order `190`; archive `2026-08-05T22:02:46Z`; refund `b4711d44-…cb993` `+54.15`; hyp after archive `57.00` | Snapshot independent of profile state |
+| R6 | Replay / retry | 6 | **PASS** | order `191`; debit_count `1→1`; same_order; fp unchanged; key `pricing-r6-1785967368-10955` | Airalo 429 on first fulfill → compensate from snapshot; replay no second debit |
+| R7 | Deterministic preview | 7 | **BLOCKED** until PR4 | — | Complete in post-PR4 addendum |
 
-### Per-PASS artifacts (minimum)
+### Expected vs Actual (summary)
 
-For each **PASS** row, evidence must include (or link to):
+| # | Expected | Actual |
+|---|----------|--------|
+| R1 | Charge `L=57.00` with flag OFF | `57.00` debit; flag false |
+| R2 | Charge `C=54.15` with Family 5% | `54.15`; profile snapshot present |
+| R3 | Refund = snapshotted `C` | `+54.15` |
+| R4 | After 20% edit, refund still `C` (not live resolve) | refund `54.15`; live hyp `50.00` |
+| R5 | After archive, refund still snapshotted charge | refund `54.15`; archive recorded |
+| R6 | Same order, one debit, same fingerprint | PASS (see `R6.json` retry_logs) |
 
-- `order_id` (or `topup_id`)
-- `account_id`
-- `pricing_profile_slug` / `pricing_profile_version` (when flag ON)
-- `pricing_context_hash` (and quote fingerprint if recorded)
-- `ledger_entry_id` (+ refund id when applicable)
-- charged amount (`retail_price_usd` / Topup `amount`)
-- timestamp (UTC)
-- `PRICING_PROFILES_ENABLED` value for that run
+### Per-scenario evidence (minimal fields)
+
+**R1**
+
+| Field | Value |
+|-------|-------|
+| order_id | `188` |
+| account_id | `5cc46dd3-cd33-4488-84bd-9e3ebd0bc19a` |
+| pricing_profile_slug / version | *(empty / null — flag OFF)* |
+| quote_fingerprint | `-|-|-` |
+| pricing_context_hash | *(empty)* |
+| ledger_entry_id | `18a845e6-1846-4c6d-9e5d-6386e343feb1` |
+| charged amount | `57.00` |
+| timestamp | `2026-08-05T22:02:22.476728+00:00` |
+| PRICING_PROFILES_ENABLED | `false` |
+
+**R2**
+
+| Field | Value |
+|-------|-------|
+| order_id | `189` |
+| account_id | `5cc46dd3-cd33-4488-84bd-9e3ebd0bc19a` |
+| pricing_profile_slug | `family` |
+| pricing_profile_version | `1` |
+| quote_fingerprint | `3af82ac5-cd50-4c96-83ef-5502fca1715d\|1\|2e385d1657fe279c57623d426b929f166a0f2c4ad20764c4cc95e3fd4f89cdc3` |
+| pricing_context_hash | `2e385d1657fe279c57623d426b929f166a0f2c4ad20764c4cc95e3fd4f89cdc3` |
+| ledger_entry_id | `9c782f75-4d17-4adf-8b44-62d07bd97c22` |
+| charged amount | `54.15` |
+| timestamp | `2026-08-05T22:02:39.933871+00:00` |
+| PRICING_PROFILES_ENABLED | `true` |
+
+**R3 / R4** (same purchase `189`)
+
+| Field | Value |
+|-------|-------|
+| order_id | `189` |
+| refund_ledger_id | `aa5f7785-d809-409b-903b-6c63947ed49b` |
+| refund amount | `54.150000` |
+| snapshot_used | `54.15` |
+| profile after edit | `family` discount `20.00`, version `2` |
+| hypothetical_live_resolve | `50.00` (≠ snapshot) |
+| PRICING_PROFILES_ENABLED | `true` |
+
+**R5**
+
+| Field | Value |
+|-------|-------|
+| order_id | `190` |
+| charged / refund | `54.15` / `+54.150000` |
+| refund_ledger_id | `b4711d44-ca4a-4b17-b64e-5ff5eaccb993` |
+| archived_at | `2026-08-05T22:02:46.042419+00:00` |
+| hypothetical_live_resolve after archive | `57.00` (≠ snapshot) |
+
+**R6**
+
+| Field | Value |
+|-------|-------|
+| order_id | `191` |
+| account_id | `5cc46dd3-cd33-4488-84bd-9e3ebd0bc19a` |
+| pricing_profile_slug / version | `family` / `1` |
+| quote_fingerprint | `5b677c6b-0cf7-4f03-a0bc-8fe675d3a136\|1\|139feec863ce06d414dab9314366ec0e46945387ce3fd4a28345294e42ad3894` |
+| pricing_context_hash | `139feec863ce06d414dab9314366ec0e46945387ce3fd4a28345294e42ad3894` |
+| ledger_entry_id | `1a697fb5-2247-482c-a358-279c680f3727` (single debit) |
+| charged amount | `54.15` |
+| retry_logs | `idempotency_key=pricing-r6-1785967368-10955 replay; debit_count 1->1; same_order=True` |
+| PRICING_PROFILES_ENABLED | `true` |
+| Notes | First fulfill hit Airalo `429`; compensate refunded snapshot `54.15`; replay returned same order |
+
+Raw JSON: `docs/ops/releases/pricing-adr019-validation/evidence/*.json` (+ `pack.json`).
 
 ---
 
-## Decision — PASS template
+## Decision — draft (reviewer sign-off required)
 
-Use when R1–R6 are all **PASS** and evidence is attached (R7 may remain BLOCKED).
+Operator verdict from evidence: **all of R1–R6 PASS**. Formal unlock requires reviewer signature.
 
 ```text
 Capability: Account Pricing Profiles
@@ -89,7 +144,7 @@ Architecture:
 ✓ Validated
 
 Evidence:
-Attached (see Evidence pack location / table above)
+Attached — docs/ops/releases/pricing-adr019-validation/evidence/
 
 Decision:
 READY FOR SURFACE
@@ -106,50 +161,10 @@ Blocked until later:
 
 | Field | Value |
 |-------|-------|
-| Outcome | `PASS` |
-| Engine status | **READY FOR SURFACE** |
-| Date (UTC) | |
-| Signed off by | |
-
----
-
-## Decision — FAIL template
-
-Use when any of R1–R6 is **FAIL**. Do **not** edit the checklist definition; record failure here.
-
-```text
-Capability: Account Pricing Profiles
-
-Validation: FAIL
-
-Blocked:
-- PR4
-- PR5
-- PR6
-
-Failed scenario(s):
-- R# …
-
-Root Cause:
-…
-
-Required Fix:
-… (backend / config / ops — not a checklist rewrite)
-
-Re-validation:
-Scenarios R#–R# (re-run after fix; attach new evidence)
-
-Decision:
-NOT READY FOR SURFACE
-```
-
-| Field | Value |
-|-------|-------|
-| Outcome | `FAIL` |
-| Engine status | **NOT READY FOR SURFACE** |
-| Date (UTC) | |
-| Signed off by | |
-| Tracking issue / PR for fix | |
+| Outcome | `PASS` *(draft — pending Reviewed by)* |
+| Engine status | **READY FOR SURFACE** *(effective after sign-off)* |
+| Date (UTC) | 2026-08-05 |
+| Signed off by | *(pending reviewer)* |
 
 ---
 
