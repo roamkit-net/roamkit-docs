@@ -81,7 +81,7 @@ Cap2 Merge leftovers remain migration backlog.
 |-------|--------|-----|
 | Cap4.1 AuthShell chrome | ✅ Pilot Freeze | [web #113](https://github.com/roamkit-net/roamkit-web/pull/113) |
 | Cap4.2 Form theme binding | ✅ staging `bb79f90` | [web #114](https://github.com/roamkit-net/roamkit-web/pull/114) |
-| Cap4.3 Validation | ✅ | Cap4.3 suite (this close) |
+| Cap4.3 Validation | ✅ | [web #115](https://github.com/roamkit-net/roamkit-web/pull/115) |
 | **Cap4 (Auth Polish)** | **CLOSED** | Cap4.1–4.3 |
 
 ### Cap4 close note
