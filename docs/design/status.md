@@ -173,18 +173,20 @@ Chrome consistency matrix: Button / Input / Alert / Card / Tabs / Stepper / Avat
 | Doc | Status |
 |-----|--------|
 | [Design Lock](./cap6-consistency-review-lock.md) | **Accepted** |
-| [Implementation Plan](./cap6-implementation-plan.md) | **Draft — awaiting acceptance** |
+| [Implementation Plan](./cap6-implementation-plan.md) | **Accepted** |
 | Close artifact | `docs/design/design-system-v1-review.md` (at Cap6 close) |
 
+| Slice | Status | Notes |
+|-------|--------|-------|
+| Cap6.1 Routes + Primitives | ✅ | staging `fb86a52` — all PASS |
+| Cap6.2 Tokens + A11y + Legacy | ▶ next | |
+| Cap6.3 Review doc + close | pending | |
+
 ```text
-Cap6.1 Routes + Primitives
-  → Cap6.2 Tokens + A11y + Legacy
-    → Cap6.3 Docs review + design-system-v1-review.md + CLOSE
+Cap6.1 ✅ → Cap6.2 ▶ → Cap6.3
 ```
 
-Audit order: Routes → Primitives → Tokens → Accessibility → Legacy → Documentation.
-
-Do not start Cap6.1 until Implementation Plan is Accepted. `roamkit-web` only for dispositioned **REGRESSION**.
+`roamkit-web` only for dispositioned **REGRESSION** (none in Cap6.1).
 
 ## Inventory
 
