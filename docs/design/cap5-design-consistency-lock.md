@@ -2,15 +2,16 @@
 
 | Field | Value |
 |-------|-------|
-| Status | **Draft — awaiting acceptance** |
+| Status | **Accepted** |
 | Date | 2026-08 |
+| Accepted | 2026-08-05 |
 | Capability | Cap5 — Design Consistency Polish (visual chrome only) |
-| Related | [ADR 016](../adr/016-web-design-tokens.md), [status.md](./status.md), Cap2 Review (`roamkit-web/components/ui/CAP2_REVIEW.md`), [Cap3 Design Lock](./cap3-appshell-design-lock.md) (CLOSED), [Cap4 Design Lock](./cap4-auth-design-lock.md) (CLOSED) |
+| Related | [ADR 016](../adr/016-web-design-tokens.md), [status.md](./status.md), Cap2 Review (`roamkit-web/components/ui/CAP2_REVIEW.md`), [Cap3 Design Lock](./cap3-appshell-design-lock.md) (CLOSED), [Cap4 Design Lock](./cap4-auth-design-lock.md) (CLOSED), [Implementation Plan](./cap5-implementation-plan.md) |
 | Pattern | Same as Cap1–Cap4: **Design Lock → Implementation Plan → code** |
 | Prerequisite | Design System **v1.0** (Cap1–Cap4) CLOSED |
 
 This document locks Cap5 decisions so implementation does not wander.  
-**Do not reopen locked decisions.** Execution detail lives in the Implementation Plan (not yet drafted).
+**Do not reopen locked decisions.** Execution detail lives in the Implementation Plan.
 
 Cap1–Cap4 remain **CLOSED**. Cap5 must not reopen them except for a true production regression.
 
@@ -249,24 +250,21 @@ Then mark Cap5 **CLOSED** in [status.md](./status.md). Cap6 may open (audit only
 ## Process (locked)
 
 ```text
-Design Lock (this doc) — Draft → Accepted
+Design Lock (this doc) ✅ Accepted
   → Implementation Plan — Draft → Accepted
-    → Cap5.N slices (one concern per PR)
-      → Validation + close
+    → Cap5.1 Tabs (pilot) → Pilot Freeze → Cap5.2 → Cap5.3 → Cap5.4
 ```
 
-Do **not** open `roamkit-web` Cap5 code until Design Lock is **Accepted** and Implementation Plan is **Accepted**.
+Do **not** open `roamkit-web` Cap5 code until Implementation Plan is **Accepted**.
 
-Suggested slice shape (non-binding until Plan):
+Slice shape (locked by Implementation Plan):
 
 ```text
-Cap5.1  Tabs theme
-Cap5.2  Stepper pills theme
-Cap5.3  Avatar trigger chrome
-Cap5.4  Validation + close (matrix + Cap3.5 allowlist cleared)
+Cap5.1  Tabs (pilot) → Pilot Freeze
+Cap5.2  Stepper pills
+Cap5.3  Avatar trigger
+Cap5.4  Validation + Legacy Chrome Audit + close
 ```
-
-Exact slices live in the Implementation Plan.
 
 ---
 
@@ -274,8 +272,8 @@ Exact slices live in the Implementation Plan.
 
 | State | Meaning |
 |-------|---------|
-| **Draft — awaiting acceptance** | **Current** |
-| Accepted | Cap5 Implementation Plan may be drafted |
+| Draft — awaiting acceptance | Closed |
+| **Accepted** | **Current** — Implementation Plan may proceed |
 | Done | Cap5.N closed Cap5 |
 
-**Next after Accept:** Cap5 Implementation Plan draft (still no web code until Plan Accepted).
+**Next:** Cap5 Implementation Plan acceptance — then Cap5.1 (no web code until Plan Accepted).
