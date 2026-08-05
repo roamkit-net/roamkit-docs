@@ -13,7 +13,7 @@ Non-normative — not an ADR. Update when a capability closes (or when Cap plann
 | Cap3 AppShell Variant A | ✅ | [#103](https://github.com/roamkit-net/roamkit-web/pull/103)–[#105](https://github.com/roamkit-net/roamkit-web/pull/105), [#110](https://github.com/roamkit-net/roamkit-web/pull/110)–[#112](https://github.com/roamkit-net/roamkit-web/pull/112) | [#74](https://github.com/roamkit-net/roamkit-docs/pull/74)–[#79](https://github.com/roamkit-net/roamkit-docs/pull/79), [#89](https://github.com/roamkit-net/roamkit-docs/pull/89), [#100](https://github.com/roamkit-net/roamkit-docs/pull/100)–[#101](https://github.com/roamkit-net/roamkit-docs/pull/101) |
 | Cap4 Auth Polish | ✅ | [#113](https://github.com/roamkit-net/roamkit-web/pull/113)–[#115](https://github.com/roamkit-net/roamkit-web/pull/115) | [#102](https://github.com/roamkit-net/roamkit-docs/pull/102)–[#104](https://github.com/roamkit-net/roamkit-docs/pull/104), [#106](https://github.com/roamkit-net/roamkit-docs/pull/106) |
 | Cap5 Design Consistency Polish | ✅ | [#116](https://github.com/roamkit-net/roamkit-web/pull/116)–[#119](https://github.com/roamkit-net/roamkit-web/pull/119) | [#109](https://github.com/roamkit-net/roamkit-docs/pull/109)–[#114](https://github.com/roamkit-net/roamkit-docs/pull/114), [#118](https://github.com/roamkit-net/roamkit-docs/pull/118), [#120](https://github.com/roamkit-net/roamkit-docs/pull/120)–[#121](https://github.com/roamkit-net/roamkit-docs/pull/121) |
-| Cap6 Consistency Review | 🟡 Design Lock draft | — (audit; zero code OK) | Cap6 Design Lock (this PR) |
+| Cap6 Consistency Review | 🟡 Design Lock ✅; Plan draft | — (audit; zero code OK) | [#122](https://github.com/roamkit-net/roamkit-docs/pull/122); Accept + Plan draft (this PR) |
 
 ## Notes
 
