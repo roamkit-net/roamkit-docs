@@ -164,8 +164,13 @@ during staging. Leave empty until executed.
 
 ## Pricing Validation Report (fill after staging)
 
-Copy results into this block when all runnable scenarios are done. Attach evidence
-under `docs/ops/releases/…/evidence/` or link staging admin / ticket IDs.
+Official decision record: **[pricing-validation-report.md](./pricing-validation-report.md)**.
+
+Copy scenario results into that report (PASS or FAIL template). Attach evidence
+under `docs/ops/releases/<release>/evidence/` or link staging admin / ticket IDs.
+Do not mark READY FOR SURFACE in the checklist alone — the Report Decision block is authoritative.
+
+Working notes while executing may still use the table below:
 
 | Scenario | Result | Evidence ref |
 |----------|--------|--------------|
