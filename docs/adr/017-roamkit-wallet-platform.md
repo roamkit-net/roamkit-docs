@@ -2,7 +2,7 @@
 
 | Field | Value |
 |-------|-------|
-| Status | **Proposed** |
+| Status | **Accepted — Architecture Complete** |
 | Date | 2026-08 |
 | Deciders | Product / Engineering (post RFC 003–006 Architecture Reviews) |
 | Index | [Wallet Architecture Index](../architecture/wallet-architecture-index.md) |
@@ -143,24 +143,37 @@ Cutover plan (shared wallet → per-user addresses) is **out of scope for this A
 
 ## Status
 
-**Proposed** — Architecture Review of RFC 006 passed; this ADR is the acceptance gate before Wallet capabilities.
+**Accepted — Architecture Complete** (2026-08).
 
-When **Accepted**:
+The Wallet RFC cycle (003–006) is closed. This ADR is the binding constitution for Wallet implementation. Further architecture docs for this cycle are not opened unless implementation evidence requires a new ADR (or freeze-process amendment).
 
-- Treat Normative Sources, standing rules, and Implementation Constraints as binding for Wallet PRs.
-- Do not open new Wallet RFCs for this cycle without freeze-process evidence.
-- Prefer small capability/implementation PRs and, if needed, focused ADRs (e.g. Polygon Chain Policy numbers, schema, cutover).
+Binding from acceptance:
+
+- Normative Sources, standing rules, and Implementation Constraints apply to all Wallet PRs.
+- Review question for implementation: **Is this PR consistent with ADR 017?**
+- Prefer small capabilities (Address Allocation → Observation → Credit Conversion → Funding adapters), each with its own DoD.
+- Do not open RFC 007 / Vision v2 / ADR 018 for the same foundation without evidence of a real gap.
+
+### Wallet PR header (required)
+
+Every Wallet-related PR must start with:
+
+```text
+Implements:
+ADR 017
+RFC 00X
+Capability: <name>
+```
+
+Example: `Capability: Wallet Address Allocation` with `RFC 004`.
 
 ### ADR Exit Criteria
 
-ADR 017 is considered **done as a living constitution** (not “never revisited”) when:
+ADR 017 remains Accepted as constitution. Operational “done” progress is tracked by capabilities under milestone **Wallet Platform v1**:
 
-1. Wallet capabilities and related PRs **reference ADR 017** as the binding Wallet decision.
-2. The **first** Wallet capability implements against Normative Sources **without deviation**.
-3. Any intentional deviation requires a **new ADR** (or Accepted revision of this one) before merge.
-4. Production cutover from ADR 010 shared wallet is tracked as an **explicit** follow-on plan/ADR — not implied by accepting this document alone.
-
-Until then, status remains Proposed (or Accepted-with-open-cutover if Accepted before cutover completes).
+1. Wallet capabilities and related PRs **reference ADR 017**.
+2. Capabilities implement Normative Sources **without deviation** (or open a new ADR first).
+3. Production cutover from ADR 010 shared wallet remains an **explicit** follow-on plan/ADR — not implied by this acceptance alone.
 
 ## Related
 
