@@ -179,14 +179,14 @@ Chrome consistency matrix: Button / Input / Alert / Card / Tabs / Stepper / Avat
 | Slice | Status | Notes |
 |-------|--------|-------|
 | Cap6.1 Routes + Primitives | ✅ | staging `fb86a52` — all PASS |
-| Cap6.2 Tokens + A11y + Legacy | ▶ next | |
-| Cap6.3 Review doc + close | pending | |
+| Cap6.2 Tokens + A11y + Legacy | ✅ | PASS (+ MINOR legacy links documented) |
+| Cap6.3 Review doc + close | ▶ next | |
 
 ```text
-Cap6.1 ✅ → Cap6.2 ▶ → Cap6.3
+Cap6.1 ✅ → Cap6.2 ✅ → Cap6.3 ▶
 ```
 
-`roamkit-web` only for dispositioned **REGRESSION** (none in Cap6.1).
+`roamkit-web` only for dispositioned **REGRESSION** (none in Cap6.1–6.2).
 
 ## Inventory
 
