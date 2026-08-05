@@ -9,7 +9,7 @@ This repo is the **source of truth for documentation** — ADRs and standards ar
 | Path | Purpose |
 |------|---------|
 | [ADR_INDEX.md](./ADR_INDEX.md) | Index of all Architecture Decision Records |
-| [docs/architecture/](./docs/architecture/) | System overview, directory layout, provider patterns |
+| [docs/architecture/](./docs/architecture/) | System overview, directory layout, provider patterns, [Wallet platform vision](./docs/architecture/roamkit-wallet-platform-vision.md) (Draft) |
 | [docs/adr/](./docs/adr/) | ADR 001–013 (decisions; see [ADR_INDEX](./ADR_INDEX.md) for status) |
 | [docs/ops/](./docs/ops/) | **Operations Handbook** — Launch Gates, cutover, incidents, maturity |
 | [docs/rfcs/](./docs/rfcs/) | Request for Comments — proposed features before implementation |

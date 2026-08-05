@@ -106,4 +106,5 @@ Application processes (`runserver`, Celery, `npm run dev`) run on the WSL host, 
 
 - [Directory structure](./directory-structure.md)
 - [Provider abstractions](./provider-abstractions.md)
+- [RoamKit Wallet Platform — Architecture Vision](./roamkit-wallet-platform-vision.md) (Draft / Vision; non-normative)
 - [ADR index](../../ADR_INDEX.md)
