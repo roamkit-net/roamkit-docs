@@ -26,6 +26,7 @@ every **6 months** (Architecture Decision Review: still valid?).
 | [013](./docs/adr/013-production-launch.md) | Production launch | Accepted | 2026-07 |
 | [014](./docs/adr/014-esim-lifecycle-install-telemetry.md) | eSIM lifecycle and install telemetry | Accepted | 2026-07 |
 | [015](./docs/adr/015-google-oauth-gis.md) | Google OAuth via GIS ID token | Accepted | 2026-07 |
+| [016](./docs/adr/016-web-design-tokens.md) | RoamKit web design tokens | Accepted | 2026-08 |
 
 ## Billing ADR hierarchy
 
