@@ -2,18 +2,19 @@
 
 | Field | Value |
 |-------|-------|
-| Status | Draft |
+| Status | **Architecture Review Passed / Frozen** (2026-08) |
 | Date | 2026-08 |
 | Authors | Product / Engineering |
 | Parent | [RoamKit Wallet Platform Vision](../architecture/roamkit-wallet-platform-vision.md) |
 | Depends on | [RFC 003](./003-wallet-domain-ownership-model.md) (Frozen), [RFC 004](./004-platform-wallet-infrastructure.md) (Frozen), [RFC 005](./005-funding-provider-interface.md) (Frozen) |
 | Freeze context | [Wallet Architecture Freeze](../architecture/wallet-architecture-freeze.md) |
 | Index | [Wallet Architecture Index](../architecture/wallet-architecture-index.md) |
+| Wallet ADR | [ADR 017 — RoamKit Wallet Platform](../adr/017-roamkit-wallet-platform.md) (Proposed) |
 | Template | [TEMPLATE-wallet.md](./TEMPLATE-wallet.md) |
 
-> This RFC is a proposal. It does **not** amend [ADR 010](../adr/010-polygon-usdt-prepaid-credits.md). No implementation may treat this document as normative until a related ADR is Accepted.
+> This RFC is a proposal relative to production until [ADR 017](../adr/017-roamkit-wallet-platform.md) (or successor) is Accepted. It does **not** amend [ADR 010](../adr/010-polygon-usdt-prepaid-credits.md) by itself.
 >
-> Do not amend frozen Vision / RFC 003–005 unless [freeze rules](../architecture/wallet-architecture-freeze.md) are met.
+> **Architecture Freeze:** further modifications require evidence from subsequent research tracks or a new ADR proposal.
 
 ---
 
@@ -282,23 +283,27 @@ Primary adapter choice is **out of scope** (research / ADR).
 
 This RFC is ready for Architecture Review / freeze when:
 
-- [ ] Observation State Machine accepted.
-- [ ] Observation Identity (`Chain + TxHash + LogIndex`) accepted.
-- [ ] Confirmation Policy as chain-agnostic abstraction accepted.
-- [ ] Observation Window lifecycle accepted (without hardcoded durations).
-- [ ] Credit Conversion Trigger = Confirmed Observation accepted.
-- [ ] Duplicate Observation / idempotency accepted.
-- [ ] Reorg behavior before/after Credited accepted.
-- [ ] Adapters listed as non-SoT accepted.
-- [ ] Open questions deferred to research/ADR without blocking the rules.
-- [ ] Frozen RFC 003–005 unchanged except via freeze process.
+- [x] Observation State Machine accepted.
+- [x] Observation Identity (`Chain + TxHash + LogIndex`) accepted.
+- [x] Confirmation Policy as chain-agnostic abstraction accepted.
+- [x] Observation Window lifecycle accepted (without hardcoded durations).
+- [x] Credit Conversion Trigger = Confirmed Observation accepted.
+- [x] Duplicate Observation / idempotency accepted.
+- [x] Reorg behavior before/after Credited accepted.
+- [x] Adapters listed as non-SoT accepted.
+- [x] Open questions deferred to research/ADR without blocking the rules.
+- [x] Frozen RFC 003–005 unchanged except via freeze process.
+- [x] **Architecture Review PASS** (2026-08).
 
-**Next after freeze:** **Wallet ADR** (implementable architecture + Chain Policy parameters + cutover from ADR 010). Optional terminology cleanup PR (Vision/Sandbox “Deposit Key” / “Deposit Detection”) only after this RFC is frozen. No further Wallet RFCs required for this cycle.
+**Architecture Review result:** PASS — Observation SM, Identity, Confirmation Policy, Credit Trigger, Duplicate Observation.
+
+**Next:** [ADR 017 — RoamKit Wallet Platform](../adr/017-roamkit-wallet-platform.md) (Proposed). Optional terminology cleanup PR after freeze. No further Wallet RFCs for this cycle.
 
 ---
 
 ## Related
 
+- [ADR 017 — RoamKit Wallet Platform](../adr/017-roamkit-wallet-platform.md)
 - [Wallet Architecture Index](../architecture/wallet-architecture-index.md)
 - [Wallet Architecture Freeze](../architecture/wallet-architecture-freeze.md)
 - [Cross-RFC Consistency Review](../architecture/wallet-sandbox-artifacts/02-cross-rfc-consistency-review.md)
