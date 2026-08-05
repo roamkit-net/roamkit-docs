@@ -80,13 +80,15 @@ Cap1 is architectural only:
 
 ### Roadmap (separate PRs)
 
-1. Cap1 — tokens + this ADR (this decision)
-2. Cap2 — shared UI primitives (theme-bound, not brand-direct)
-3. Cap2b — component inventory with Status: Reuse / Merge / Replace / Delete
+1. Cap1 — tokens + this ADR (this decision) — **done**
+2. Cap2b — component inventory with Status: Reuse / Merge / Replace / Delete (before Cap2)
+3. Cap2 — shared UI primitives (theme-bound, not brand-direct; zero visual)
 4. Cap3 — AppShell Variant A (dark shell + light elevated cards)
 5. Cap4 — Auth polish onto shared tokens/primitives
 6. Cap5 — iconography / empty states / illustrations
 7. Cap6 — consistency review
+
+Inventory live doc: [component-inventory.md](../design/component-inventory.md).
 
 ## Consequences
 
