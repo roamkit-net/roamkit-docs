@@ -2,9 +2,9 @@
 
 Evidence pack for **PR B1 → B2**: Android eSIM install from browser.
 
-Related code: `roamkit-web` `buildAndroidUniversalLink`, `buildAndroidInstallActions`,
-`launchInstallAction`, `NEXT_PUBLIC_ANDROID_LPA_DEEP_LINK` (default **off** in
-production bake; staging may be `1`).
+Related code: `roamkit-web` `buildAndroidUniversalLink`, `buildAndroidInstallAction`,
+`launchInstallAction`, `NEXT_PUBLIC_ANDROID_LPA_DEEP_LINK` (staging bake) /
+`NEXT_PUBLIC_ANDROID_LPA_DEEP_LINK_PRODUCTION` (production bake; empty = off).
 
 ## Security
 
@@ -66,9 +66,15 @@ Enable production flag only if:
 - Samsung pass rate >95% on broader matrix (Pixel/Xiaomi follow-up OK as later)
 - No critical browser bugs
 - Fallback (guide + QR) confirmed — already on setup page
+
+2026-08-06 — Production bake enabled via
+`NEXT_PUBLIC_ANDROID_LPA_DEEP_LINK_PRODUCTION=1` (Ship B2). Kill switch: clear
+that Actions var and redeploy `main`.
 ```
 
 ## Kill switch
 
-`NEXT_PUBLIC_ANDROID_LPA_DEEP_LINK` — production bake stays empty until explicit
-enable. Staging may keep `1`. Disable immediately if One UI / GMS regresses.
+- Staging: `NEXT_PUBLIC_ANDROID_LPA_DEEP_LINK` (repo Actions var; may stay `1`).
+- Production: `NEXT_PUBLIC_ANDROID_LPA_DEEP_LINK_PRODUCTION` — set to `1` to
+  bake Install eSIM CTA; clear/empty and rebuild `main` to disable immediately
+  if One UI / GMS regresses.
