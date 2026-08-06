@@ -10,6 +10,7 @@ Non-normative ops view of capability lifecycle. Architecture stays in ADRs.
 | Billing HTTP `/api/v1/billing/` | ✅ | ✅ | ✅ | ✅ | Criterion #3 public DoD |
 | WalletConnect deposit UX | ✅ | ✅ | ⏳ | ⏳ | Flag OFF at first cutover |
 | Subscriptions service | ✅ | ✅ | ❌ | ❌ | `SUBSCRIPTIONS_ENABLED=false` |
+| eSIM Auto Top-up v1 | ✅ | ❌ | ❌ | ❌ | Design lock: [esim-auto-topup-v1-design-lock.md](../design/esim-auto-topup-v1-design-lock.md); ≠ Subscription; does not amend ADR 010 |
 | Credit vouchers (ADR 011) | ✅ | ❌ | ❌ | ❌ | Blocked until **after Phase 7**: [voucher-pr1-kickoff.md](./voucher-pr1-kickoff.md); [Airalo freeze](./airalo-go-live-readiness/README.md) |
 | Billing extensibility (ADR 012) | ✅ | ✅ (docs) | n/a | n/a | Constitution, not a runtime feature |
 | Production platform (ADR 013 PR1) | ✅ | ✅ | ✅ | ✅ | Gate D GO + Phase 4 Complete — [phase-4-complete.md](./releases/1.0.0/evidence/phase-4-complete.md) |
@@ -36,6 +37,7 @@ Update at each Launch Gate milestone, Airalo go-live phase exit, when vouchers s
 - [Launch Gates](./launch-gates.md)
 - [Airalo Go-Live Readiness](./airalo-go-live-readiness/README.md)
 - [ADR 010](../adr/010-polygon-usdt-prepaid-credits.md)
+- [eSIM Auto Top-up v1 Design Lock](../design/esim-auto-topup-v1-design-lock.md)
 - [ADR 013](../adr/013-production-launch.md)
 - [Production readiness review](./production-readiness-review.md)
 - [Go-live checklist](./production-go-live-checklist.md)
