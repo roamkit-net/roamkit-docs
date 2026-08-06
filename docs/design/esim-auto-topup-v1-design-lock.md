@@ -14,6 +14,21 @@ This document locks Auto Top-up v1 so PR2–PR5 implement an accepted design.
 
 This design **does not** amend ADR 010 financial invariants (`balance >= 0`, `CreditService` sole mutator, append-only ledger).
 
+### Locked v1 checklist (implementers)
+
+Everything below is **in scope for PR2–PR5**. Do not drop items; do not add product features outside this list.
+
+| Item | Locked detail |
+|------|----------------|
+| `cooldown_until` | Set on successful auto top-up; default 15 min (`AUTO_TOPUP_COOLDOWN_SECONDS=900`); beat skips trigger while active |
+| Usage freshness | Never buy on stale cache; max age 10 min; refresh first; skip if refresh fails |
+| `status` + `reason` | Coarse status (`active` / `paused` / `blocked` / `disabled`) + separate reason codes |
+| Rollout | `AUTO_TOPUP_ENABLED` + mode `off` → `staff` → `allowlist` → `percent` → `all` |
+| `version` / `If-Match` | Optimistic concurrency on policy mutate; stale write → 409 |
+| Domain events | `AutoTopupSucceeded`, `AutoTopupPolicyCreated`, `AutoTopupPolicyUpdated` (+ funds-pause CTA path) |
+| Admin support fields | Read-only: last trigger, status, reason, last Topup, last idempotency key, `cooldown_until` |
+| Also required | `minimum_age`; provider timeout ≠ pause; idempotency layered with cooldown/freshness; Prometheus metrics; DoD test matrix |
+
 ---
 
 ## One-sentence product goal
