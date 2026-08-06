@@ -106,6 +106,7 @@ Application processes (`runserver`, Celery, `npm run dev`) run on the WSL host, 
 
 - [Directory structure](./directory-structure.md)
 - [Provider abstractions](./provider-abstractions.md)
+- [eSIM Auto Top-up v1 — Design Lock](../design/esim-auto-topup-v1-design-lock.md) (Accepted; does not amend ADR 010)
 - [RoamKit Wallet Platform — Architecture Vision](./roamkit-wallet-platform-vision.md) (Draft / Vision; non-normative)
 - [Wallet Conversion Boundary](./wallet-conversion-boundary.md) (Draft; explanatory)
 - [Wallet Sandbox](./wallet-sandbox.md) (Draft; research framework)
