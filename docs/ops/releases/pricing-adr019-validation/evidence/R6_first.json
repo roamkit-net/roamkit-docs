@@ -1,0 +1,39 @@
+{
+  "scenario": "R6_first",
+  "timestamp_utc": "2026-08-05T22:02:49.305546+00:00",
+  "PRICING_PROFILES_ENABLED": true,
+  "order_id": "191",
+  "order_status": "failed",
+  "account_id": "5cc46dd3-cd33-4488-84bd-9e3ebd0bc19a",
+  "package_external_id": "discover-in-180days-10gb-px",
+  "list_price_usd": "57.00",
+  "retail_price_usd": "54.15",
+  "net_price_usd": "50.00",
+  "pricing_profile_slug": "family",
+  "pricing_profile_version": 1,
+  "pricing_profile_id": "5b677c6b-0cf7-4f03-a0bc-8fe675d3a136",
+  "pricing_reason": "pricing_profile",
+  "pricing_context_hash": "139feec863ce06d414dab9314366ec0e46945387ce3fd4a28345294e42ad3894",
+  "quote_fingerprint": "5b677c6b-0cf7-4f03-a0bc-8fe675d3a136|1|139feec863ce06d414dab9314366ec0e46945387ce3fd4a28345294e42ad3894",
+  "snapshot_schema_version": 1,
+  "idempotency_key": "pricing-r6-1785967368-10955",
+  "ledger_entry_id": "1a697fb5-2247-482c-a358-279c680f3727",
+  "ledger_debits": [
+    {
+      "ledger_entry_id": "1a697fb5-2247-482c-a358-279c680f3727",
+      "delta": "-54.150000",
+      "created_at": "2026-08-05T22:02:49.271178+00:00"
+    }
+  ],
+  "ledger_refunds": [
+    {
+      "ledger_entry_id": "9ae41424-0620-4592-9c49-973adb3fa246",
+      "delta": "54.150000",
+      "created_at": "2026-08-05T22:02:49.300497+00:00"
+    }
+  ],
+  "charged_amount": "54.15",
+  "expected_legacy_L": "57.00",
+  "expected_family_5pct_C": "54.15",
+  "provider_error": "AiraloClientError: Airalo API returned 429 for POST /v2/token"
+}
