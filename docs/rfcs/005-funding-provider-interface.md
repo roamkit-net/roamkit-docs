@@ -1,0 +1,218 @@
+# RFC 005: Funding Provider Interface
+
+| Field | Value |
+|-------|-------|
+| Status | **Architecture Review Passed / Frozen** (2026-08) |
+| Date | 2026-08 |
+| Authors | Product / Engineering |
+| Parent | [RoamKit Wallet Platform Vision](../architecture/roamkit-wallet-platform-vision.md) |
+| Depends on | [RFC 003](./003-wallet-domain-ownership-model.md) (Frozen), [RFC 004](./004-platform-wallet-infrastructure.md) (Frozen) |
+| Freeze context | [Wallet Architecture Freeze](../architecture/wallet-architecture-freeze.md) |
+| Contract appendix | [Funding Provider Interface Contract](../architecture/funding-provider-interface-contract.md) (technical, non-RFC) |
+| Template | [TEMPLATE-wallet.md](./TEMPLATE-wallet.md) |
+
+> This RFC is a proposal. It does **not** amend [ADR 010](../adr/010-polygon-usdt-prepaid-credits.md). No implementation may treat this document as normative until a related ADR is Accepted.
+>
+> **Architecture Freeze:** further modifications require evidence from subsequent research tracks or a new ADR proposal.
+
+---
+
+## Problem
+
+RFC 003–004 define **where** value is received (`WalletAddress` owned by RoamKit) and **how** addresses are allocated. They do not define **how value is guided toward that address** from the outside world.
+
+Without a Funding Provider interface:
+
+- Product UX risks embedding a single exchange (MEXC, Binance, …) into the Wallet domain.
+- Teams confuse “user bought USDT on an exchange” with “Credits were granted.”
+- Card on-ramps and CEX withdrawals look like separate products instead of interchangeable adapters.
+
+The question this RFC answers:
+
+> **How does value arrive at a RoamKit `WalletIdentity` (via its active `WalletAddress`)?**
+
+Not: how RPC works. Not: how one vendor’s API works in isolation.
+
+---
+
+## Goals
+
+- Define **Funding Provider** as a pluggable **adapter**, not a domain owner.
+- Separate **FundingSource** (domain kind of funding) from **FundingProvider** (concrete integration) — per RFC 003.
+- Specify the **destination contract**: providers deliver value to a RoamKit-owned `WalletAddress`.
+- State standing invariants inherited from the freeze (never define `WalletIdentity`; never Credits SoT).
+- Describe provider **capabilities** at interface level (guide / buy / withdraw-to-address / status), without vendor lock-in.
+- Keep deposit observation/confirmation and Credits conversion out of this interface.
+
+## Non-goals
+
+- Deposit observation & confirmation (RPC / indexer / explorer) — future **RFC 006**; not this interface.
+- Choosing a single vendor (MEXC vs Binance vs MoonPay) as architecture.
+- Card processor contracts, KYC product design, or fee schedules (ops / vendor research).
+- Amending RFC 003 / 004 / Vision.
+- Credits grant from provider webhooks or `hisrec`.
+- Withdrawals from RoamKit to users; swap; staking; multi-chain beyond “Polygon first.”
+- ADR 010 cutover.
+
+---
+
+## Domain
+
+### Standing rules (inherited, not reopened)
+
+1. **Funding Providers never define `WalletIdentity`.**
+2. Destination of funded value is a RoamKit **`WalletAddress`** (RFC 004 allocation).
+3. **Credits / ledger** remain Billing; provider success ≠ credit granted.
+4. Blockchain / ramp activity ends at deposit → convert (Vision Funding Boundary).
+
+### FundingSource vs FundingProvider
+
+| | FundingSource | FundingProvider |
+|---|---------------|-----------------|
+| Layer | Domain (RFC 003) | Integration (this RFC) |
+| Question | *What kind of funding is this?* | *Which adapter fulfilled it?* |
+| Examples | On-chain transfer, exchange withdrawal, card purchase | MEXC, Binance, OKX, MoonPay, Transak, “external wallet send” (null provider) |
+
+Same `FundingSource` may be fulfilled by many providers over time without changing WalletIdentity or Index Registry.
+
+### Arrival path (conceptual)
+
+```text
+User
+  │
+  ▼
+Funding Provider (adapter)     ← optional UX / rails
+  │
+  │  guides or moves Asset
+  ▼
+RoamKit WalletAddress (active) ← RFC 004
+  │
+  ▼
+Deposit Observation & Confirmation  ← RFC 006 (out of scope here)
+  │
+  ▼
+Convert → Credits              ← Billing / CreditService
+```
+
+External wallet send is the same arrival path with **no** commercial Funding Provider (user is the sender).
+
+### Interface responsibilities
+
+A Funding Provider adapter **may**:
+
+| Capability | Meaning |
+|------------|---------|
+| **Present destination** | Show or deep-link the user’s active RoamKit `WalletAddress` + Chain + Asset expectations |
+| **Guide buy** | Help the user acquire Asset (e.g. card → USDT) on the provider |
+| **Guide withdraw / send** | Instruct or initiate send of Asset **to** that `WalletAddress` on the supported Chain |
+| **Report provider-side status** | Optional: “buy completed”, “withdrawal submitted” — **ops/UX only**, not Credits SoT |
+| **Fail clearly** | Unsupported network, limits, KYC blocked — without inventing a WalletIdentity |
+
+A Funding Provider adapter **must not**:
+
+- Create or own `WalletIdentity` / Index Registry rows.
+- Allocate RoamKit derivation indices.
+- Call `CreditService` or mutate the ledger.
+- Claim deposit finality for Credits (that is Observation & Confirmation + Billing policy).
+- Require RoamKit to treat provider balance or history as source of truth.
+
+### Destination contract
+
+Before any provider flow that moves funds:
+
+1. Ensure `WalletIdentity` exists (domain).
+2. Ensure an **active** `WalletAddress` for the target Chain (RFC 004 allocation — idempotent).
+3. Pass **address + chain + asset** into the provider UX or API as the sole RoamKit destination.
+
+Provider-specific deposit addresses / memos are **not** RoamKit `WalletAddress` records and must not replace them.
+
+### Provider identity in domain
+
+If a Deposit or funding attempt records a provider:
+
+- Store an opaque **provider id** (or null for external send) alongside `FundingSource`.
+- Do not embed vendor SDK types in the Wallet domain model.
+
+### Provider Capability Matrix
+
+Every Funding Provider adapter implements the **same contract**. Fill required vs optional at the interface; vendor research later ticks what each adapter supports.
+
+| Capability | Required | Optional | Notes |
+|------------|:--------:|:--------:|-------|
+| **Deposit** (deliver / guide Asset to RoamKit `WalletAddress` on supported Chain) | ✅ | | Core of the destination contract |
+| **Status** (provider-side progress for UX/ops) | ✅ | | Never Credits SoT |
+| **Metadata** (provider id, Asset, Chain labels, limits/errors surfaced to UX) | ✅ | | Opaque to Wallet domain beyond ids |
+| **Explorer URL** (link to provider or tx explorer) | | ✅ | UX convenience |
+| **Buy with Card** (fiat → Asset on provider) | | ✅ | On-ramp; still ends at WalletAddress |
+| **Webhooks** (provider push events) | | ✅ | Ops/UX only; not ledger authority |
+| **Memo / tag** (if provider or chain requires it *on their side*) | | ✅ | Must not replace RoamKit `WalletAddress` |
+
+**Architecture review question:** is this matrix generic enough for MEXC, Binance, MoonPay, and future adapters **without changing the Wallet domain**? If yes, freeze candidates after review.
+
+### Capability Discovery (out of scope, enabled by this RFC)
+
+This interface does **not** implement the following. It **enables** them as interchangeable adapter classes later:
+
+- Exchange adapters (CEX buy → withdraw to RoamKit address)
+- Card / on-ramp providers
+- Bank transfer / SEPA-style ramps (where they settle to crypto then to `WalletAddress`)
+- Stablecoin bridges (only as a path that still lands on a RoamKit `WalletAddress`)
+
+Discovery here means: product can add a new adapter behind the same matrix without amending RFC 003 / 004.
+
+---
+
+## Open Questions
+
+1. First production adapter shortlist (research Exit Artifact — not this RFC’s job to pick).
+2. Whether RoamKit hosts in-app buy (embedded on-ramp) vs deep-link to provider.
+3. How much provider status to surface in UI before on-chain confirm.
+4. Mapping of provider “networks” labels to RoamKit `Chain` + `Asset` (ops catalog).
+5. Idempotency keys for “start funding session” UX (product), distinct from address allocation idempotency (RFC 004).
+
+## Exit Criteria
+
+This RFC is ready to close / promote toward an ADR when:
+
+- [x] FundingSource ≠ FundingProvider accepted as the integration boundary.
+- [x] Destination contract (active RoamKit `WalletAddress`) accepted.
+- [x] Standing rules (never WalletIdentity; never Credits SoT) accepted.
+- [x] Provider Capability Matrix (required vs optional) accepted.
+- [x] Capability Discovery scope accepted (enabled, not implemented here).
+- [x] Open questions deferred to vendor research / ADR without blocking the interface shape.
+- [x] No production vendor hard-coded as architecture.
+- [x] Frozen RFC 003 / 004 unchanged except via freeze process.
+- [x] **Architecture Review** completed with no blocking gaps (2026-08 — PASS).
+
+### Architecture Review (before freeze / RFC 006)
+
+**Result (2026-08): PASS**
+
+> Is the Funding Provider Interface generic enough to support MEXC, Binance, MoonPay, and future providers **without changing the Wallet domain?** → **DA**
+
+| Criterion | Status |
+|-----------|--------|
+| Scope (single responsibility) | ✅ |
+| Domain boundaries | ✅ |
+| Replaceability | ✅ |
+| Credits boundary | ✅ |
+| Provider independence | ✅ |
+| Future extensibility | ✅ |
+
+RFC 005 is on the [Architecture Freeze](../architecture/wallet-architecture-freeze.md). Logical ops live in the [Interface Contract Appendix](../architecture/funding-provider-interface-contract.md) (not an RFC).
+
+**Next:** [RFC 006 — Deposit Observation & Confirmation](./006-deposit-observation-confirmation.md).
+
+---
+
+## Related
+
+- [Wallet Architecture Freeze](../architecture/wallet-architecture-freeze.md)
+- [RFC 003 — Domain & Ownership](./003-wallet-domain-ownership-model.md)
+- [RFC 004 — Platform Wallet Infrastructure](./004-platform-wallet-infrastructure.md)
+- [RFC 006 — Deposit Observation & Confirmation](./006-deposit-observation-confirmation.md)
+- [Funding Provider Interface Contract](../architecture/funding-provider-interface-contract.md)
+- [Track 1 Exit Artifact](../architecture/wallet-sandbox-artifacts/01-wallet-address-assignment.md)
+- [Vision — Funding Provider](../architecture/roamkit-wallet-platform-vision.md)
+- [ADR 010](../adr/010-polygon-usdt-prepaid-credits.md)
+- [TEMPLATE-wallet.md](./TEMPLATE-wallet.md)

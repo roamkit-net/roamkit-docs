@@ -5,7 +5,8 @@ Non-normative ops view of capability lifecycle. Architecture stays in ADRs.
 | Capability | Design | Implemented | Production | Observed | Notes |
 |------------|:------:|:-----------:|:----------:|:--------:|-------|
 | Ledger / CreditService (ADR 010) | ✅ | ✅ | ✅ | ✅ | Public Billing DoD PASS — Criterion #3 |
-| Deposits / Polygon verify | ✅ | ✅ | ✅ | ⏳ | Env+negative path OK; live TX verify optional backlog |
+| Deposits / Polygon verify | ✅ | ✅ | ✅ | ⏳ | On-chain Polygon SoT + ledger; customer credit never via exchange APIs. UX polish done — see [Deposit UX observation](./deposit-ux-observation.md) |
+| Deposit UX (PR0–PR5) | ✅ | ✅ | ✅ | ⏳ | Telemetry, network warning, explorer, mismatch retry, CEX panel, pending resume. Promoted with deposit billing; **7-day observation** — [deposit-ux-observation.md](./deposit-ux-observation.md) |
 | Billing HTTP `/api/v1/billing/` | ✅ | ✅ | ✅ | ✅ | Criterion #3 public DoD |
 | WalletConnect deposit UX | ✅ | ✅ | ⏳ | ⏳ | Flag OFF at first cutover |
 | Subscriptions service | ✅ | ✅ | ❌ | ❌ | `SUBSCRIPTIONS_ENABLED=false` |
@@ -17,6 +18,8 @@ Non-normative ops view of capability lifecycle. Architecture stays in ADRs.
 | OpenAPI / schema (C10) | ✅ | ✅ | ⏳ | n/a | Staging schema/docs; prod after freeze policy |
 | Billing dashboard | ✅ | ❌ | ❌ | ❌ | [billing-dashboard.md](./billing-dashboard.md) |
 
+**Non-goals (do not start without a new capability / ADR):** multi-chain deposits; exchange/`hisrec`-style payment rails as customer credit source; ADR amount-policy changes. See [Deposit UX observation](./deposit-ux-observation.md).
+
 **Column definitions**
 
 - **Design** — ADR Accepted (or explicit N/A design note).
@@ -24,13 +27,15 @@ Non-normative ops view of capability lifecycle. Architecture stays in ADRs.
 - **Production** — running on `/opt/stacks/roamkit-production/` with intended flags (or customer traffic).
 - **Observed** — confirmed via metrics / [billing dashboard](./billing-dashboard.md) in production (not only flag ON).
 
-Update at each Launch Gate milestone, Airalo go-live phase exit, and when vouchers ship.
+Update at each Launch Gate milestone, Airalo go-live phase exit, when vouchers ship, and when Deposit UX observation closes.
 
 ## Related
 
+- [Deposit UX observation](./deposit-ux-observation.md)
 - [Operations Handbook](./README.md)
 - [Launch Gates](./launch-gates.md)
 - [Airalo Go-Live Readiness](./airalo-go-live-readiness/README.md)
+- [ADR 010](../adr/010-polygon-usdt-prepaid-credits.md)
 - [ADR 013](../adr/013-production-launch.md)
 - [Production readiness review](./production-readiness-review.md)
 - [Go-live checklist](./production-go-live-checklist.md)
