@@ -17,6 +17,8 @@ Git workflow for all RoamKit repositories.
 3. Delete `feature/*` branches after merge.
 4. Keep PRs small and focused; one logical change per PR when possible.
 5. Promote releases with PR `develop` → `main` after staging verification.
+   Use the [promote parity checklist](../docs/ops/promote-parity-checklist.md)
+   (content diff + bake/flag matrix — do not trust commit-ahead counts).
 
 ## PR flow
 
@@ -56,4 +58,5 @@ When API and web change together:
 - [ADR 013](../docs/adr/013-production-launch.md) — production launch (current deploy matrix)
 - [ADR 007](../docs/adr/007-staging-only-until-launch.md) — superseded staging-only gate
 - [Production go-live checklist](../docs/ops/production-go-live-checklist.md)
+- [Promote parity checklist](../docs/ops/promote-parity-checklist.md)
 - [CI standard](./ci-standard.md)
