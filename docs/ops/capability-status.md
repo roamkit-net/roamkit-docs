@@ -11,6 +11,7 @@ Non-normative ops view of capability lifecycle. Architecture stays in ADRs.
 | WalletConnect deposit UX | ✅ | ✅ | ⏳ | ⏳ | Flag OFF at first cutover |
 | Subscriptions service | ✅ | ✅ | ❌ | ❌ | `SUBSCRIPTIONS_ENABLED=false` |
 | eSIM Auto Top-up v1 | ✅ | ✅ | ❌ | ❌ | Staging gate PASS. Design lock: [esim-auto-topup-v1-design-lock.md](../design/esim-auto-topup-v1-design-lock.md); ≠ Subscription; does not amend ADR 010. Delivered: docs [#141](https://github.com/roamkit-net/roamkit-docs/pull/141) (`ffacbc8`), api [#76](https://github.com/roamkit-net/roamkit-api/pull/76)/[#77](https://github.com/roamkit-net/roamkit-api/pull/77)/[#78](https://github.com/roamkit-net/roamkit-api/pull/78) (`5b235c5`/`ef2439f`/`f5ac588`), web [#144](https://github.com/roamkit-net/roamkit-web/pull/144) (`433d507`). Production / Observed still ❌ until promote + flag rollout |
+| eSIM Auto Top-up v2 | ✅ | ❌ | ❌ | ❌ | Design lock: [esim-auto-topup-v2-design-lock.md](../design/esim-auto-topup-v2-design-lock.md); OR triggers (`expiry_enabled` + `usage_mode`); supersedes v1 trigger shape only; does not amend ADR 010 |
 | Credit vouchers (ADR 011) | ✅ | ❌ | ❌ | ❌ | Blocked until **after Phase 7**: [voucher-pr1-kickoff.md](./voucher-pr1-kickoff.md); [Airalo freeze](./airalo-go-live-readiness/README.md) |
 | Billing extensibility (ADR 012) | ✅ | ✅ (docs) | n/a | n/a | Constitution, not a runtime feature |
 | Production platform (ADR 013 PR1) | ✅ | ✅ | ✅ | ✅ | Gate D GO + Phase 4 Complete — [phase-4-complete.md](./releases/1.0.0/evidence/phase-4-complete.md) |
@@ -38,6 +39,7 @@ Update at each Launch Gate milestone, Airalo go-live phase exit, when vouchers s
 - [Airalo Go-Live Readiness](./airalo-go-live-readiness/README.md)
 - [ADR 010](../adr/010-polygon-usdt-prepaid-credits.md)
 - [eSIM Auto Top-up v1 Design Lock](../design/esim-auto-topup-v1-design-lock.md)
+- [eSIM Auto Top-up v2 Design Lock](../design/esim-auto-topup-v2-design-lock.md)
 - [ADR 013](../adr/013-production-launch.md)
 - [Production readiness review](./production-readiness-review.md)
 - [Go-live checklist](./production-go-live-checklist.md)

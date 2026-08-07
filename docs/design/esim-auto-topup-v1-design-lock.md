@@ -10,6 +10,8 @@
 
 This document locks Auto Top-up v1 so PR2–PR5 implement an accepted design.
 
+**Shipped.** Multi-condition OR triggers are a **separate epic** — see [eSIM Auto Top-up v2 — Design Lock](./esim-auto-topup-v2-design-lock.md). Do not reopen this v1 lock to retrofit OR semantics.
+
 **Do not reopen locked decisions** unless: (a) bug fix, (b) docs inconsistency, or (c) a real architectural blocker. Everything else goes to a **separate backlog** item — not into the active implementation PR.
 
 This design **does not** amend ADR 010 financial invariants (`balance >= 0`, `CreditService` sole mutator, append-only ledger).
