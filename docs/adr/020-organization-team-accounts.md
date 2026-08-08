@@ -2,7 +2,7 @@
 
 | Field | Value |
 |-------|-------|
-| Status | Draft |
+| Status | Accepted |
 | Date | 2026-08 |
 | Deciders | Solo operator (architecture lock before schema / API) |
 
@@ -51,10 +51,10 @@ This ADR **does not** revise ADR 010 money invariants (`CreditService`, ledger S
 ### Architecture lock
 
 ```text
-Architecture: DRAFT → Accept before any schema PR
+Architecture: LOCKED (Accepted)
 Organization ≠ Account (collaboration vs money/inventory)
 Account remains sole money + eSIM inventory owner
-No Labels / DeviceBinding / UEM / Flutter implementation before Accept + ordered PRs below
+No Labels / DeviceBinding / UEM / Flutter ahead of the ordered PRs below
 No parallel ownership system
 ```
 

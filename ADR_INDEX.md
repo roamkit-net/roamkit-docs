@@ -30,7 +30,7 @@ every **6 months** (Architecture Decision Review: still valid?).
 | [017](./docs/adr/017-roamkit-wallet-platform.md) | RoamKit Wallet Platform (architecture adoption) | Accepted — Architecture Complete | 2026-08 |
 | [018](./docs/adr/018-wallet-product-activation-strategy.md) | Wallet Product Activation Strategy | **Accepted** | 2026-08 |
 | [019](./docs/adr/019-account-pricing-profiles.md) | Account pricing profiles | Accepted | 2026-08 |
-| [020](./docs/adr/020-organization-team-accounts.md) | Organization / Team accounts | **Draft** | 2026-08 |
+| [020](./docs/adr/020-organization-team-accounts.md) | Organization / Team accounts | **Accepted** | 2026-08 |
 
 ## Billing ADR hierarchy
 
