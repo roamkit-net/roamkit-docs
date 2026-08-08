@@ -29,6 +29,8 @@ every **6 months** (Architecture Decision Review: still valid?).
 | [016](./docs/adr/016-web-design-tokens.md) | RoamKit web design tokens | Accepted | 2026-08 |
 | [017](./docs/adr/017-roamkit-wallet-platform.md) | RoamKit Wallet Platform (architecture adoption) | Accepted — Architecture Complete | 2026-08 |
 | [018](./docs/adr/018-wallet-product-activation-strategy.md) | Wallet Product Activation Strategy | **Accepted** | 2026-08 |
+| [019](./docs/adr/019-account-pricing-profiles.md) | Account pricing profiles | Accepted | 2026-08 |
+| [020](./docs/adr/020-organization-team-accounts.md) | Organization / Team accounts | **Draft** | 2026-08 |
 
 ## Billing ADR hierarchy
 
@@ -39,6 +41,7 @@ every **6 months** (Architecture Decision Review: still valid?).
 | First extension | [011](./docs/adr/011-credit-vouchers-gift-codes.md) | Vouchers / gift codes (must satisfy 012) |
 | Wallet constitution | [017](./docs/adr/017-roamkit-wallet-platform.md) | Wallet Platform (RFC 003–006); intake cutover via [018](./docs/adr/018-wallet-product-activation-strategy.md) |
 | Wallet activation | [018](./docs/adr/018-wallet-product-activation-strategy.md) | Product activation / ADR 010 shared-wallet cutover (**Accepted**) |
+| Team collaboration | [020](./docs/adr/020-organization-team-accounts.md) | Organization / Membership; extends Account identity; **does not** replace 010 |
 
 ## Deploy ADR hierarchy
 
