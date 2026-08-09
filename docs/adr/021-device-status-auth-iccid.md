@@ -77,6 +77,25 @@ resolve authoritative SIM / ICCID from that record
 
 Secondary identifiers (`udid`, `serialNumber`, `imei`, `userDevice.guid` / `activeSyncId`) were observed but are **not** the preferred RoamKit ↔ UEM map key.
 
+### UEM eSIM swap observation (read-only)
+
+On the same Pixel 6a (`device.guid` unchanged), after replacing the active eSIM:
+
+| Observation | Detail |
+|-------------|--------|
+| `device.guid` / `udid` / serial / IMEI | **Stable** across the SIM change |
+| ICCID | Changed from prior SIM to the new active SIM after UEM inventory refreshed |
+| Intermediate reads | Temporarily showed `iccid=null` and `sims=[]` before the new ICCID appeared |
+
+Semantic confirmation:
+
+```text
+device.guid = device identity
+ICCID       = current SIM state / lookup
+```
+
+Therefore `iccid=null` or `sims=[]` must **not** be interpreted as “this device has no eSIM” — it may mean UEM telephony inventory is **unavailable or stale**.
+
 ## Decision (Proposed)
 
 ### Current contract (unchanged until Accept)
@@ -172,6 +191,40 @@ DeviceBinding          = association + audit + revoke
 
 Even a valid credential must not authorize arbitrary ICCIDs on the team Account without the agreed allow/revoke boundary.
 
+### UEM telephony inventory unavailable / stale (normative for option C)
+
+When `device.guid` resolves but telephony fields are missing:
+
+```text
+iccid = null
+and/or
+sims = []
+```
+
+this means **UEM telephony inventory unavailable/stale**, **not** “no eSIM on the device”.
+
+Normative fail-closed read outcome:
+
+```text
+UEM device.guid resolved
+      ↓
+telephony inventory missing / stale
+      ↓
+uem_inventory_unavailable
+      ↓
+no status resolution
+      ↓
+NO inventory mutation
+```
+
+**Must not** (on this read path alone):
+
+- unbind / archive / revoke `DeviceBinding`
+- change `Esim.account` or any other RoamKit eSIM inventory ownership
+- invent a substitute ICCID or guess from prior cached SIM state as if it were fresh truth
+
+Exact freshness / staleness criteria (e.g. `lastContactTime` age, empty inventory after a known SIM change window) are an **Accept prerequisite** — not invented in this docs step beyond the fail-closed invariant above.
+
 ### REST constraint (validated tenant)
 
 On tenant `S31564560` (`p07003.cp1.uem.blackberry.com`):
@@ -188,8 +241,8 @@ For **option C** (still open — Accept gate):
 
 - Do **not** assume top-level `iccid == sims[0].iccid` (tenant counterexample: dual-SIM device where top-level matched the **second** SIM)
 - Top-level `iccid`, when present, was always **one of** the `sims[].iccid` values in the sample
-- Some devices had empty `sims` / missing top-level `iccid` → **fail closed**
-- Authoritative selection rule (e.g. prefer top-level when present and in `sims[]`, else explicit policy) must be written before Accept of C
+- Empty `sims` / missing top-level `iccid` → treat as **`uem_inventory_unavailable` / stale** (fail closed for status; **not** “no eSIM”; **no** RoamKit inventory mutation)
+- Authoritative selection rule when multiple SIMs are present must be written before Accept of C
 
 ### No Subscription ID fallback
 
@@ -217,12 +270,13 @@ Android Subscription ID is **not** a global RoamKit identity and **must not** ma
 **Must not Accept C** until all of the following are confirmed:
 
 1. **`device.guid` lifecycle** through wipe / re-enroll / policy refresh is proven, **or** behaviour when GUID changes is precisely defined (remap / re-bind / fail closed)
-2. **Dual-SIM / missing-ICCID** authoritative ICCID selection + fail-closed rules for UEM-reported SIMs are specified
-3. Server-side UEM read of ICCID via the validated path (`GET /devices` + match `guid`) remains viable for the mapped device
-4. Auth shape for the APK call is specified (what credential / identity the APK sends — `uem_device_guid` is **not** sufficient alone)
-5. Team Account ownership check on resolved `Esim`
-6. Allow/revoke boundary (active `DeviceBinding`) is specified
-7. PR18 migration / rollback path remains defined
+2. **Dual-SIM** authoritative ICCID selection rule for UEM-reported SIMs is specified
+3. **UEM inventory freshness / staleness** rule is specified (empty/`null` telephony inventory → `uem_inventory_unavailable`; no status resolution; no RoamKit inventory mutation)
+4. Server-side UEM read of ICCID via the validated path (`GET /devices` + match `guid`) remains viable for the mapped device
+5. Auth shape for the APK call is specified (what credential / identity the APK sends — `uem_device_guid` is **not** sufficient alone)
+6. Team Account ownership check on resolved `Esim`
+7. Allow/revoke boundary (active `DeviceBinding`) is specified
+8. PR18 migration / rollback path remains defined
 
 Accepting **A only** (keep PR18 long-term) requires no UEM ICCID work.
 
@@ -241,6 +295,7 @@ Accepting **A only** (keep PR18 long-term) requires no UEM ICCID work.
 - PR18 remains the only supported device status auth path
 - No new ICCID-based or UEM-lookup status implementation in `roamkit-api`, `roamkit-device`, or `roamkit-web`
 - Mapping key preference is locked to UEM `device.guid`; option C remains **not** Accept-ready
+- Stale/empty UEM telephony inventory is documented as fail-closed (`uem_inventory_unavailable`) with no inventory mutation
 - Local ICCID spike UI may remain as negative-proof tooling; it does not unlock Accept of local hybrid
 
 ### If Accepted as A
@@ -267,5 +322,6 @@ Until this ADR is **Accepted**:
 - do not add `uem_device_guid` schema or status contract changes for option C
 - do not change the PR18 public contract in a breaking way for this redesign
 - do not silently treat UEM ICCID (or UEM `guid` alone) as sufficient authorization
+- do not treat UEM `iccid=null` / `sims=[]` as proof of no eSIM or as a trigger to mutate RoamKit inventory
 
 Changing an Accepted decision later requires a new ADR discussion — never a silent rewrite during implementation.
