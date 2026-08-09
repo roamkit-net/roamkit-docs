@@ -5,7 +5,7 @@
 | Status | **Accepted** |
 | Date | 2026-08 |
 | Accepted | 2026-08-09 |
-| Amended | 2026-08-09 (serial bootstrap); **2026-08-09 (serial-only v1 status)** |
+| Amended | 2026-08-09 (serial bootstrap); 2026-08-09 (serial-only v1 status); **2026-08-10 (ICCID lookup ≠ ownership)** |
 | Deciders | Solo operator |
 | Relates to | [ADR 020](./020-organization-team-accounts.md) |
 
@@ -29,10 +29,11 @@ Hard rules:
 
 1. **ICCID must never become a credential.** No unauthenticated `GET /device/status/{iccid}` (or body with ICCID alone).
 2. **Lookup and mutation stay separate.** Serial-based status is read-only only.
-3. **`Esim.account` remains the ownership boundary** for resolved inventory.
+3. **`Esim.account` / `Order.account` remain the purchase ownership boundary.** MDM/UEM enrollment must **never** transfer or rewrite eSIM ownership. Inventory ownership changes only via ADR 020 explicit Account → Account transfer.
 4. **UEM `device.guid` alone is never sufficient authorization.**
 5. **Device serial is an identifier, not a secret.** It must not authorize mutations. For v1 status it is accepted as the public device lookup key **only together with** an active `DeviceBinding` for that serial.
 6. **No free-form serial entry in the APK** — serial comes from UEM App Configuration `%SerialNumber%` only.
+7. **Read-only status ICCID lookup is not scoped to `DeviceBinding.organization.account`.** Personal and team eSIMs are both valid resolve targets.
 
 ## Spike results (historical + amend proof)
 
@@ -98,7 +99,7 @@ Same Pixel after re-activation:
 |-------|--------|-------|
 | `serialNumber` | `36281JEGR04531` | `36281JEGR04531` (stable) |
 | `device.guid` | `bc473029-…` | `fb3de589-…` (changed) |
-| ICCID | team eSIM ICCID | same ICCID after inventory refresh |
+| ICCID | RoamKit eSIM ICCID (personal or team) | same ICCID after inventory refresh |
 
 ```text
 device serial   = physical phone identity (stable across re-enroll)
@@ -108,7 +109,7 @@ ICCID           = current SIM state / lookup only
 
 Empty telephony inventory means **UEM inventory unavailable/stale**, not “no eSIM”.
 
-## Decision (Accepted — amended for serial-only v1 status)
+## Decision (Accepted — amended for serial-only v1 status; ICCID lookup ≠ ownership)
 
 **Option C″ — `%SerialNumber%` + active DeviceBinding + UEM-sourced ICCID (read-only status)** is the normative managed-device **v1 status** target.
 
@@ -133,9 +134,10 @@ For v1 read-only status/usage:
 
 ```text
 device_serial         = identify physical phone (UEM %SerialNumber%; not a secret)
-active DeviceBinding  = enrollment / org gate for that serial
+active DeviceBinding  = enrollment / security gate for that serial (not inventory owner)
 UEM device.guid       = current UEM inventory record (correlation / cache)
-ICCID                 = find current eSIM (lookup only)
+ICCID                 = find current eSIM (lookup only; never ownership rewrite)
+Esim.account          = purchase ownership (personal or team); unchanged by MDM paths
 ```
 
 ### Authorization / resolution boundary (v1 status)
@@ -147,10 +149,12 @@ active DeviceBinding(uem_serial_number == device_serial)
 AND
 UEM unique serial match → ICCID
 AND
-Esim.account == DeviceBinding.organization.account
+exactly one non-archived Esim with that ICCID in RoamKit
 ```
 
-No fleet credential check on this path. GUID alone is never enough. ICCID alone is never enough. Serial without active binding is never enough.
+**Forbidden for read-only status:** requiring `Esim.account == DeviceBinding.organization.account`.
+
+No fleet credential check on this path. GUID alone is never enough. ICCID alone is never enough. Serial without active binding is never enough. MDM bind / rotate / status must never mutate `Esim.account` or `Order.account`.
 
 ### UEM App Configuration (ops lock — v1 status)
 
@@ -185,14 +189,26 @@ UEM GET /devices + match serialNumber (exactly one)
       ↓
 current device.guid (+ refresh cache) + authoritative ICCID
       ↓
-Esim on DeviceBinding.organization.account
+Esim by ICCID (global RoamKit domain; uniqueness guard)
       ↓
 read-only status snapshot
 ```
 
-This path **ignores** `DeviceBinding.esim` for resolving the current eSIM (ICCID comes from UEM).
+This path **ignores** `DeviceBinding.esim` for resolving the current eSIM (ICCID comes from UEM). Personal-account eSIMs are valid resolve targets; MDM enrollment does **not** require moving inventory onto the organization Account.
 
-PR18 body shape (`device_external_id` + `credential`) remains supported as fallback on the same endpoint (or as already shipped). Serial shape and PR18 shape must not be mixed in one request.
+### ICCID uniqueness (normative)
+
+`Esim.iccid` is already **globally unique** at the schema layer. Read-only status/coverage resolve must still apply an application uniqueness guard and **must not** use unordered `.first()`:
+
+| Non-archived `Esim` rows with ICCID | Result |
+|-------------------------------------|--------|
+| exactly 1 | resolve that eSIM |
+| 0 | `iccid_not_found` |
+| >1 | `iccid_ambiguous` (fail closed; defense in depth if uniqueness is ever relaxed) |
+
+“Non-archived” means `archived_at IS NULL`. An archived-only row does not satisfy status resolve (`iccid_not_found`). Ambiguity must never return an arbitrary eSIM.
+
+PR18 body shape (`device_external_id` + `credential`) remains supported as fallback on the same endpoint (or as already shipped). When PR18 resolves via UEM ICCID, the same global uniqueness rule applies. Serial shape and PR18 shape must not be mixed in one request.
 
 ### Read-only hard stop (normative)
 
@@ -201,8 +217,11 @@ The serial status path (and PR18 status path) must remain **strictly read-only**
 - purchase or top-up
 - create/change/disable auto-topup
 - transfer / assign / unbind eSIMs
+- change `Esim.account` / `Order.account` (ownership)
 - create/rotate/revoke bindings or credentials
 - return account balances, payment instruments, or other high-sensitivity account data beyond the existing status snapshot fields
+
+`create_device_binding` / credential rotate are enrollment operations: they may create or update `DeviceBinding` rows, but they **must not** rewrite eSIM ownership as a side effect.
 
 ### Dual-SIM rule (normative)
 
@@ -224,10 +243,11 @@ Do **not** collapse these into one generic 404:
 | Condition | Code |
 |-----------|------|
 | No active binding for serial; unbound/replaced | `binding_not_found` |
-| UEM ICCID present, no team-Account `Esim` for the binding’s org | `iccid_not_found` |
+| UEM ICCID present, no non-archived RoamKit `Esim` with that ICCID | `iccid_not_found` |
+| UEM ICCID present, more than one non-archived RoamKit `Esim` with that ICCID | `iccid_ambiguous` |
 | UEM serial match not exactly one; or telephony empty/stale | `uem_inventory_unavailable` |
 
-On all three families: **no** create/transfer/unbind/provider side effects.
+On all four families: **no** create/transfer/unbind/ownership/provider side effects.
 
 ### REST constraint (validated tenant)
 
@@ -244,10 +264,10 @@ On tenant `S31564560` (`p07003.cp1.uem.blackberry.com`):
 APK / App Config     : roamkit.device_serial = %SerialNumber%
 Stored stable map key: DeviceBinding.uem_serial_number
 Stored UEM cache     : DeviceBinding.uem_device_guid (refreshable)
-Current SIM lookup   : UEM ICCID → Esim.iccid on binding organization.account
+Current SIM lookup   : UEM ICCID → unique non-archived Esim.iccid (any Account)
 ```
 
-ICCID must **not** be the DeviceBinding ↔ UEM device identity.
+ICCID must **not** be the DeviceBinding ↔ UEM device identity. Organization on `DeviceBinding` is an enrollment context, not the eSIM owner filter for status.
 
 ### Rejected / superseded options
 
@@ -261,6 +281,8 @@ ICCID must **not** be the DeviceBinding ↔ UEM device identity.
 | C″ — Serial + active binding + UEM ICCID (read-only) | **Accepted** (this amend) |
 | Serial with **no** DeviceBinding gate | **Rejected** |
 | Serial authorizing mutations | **Rejected** |
+| MDM bind requiring / performing `Esim.account` transfer onto org Account | **Rejected** |
+| Status resolve requiring `Esim.account == organization.account` | **Rejected** (2026-08-10 amend) |
 
 ### Migration / compatibility
 
@@ -283,8 +305,9 @@ ICCID must **not** be the DeviceBinding ↔ UEM device identity.
 ### Accepted Option C″
 
 - Normative v1 App Config for status: only `roamkit.device_serial=%SerialNumber%`.
-- Normative gate: active `DeviceBinding` for that serial; then UEM ICCID → team-Account `Esim` → read-only snapshot.
-- Explicit tradeoff: enrolled serial knowledge ⇒ read status/usage; never mutations.
+- Normative gate: active `DeviceBinding` for that serial; then UEM ICCID → unique non-archived `Esim` (personal or team) → read-only snapshot.
+- `DeviceBinding` is enrollment/security mapping, **not** inventory ownership.
+- Explicit tradeoff: enrolled serial knowledge ⇒ read status/usage; never mutations or ownership transfer.
 - Pairing out of v1. Fleet credentials out of v1 status App Config / status auth.
 - PR18 remains fallback until explicitly deprecated after validation.
 - Implementation continues in small PRs (docs ≠ API ≠ APK).
@@ -295,15 +318,19 @@ ICCID must **not** be the DeviceBinding ↔ UEM device identity.
 - ICCID-as-auth and guid-alone-as-auth remain forbidden.
 - Serial without binding gate remains forbidden.
 - Serial as mutation auth remains forbidden.
+- Silent / MDM-driven `Esim.account` transfer remains forbidden.
 
 ## Stop rule
 
-Now that this ADR is **Accepted** (as amended for C″):
+Now that this ADR is **Accepted** (as amended for C″ + ICCID lookup ≠ ownership):
 
 - Implementation **must** follow Option C″ for v1 managed-device status (or open a new ADR discussion first).
 - Do **not** require `fleet_*` App Config keys for v1 status.
 - Do **not** accept serial status without an active `DeviceBinding` for that serial.
 - Do **not** authorize any mutation from serial (or from this status endpoint family).
+- Do **not** require `Esim.account == DeviceBinding.organization.account` for read-only status/coverage resolve.
+- Do **not** transfer or rewrite `Esim.account` / `Order.account` from bind, rotate, serial, or UEM status paths.
+- Do **not** resolve ICCID with unordered `.first()` when multiple non-archived rows match — fail closed (`iccid_ambiguous`).
 - Do **not** treat UEM ICCID or UEM `guid` alone as sufficient authorization.
 - Do **not** treat `iccid=null` / `sims=[]` as proof of no eSIM or as a trigger to mutate inventory.
 - Do **not** implement local-ICCID status paths without a new ADR.
