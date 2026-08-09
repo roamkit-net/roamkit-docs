@@ -19,7 +19,7 @@ That shape is already shipped (PR18): public `POST /api/v1/device/status/` authe
 
 PR18 is **confirmed end-to-end** on a real BlackBerry-managed Pixel 6a (UEM managed config → APK → status API → active `DeviceBinding` → usage snapshot).
 
-Operators want simpler enrollment than per-device managed credentials. Early candidates assumed the APK could discover the active SIM **ICCID locally**. That assumption was tested and **failed** on the validated setup (see Spike result below).
+Operators want simpler enrollment than per-device managed credentials. Early candidates assumed the APK could discover the active SIM **ICCID locally**. That assumption was tested and **failed** on the validated setup (see Spike result below). A later read-only UEM identity spike locked the preferred **device mapping key** (UEM `device.guid`) but did **not** clear Accept of option C (lifecycle + dual-SIM rules remain open).
 
 Hard rules that remain unchanged:
 
@@ -28,7 +28,9 @@ Hard rules that remain unchanged:
 3. **`Esim.account` remains the ownership boundary.**
 4. **No API / APK / web implementation** of a new ICCID-based status path until this ADR is Accepted under an updated option.
 
-## Spike result (negative proof)
+## Spike results
+
+### Local ICCID (negative proof)
 
 Validated on BlackBerry UEM Cloud tenant device (Pixel 6a, Android 16, work profile), `roamkit-device` ICCID spike (`develop`, ADR 021 proof screen):
 
@@ -47,6 +49,33 @@ APK on Pixel 6a / Android 16 cannot read ICCID locally
 **Local-ICCID hybrid is not viable on this validated setup** and **must not be Accepted** in that form. Android documentation already flags ICCID access as restricted ([SubscriptionInfo](https://developer.android.com/reference/kotlin/android/telephony/SubscriptionInfo), [unique identifier best practices](https://developer.android.com/identity/user-data-ids)).
 
 A separate UEM REST spike also showed non-Dynamics Android **app config create/update is not supported** via API — relevant to ops pain of per-device managed values, not to ICCID readability.
+
+### UEM identity mapping (read-only)
+
+Read-only OAuth spike against tenant `S31564560` (`GET /api/v1/devices`, `MDMBWS.All`):
+
+| Finding | Detail |
+|---------|--------|
+| Preferred mapping key | UEM **`device.guid`** (UEM-native UUID) |
+| Sample uniqueness | `guid` present and unique on **100/100** listed devices |
+| Consistency | Same `guid` on device list entry and nested `userDevice.device.guid` |
+| ICCID as device id | **Rejected** — tenant had a **duplicate ICCID on two devices**; ICCID is SIM lookup only |
+| Dual-SIM | Top-level `iccid` is always one of `sims[].iccid`, but **not always `sims[0]`** |
+| REST detail by guid | On this tenant, `GET /devices/{guid}` returned **404** |
+
+Validated read path for option C (until BlackBerry documents otherwise on this tenant):
+
+```text
+GET /api/v1/devices
+      ↓
+match device.guid == DeviceBinding.uem_device_guid
+      ↓
+resolve authoritative SIM / ICCID from that record
+```
+
+**Not proven yet:** whether `device.guid` survives wipe / re-enroll / policy refresh. Short dual REST reads showed stable IDs; lifecycle churn was not exercised.
+
+Secondary identifiers (`udid`, `serialNumber`, `imei`, `userDevice.guid` / `activeSyncId`) were observed but are **not** the preferred RoamKit ↔ UEM map key.
 
 ## Decision (Proposed)
 
@@ -70,15 +99,17 @@ credential /
 Esim.account     = ownership / authorization boundary (team Account)
 DeviceBinding    = inventory/device association + audit + revoke boundary
                    (not torn down by this ADR)
+UEM device.guid  = preferred external map to UEM device (option C)
+                   — not an auth secret by itself
 ```
 
 ### Options compared
 
-| Dimension | A: PR18 (current) | B: Pure fleet + local ICCID | Local hybrid (former preferred) | C: UEM-sourced ICCID (new preferred direction) |
-|-----------|-------------------|-----------------------------|----------------------------------|------------------------------------------------|
-| Lookup | `device_external_id` | local ICCID | local ICCID | **ICCID from UEM REST** (server-side) |
+| Dimension | A: PR18 (current) | B: Pure fleet + local ICCID | Local hybrid (former preferred) | C: UEM-sourced ICCID (preferred Proposed direction) |
+|-----------|-------------------|-----------------------------|----------------------------------|-----------------------------------------------------|
+| Lookup | `device_external_id` | local ICCID | local ICCID | **ICCID from UEM REST** after `device.guid` match |
 | Auth | binding credential | fleet secret alone | fleet secret | authenticated device identity (exact shape TBD) |
-| Extra gate | — | none | active DeviceBinding for Esim | team Account + mapping `DeviceBinding ↔ UEM device` (identifier TBD) |
+| Extra gate | — | none | active DeviceBinding for Esim | team Account + `DeviceBinding.uem_device_guid` |
 | Android local ICCID | no | required | required | **not required** |
 | UEM server read | no | no | no | **yes (read-only)** |
 | UEM write / app-config automation | no | no | no | **no** (out of scope here) |
@@ -87,52 +118,78 @@ DeviceBinding    = inventory/device association + audit + revoke boundary
 
 **Pure B is not a recommended Accept target.**  
 **Local hybrid is not an Accept target** after negative proof.  
-**Preferred Proposed direction is C**, pending mapping/auth decisions below.
+**Preferred Proposed direction is C.** Mapping key is locked below; Accept of C is **not** cleared yet.
+
+### Preferred mapping key (locked while Proposed)
+
+```text
+Preferred mapping key: UEM device.guid
+Stored on RoamKit side (name indicative): DeviceBinding.uem_device_guid
+```
+
+Rationale from the identity spike:
+
+- UEM-native
+- Present on every sampled device
+- Unique in the 100-device sample
+- Consistent between device list and `userDevice.device`
+
+`udid` remains a possible secondary / correlation field only — not the preferred stored map key.
+
+ICCID must **not** be used as the `DeviceBinding ↔ UEM device` identity (duplicate ICCID observed across two devices; SIM swaps would rebind the wrong physical device).
+
+Field name `uem_device_guid` is indicative for design discussion; schema is **not** introduced until Accept + an implementation PR.
 
 ### Option C — UEM-sourced ICCID (preferred Proposed direction)
 
 ```text
 APK credential / device identity
       ↓
-RoamKit authenticates device
+RoamKit authenticates DeviceBinding
       ↓
-RoamKit ↔ UEM server-side device lookup (read-only)
+DeviceBinding.uem_device_guid
       ↓
-UEM returns ICCID
+GET /api/v1/devices   (validated path; see REST constraint)
+      ↓
+match device.guid
+      ↓
+resolve authoritative SIM / ICCID   (rule TBD — Accept gate)
       ↓
 Esim found by ICCID AND Esim.account == Organization.team Account?
       ↓
-active DeviceBinding / allow gate (exact shape TBD with mapping)
+active DeviceBinding allow / revoke gate
       ↓
 return status
 ```
 
 ```text
-UEM ICCID              = lookup
+UEM device.guid        = DeviceBinding ↔ UEM device map
+UEM ICCID              = lookup only
 credential / device id = auth
 Esim.account           = ownership
-DeviceBinding          = association + audit + revoke (+ UEM device map TBD)
+DeviceBinding          = association + audit + revoke
 ```
 
 Even a valid credential must not authorize arbitrary ICCIDs on the team Account without the agreed allow/revoke boundary.
 
-### Open decision (not locked yet)
+### REST constraint (validated tenant)
 
-**How RoamKit identifies the same physical device inside UEM** is intentionally **undecided** in this revision. Candidates to evaluate in a follow-up spike (read-only):
+On tenant `S31564560` (`p07003.cp1.uem.blackberry.com`):
 
-- UEM device GUID
-- UDID / hardware identifiers exposed by UEM REST
-- other immutable identifiers available on managed devices
+> `GET /devices/{guid}` is **not** available (**404**). The validated read path is **list devices + match by `guid`** (or follow `userDevice` link and read nested `device`).
 
-Do **not** invent a mapping or implement status-by-UEM-ICCID until that identifier is chosen and recorded in an Accept (or a further Proposed update).
-
-ICCID from UEM answers “which SIM does UEM see on this device?” — it does **not** by itself answer “which RoamKit `DeviceBinding` / credential is calling?”
+Implementation of option C must not assume a working detail-by-guid endpoint unless a later spike proves otherwise on the target environment.
 
 ### Dual-SIM / multi-eSIM
 
 For **local** ICCID options (B / local hybrid): active/default data subscription only; fail closed if ambiguous. Those options are not Accept targets after negative proof.
 
-For **option C**: which UEM SIM field is authoritative when UEM reports multiple SIMs must be defined before Accept of C (e.g. primary / data / single reported ICCID). Fail closed if UEM returns no usable ICCID for the mapped device.
+For **option C** (still open — Accept gate):
+
+- Do **not** assume top-level `iccid == sims[0].iccid` (tenant counterexample: dual-SIM device where top-level matched the **second** SIM)
+- Top-level `iccid`, when present, was always **one of** the `sims[].iccid` values in the sample
+- Some devices had empty `sims` / missing top-level `iccid` → **fail closed**
+- Authoritative selection rule (e.g. prefer top-level when present and in `sims[]`, else explicit policy) must be written before Accept of C
 
 ### No Subscription ID fallback
 
@@ -159,12 +216,12 @@ Android Subscription ID is **not** a global RoamKit identity and **must not** ma
 
 **Must not Accept C** until all of the following are confirmed:
 
-1. Stable, documented mapping key: `DeviceBinding` (or equivalent RoamKit device identity) ↔ UEM device
-2. Server-side UEM read of ICCID works for that mapped device (OAuth client already proven for other reads)
-3. Auth shape for the APK call is specified (what credential / identity the APK sends)
-4. Multi-SIM / missing-ICCID fail-closed rules for UEM-reported SIMs
+1. **`device.guid` lifecycle** through wipe / re-enroll / policy refresh is proven, **or** behaviour when GUID changes is precisely defined (remap / re-bind / fail closed)
+2. **Dual-SIM / missing-ICCID** authoritative ICCID selection + fail-closed rules for UEM-reported SIMs are specified
+3. Server-side UEM read of ICCID via the validated path (`GET /devices` + match `guid`) remains viable for the mapped device
+4. Auth shape for the APK call is specified (what credential / identity the APK sends — `uem_device_guid` is **not** sufficient alone)
 5. Team Account ownership check on resolved `Esim`
-6. Allow/revoke boundary (active `DeviceBinding` or explicit successor) is specified
+6. Allow/revoke boundary (active `DeviceBinding`) is specified
 7. PR18 migration / rollback path remains defined
 
 Accepting **A only** (keep PR18 long-term) requires no UEM ICCID work.
@@ -172,7 +229,7 @@ Accepting **A only** (keep PR18 long-term) requires no UEM ICCID work.
 ### Non-goals
 
 - Implementing option C (or any ICCID status API) in this docs step
-- Choosing the final UEM device identifier in this docs step without a mapping spike
+- Schema for `DeviceBinding.uem_device_guid` before Accept
 - Deleting or replacing `DeviceBinding`
 - BlackBerry UEM **write** sync / automated non-Dynamics app-config write
 - Web enrollment UI (`/me/orgs`) as part of this ADR Accept
@@ -183,6 +240,7 @@ Accepting **A only** (keep PR18 long-term) requires no UEM ICCID work.
 
 - PR18 remains the only supported device status auth path
 - No new ICCID-based or UEM-lookup status implementation in `roamkit-api`, `roamkit-device`, or `roamkit-web`
+- Mapping key preference is locked to UEM `device.guid`; option C remains **not** Accept-ready
 - Local ICCID spike UI may remain as negative-proof tooling; it does not unlock Accept of local hybrid
 
 ### If Accepted as A
@@ -192,8 +250,8 @@ Accepting **A only** (keep PR18 long-term) requires no UEM ICCID work.
 
 ### If Accepted as C
 
-- New server-side flow: authenticated device → UEM ICCID read → `Esim` lookup on team Account → status
-- Requires prior lock of UEM device mapping identifier and APK auth shape
+- New server-side flow: authenticated `DeviceBinding` → UEM read by `uem_device_guid` → authoritative ICCID → `Esim` on team Account → status
+- Requires cleared lifecycle + dual-SIM Accept gates and APK auth shape
 - PR18 retained through migration
 
 ### If someone proposes resurrecting local hybrid
@@ -206,7 +264,8 @@ Until this ADR is **Accepted**:
 
 - do not implement ICCID auth paths (local or UEM-sourced)
 - do not add org/fleet device credentials for status API
+- do not add `uem_device_guid` schema or status contract changes for option C
 - do not change the PR18 public contract in a breaking way for this redesign
-- do not silently treat UEM ICCID as sufficient authorization
+- do not silently treat UEM ICCID (or UEM `guid` alone) as sufficient authorization
 
 Changing an Accepted decision later requires a new ADR discussion — never a silent rewrite during implementation.
