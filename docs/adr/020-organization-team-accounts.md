@@ -220,7 +220,7 @@ Reserved for later PRs after inventory ownership ships:
 - Status payload can reuse existing eSIM usage cache and auto-topup policy signals (package/location title, unlimited vs remaining data, days to expiry, renew enabled).
 - No BlackBerry UEM admin API integration in v1 of this ADR.
 
-Device status auth / UEM ICCID lookup for managed fleets is **Accepted** (amended) in [ADR 021](./021-device-status-auth-iccid.md) (Option C′: fleet credential + `%SerialNumber%` bootstrap + UEM-sourced ICCID; PR18 fallback; pairing not v1). That ADR does **not** change Organization / Account ownership rules in this document.
+Device status auth / UEM ICCID lookup for managed fleets is **Accepted** (amended) in [ADR 021](./021-device-status-auth-iccid.md) (Option C″: `%SerialNumber%` + active DeviceBinding + UEM-sourced ICCID, read-only status; PR18 fallback; fleet credentials not required for v1 status). That ADR does **not** change Organization / Account ownership rules in this document.
 
 ### Non-goals
 
