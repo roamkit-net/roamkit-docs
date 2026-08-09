@@ -5,7 +5,7 @@
 | Status | **Accepted** |
 | Date | 2026-08 |
 | Accepted | 2026-08-09 |
-| Amended | 2026-08-09 |
+| Amended | 2026-08-09 (serial bootstrap); **2026-08-09 (serial-only v1 status)** |
 | Deciders | Solo operator |
 | Relates to | [ADR 020](./020-organization-team-accounts.md) |
 
@@ -21,15 +21,18 @@ That shape shipped as **PR18**: public `POST /api/v1/device/status/` authenticat
 
 PR18 is **confirmed end-to-end** on a real BlackBerry-managed Pixel 6a (UEM managed config → APK → status API → active `DeviceBinding` → usage snapshot).
 
-Operators need **one** UEM App Configuration per organization — not a new managed-config secret per eSIM or per SIM swap. Local ICCID on the APK was tested and **failed**. Read-only UEM REST can supply ICCID after the physical device is identified.
+Operators need **one** UEM App Configuration per organization — not a new managed-config secret per eSIM or per SIM swap. Local ICCID on the APK was tested and **failed**. Read-only UEM REST can supply ICCID after the physical device is identified via serial.
 
-Hard rules (unchanged):
+Product intent for managed-device v1 is a **read-only status / usage widget** (low-sensitivity). Mutations (purchase, top-up, auto-topup changes, inventory moves, binding changes) must **never** be authorized by this path.
+
+Hard rules:
 
 1. **ICCID must never become a credential.** No unauthenticated `GET /device/status/{iccid}` (or body with ICCID alone).
-2. **Auth and lookup stay separate.**
-3. **`Esim.account` remains the ownership boundary.**
+2. **Lookup and mutation stay separate.** Serial-based status is read-only only.
+3. **`Esim.account` remains the ownership boundary** for resolved inventory.
 4. **UEM `device.guid` alone is never sufficient authorization.**
-5. **Device serial alone is never sufficient authorization.**
+5. **Device serial is an identifier, not a secret.** It must not authorize mutations. For v1 status it is accepted as the public device lookup key **only together with** an active `DeviceBinding` for that serial.
+6. **No free-form serial entry in the APK** — serial comes from UEM App Configuration `%SerialNumber%` only.
 
 ## Spike results (historical + amend proof)
 
@@ -46,7 +49,7 @@ Validated on BlackBerry UEM Cloud tenant device (Pixel 6a, Android 16, work prof
 
 Non-Dynamics Android **app config create/update is not supported** via UEM REST — operators cannot automate per-device App Configuration writes for this package.
 
-### UEM App Configuration variable expansion (positive proof — amend)
+### UEM App Configuration variable expansion (positive proof)
 
 Validated on tenant `S31564560` with debug package `net.roamkit.mdmspike` (Pixel 6a):
 
@@ -60,7 +63,7 @@ Validated on tenant `S31564560` with debug package `net.roamkit.mdmspike` (Pixel
 | `spike.iccid` = `%ICCID%` | literal `%ICCID%` |
 | `spike.wifi_mac` = `%WiFiMAC%` | literal `%WiFiMAC%` |
 
-**Conclusion:** BlackBerry UEM **does** perform per-device substitution into Android managed App Configuration for at least `%SerialNumber%`. Pairing is **not** required as the v1 path to get a stable physical-device identity onto the APK.
+**Conclusion:** BlackBerry UEM **does** perform per-device substitution into Android managed App Configuration for at least `%SerialNumber%`. That is sufficient for one shared App Configuration that still yields a per-phone identity on device.
 
 ### UEM REST identity mapping (read-only)
 
@@ -77,7 +80,7 @@ Tenant `S31564560` (`GET /api/v1/devices`, `MDMBWS.All`):
 | Direct `query=imei=…` / `query=udid=…` | Works on this tenant (optional optimization later) |
 | List + match `serialNumber` | **Validated** — finds the Pixel among listed devices |
 
-Validated read path (fleet / amend):
+Validated read path:
 
 ```text
 GET /api/v1/devices
@@ -87,7 +90,7 @@ match device.serialNumber == DeviceBinding.uem_serial_number
 use that record's current device.guid + authoritative ICCID
 ```
 
-### GUID vs serial lifecycle (amend proof)
+### GUID vs serial lifecycle (proof)
 
 Same Pixel after re-activation:
 
@@ -98,86 +101,108 @@ Same Pixel after re-activation:
 | ICCID | team eSIM ICCID | same ICCID after inventory refresh |
 
 ```text
-device serial   = physical phone bootstrap identity (stable across re-enroll)
+device serial   = physical phone identity (stable across re-enroll)
 device.guid     = current UEM inventory record (may change)
 ICCID           = current SIM state / lookup only
 ```
 
 Empty telephony inventory means **UEM inventory unavailable/stale**, not “no eSIM”.
 
-## Decision (Accepted — amended 2026-08-09)
+## Decision (Accepted — amended for serial-only v1 status)
 
-**Option C′ — fleet auth + `%SerialNumber%` bootstrap + UEM-sourced ICCID** is the normative device-status target for managed fleets.
+**Option C″ — `%SerialNumber%` + active DeviceBinding + UEM-sourced ICCID (read-only status)** is the normative managed-device **v1 status** target.
 
-**Option A — PR18** remains the shipped contract and **required fallback** through migration. It must not be broken while fleet ships.
+**Option A — PR18** remains the shipped contract and **required fallback** through migration.
 
 **Option B / local hybrid** remain **rejected**.
 
-**Pairing-only `uem_device_guid` enrollment** (prior Accept wording) is **superseded** for v1 by serial bootstrap. Pairing is **not** a v1 fleet enrollment requirement.
+**Pairing-only guid enrollment** remains **superseded**.
+
+**Option C′ fleet credential on the status path** (`fleet_external_id` + `fleet_credential` as status auth) is **superseded for v1 status**. Fleet credential schema/services may remain in the codebase as optional future hardening, but they are **not** part of the Accepted v1 device status flow or App Configuration.
+
+### Accepted security tradeoff (explicit)
+
+For v1 read-only status/usage:
+
+- Knowing an **enrolled** device serial allows reading that device’s status/usage snapshot.
+- That is accepted because the payload is low-sensitivity and the path is **mutation-free**.
+- Serial **without** an active `DeviceBinding` must fail closed (`binding_not_found`).
+- Serial must **never** authorize purchase, top-up, auto-topup changes, eSIM transfer, binding changes, or return of account secrets / payment data.
 
 ### Role separation (normative)
 
 ```text
-fleet_external_id     = find organization / fleet
-fleet_credential      = authenticate fleet
-device_serial         = identify physical phone (UEM %SerialNumber%; not a credential)
+device_serial         = identify physical phone (UEM %SerialNumber%; not a secret)
+active DeviceBinding  = enrollment / org gate for that serial
 UEM device.guid       = current UEM inventory record (correlation / cache)
 ICCID                 = find current eSIM (lookup only)
 ```
 
-### Authorization boundary (hard security rule)
+### Authorization / resolution boundary (v1 status)
 
 ```text
-valid fleet credential
+device_serial from request
 AND
-active DeviceBinding for that organization + device serial
+active DeviceBinding(uem_serial_number == device_serial)
 AND
-Esim.account == Organization.account
+UEM unique serial match → ICCID
+AND
+Esim.account == DeviceBinding.organization.account
 ```
 
-A leaked fleet secret **must not** authorize status for an arbitrary serial. There must be an active binding for that org + serial. Serial alone is never auth. GUID alone is never auth. ICCID alone is never auth.
+No fleet credential check on this path. GUID alone is never enough. ICCID alone is never enough. Serial without active binding is never enough.
 
-### UEM App Configuration (ops lock)
+### UEM App Configuration (ops lock — v1 status)
 
-**One** App Configuration per organization for `net.roamkit.bbuem`, identical on every phone:
+**One** App Configuration per organization for `net.roamkit.bbuem` (identical template; serial expands per device):
 
 | Key | Role |
 |-----|------|
-| `roamkit.fleet_external_id` | Fleet lookup |
-| `roamkit.fleet_credential` | Fleet auth secret |
-| `roamkit.device_serial` | Must be UEM variable **`%SerialNumber%`** (per-device expansion) |
+| `roamkit.device_serial` | Must be UEM variable **`%SerialNumber%`** |
 
-No new managed-config values on eSIM swap. No per-eSIM credentials in UEM for the fleet path. No free-form / user-typed serial entry in the APK after managed config is present.
+`roamkit.fleet_external_id` and `roamkit.fleet_credential` are **not** required for v1 status and must not be treated as normative App Config for this flow.
+
+No new managed-config values on eSIM swap. No free-form / user-typed serial entry in the APK.
 
 ### DeviceBinding identity fields (normative)
 
 | Field | Role |
 |-------|------|
-| `uem_serial_number` | **Stable** map key for the physical device (from App Config / UEM `serialNumber`) |
-| `uem_device_guid` | **Current** UEM record correlation / cache; may be refreshed when UEM returns a new guid for the same serial |
+| `uem_serial_number` | **Stable** map key for the physical device |
+| `uem_device_guid` | **Current** UEM record correlation / cache; refreshable after unique serial match |
 
-Operator creates / maintains an active `DeviceBinding` keyed by organization + `uem_serial_number` (once per physical phone, not per eSIM). First implementation schema PR **must keep `DeviceBinding.esim` non-null** (PR18 / legacy). Nullable cleanup is a later PR after fleet is proven.
+Operator creates / maintains an active `DeviceBinding` with `uem_serial_number` (once per physical phone, not per eSIM). First schema work keeps `DeviceBinding.esim` non-null (PR18 / legacy). Nullable cleanup remains a later PR.
 
-### Status resolution (fleet path)
+### Status resolution (serial path — normative v1)
 
 ```text
 POST /api/v1/device/status/
-  fleet_external_id + fleet_credential + device_serial
+  { "device_serial": "..." }
       ↓
-verify fleet credential (current or grace previous)
+require active DeviceBinding(uem_serial_number == device_serial)
       ↓
-require active DeviceBinding(org, uem_serial_number == device_serial)
+UEM GET /devices + match serialNumber (exactly one)
       ↓
-UEM GET /devices + match serialNumber
+current device.guid (+ refresh cache) + authoritative ICCID
       ↓
-current device.guid (+ refresh cache on binding) + authoritative ICCID
+Esim on DeviceBinding.organization.account
       ↓
-Esim on Organization.account
-      ↓
-status snapshot
+read-only status snapshot
 ```
 
-Fleet path **ignores** `DeviceBinding.esim` for resolution of the current eSIM.
+This path **ignores** `DeviceBinding.esim` for resolving the current eSIM (ICCID comes from UEM).
+
+PR18 body shape (`device_external_id` + `credential`) remains supported as fallback on the same endpoint (or as already shipped). Serial shape and PR18 shape must not be mixed in one request.
+
+### Read-only hard stop (normative)
+
+The serial status path (and PR18 status path) must remain **strictly read-only**. They must not:
+
+- purchase or top-up
+- create/change/disable auto-topup
+- transfer / assign / unbind eSIMs
+- create/rotate/revoke bindings or credentials
+- return account balances, payment instruments, or other high-sensitivity account data beyond the existing status snapshot fields
 
 ### Dual-SIM rule (normative)
 
@@ -187,20 +212,10 @@ Fleet path **ignores** `DeviceBinding.esim` for resolution of the current eSIM.
 
 ### GUID / serial lifecycle (normative)
 
-- If UEM `device.guid` changes after wipe/re-enroll but **serial is unchanged**: RoamKit **re-discovers** the device via serial match and may update cached `uem_device_guid`. No pairing. No silent remap by ICCID.
-- If serial cannot be matched in UEM inventory → fail closed (`binding_not_found` / inventory miss as appropriate); do not invent a device.
+- If UEM `device.guid` changes after wipe/re-enroll but **serial is unchanged**: RoamKit **re-discovers** via serial match and may update cached `uem_device_guid`. No pairing. No silent remap by ICCID.
+- If serial cannot be matched uniquely in UEM inventory → fail closed (`uem_inventory_unavailable`); do not invent a device.
+- Serial with no active binding → `binding_not_found`.
 - ICCID changes (SIM swap) do **not** require App Configuration changes.
-
-### Fleet credential rotation (normative)
-
-Default is **short overlap**, not instant single-secret cutover:
-
-```text
-current credential   = valid
-previous credential  = valid during grace / UEM rollout window
-```
-
-After the window, previous is revoked. Instant cutover that bricks the fleet when App Configuration has not reached all devices is rejected as the default.
 
 ### Distinct device API failure codes (normative)
 
@@ -208,17 +223,11 @@ Do **not** collapse these into one generic 404:
 
 | Condition | Code |
 |-----------|------|
-| Bad/missing fleet auth; no active binding for org+serial | `binding_not_found` (or equivalent binding/auth failure — APK treats as config/binding problem) |
-| UEM ICCID present, no team-Account `Esim` | `iccid_not_found` |
-| UEM device resolved but telephony empty/stale; or serial not found in UEM list when inventory is otherwise expected | `uem_inventory_unavailable` (or binding/auth miss if binding absent — do not conflate) |
+| No active binding for serial; unbound/replaced | `binding_not_found` |
+| UEM ICCID present, no team-Account `Esim` for the binding’s org | `iccid_not_found` |
+| UEM serial match not exactly one; or telephony empty/stale | `uem_inventory_unavailable` |
 
 On all three families: **no** create/transfer/unbind/provider side effects.
-
-### ICCID miss / UEM inventory stale (normative)
-
-- ICCID present in UEM, no team-Account `Esim` → read-only miss (`iccid_not_found`)
-- `iccid=null` / `sims=[]` → `uem_inventory_unavailable`, not “no eSIM”
-- Must not mutate RoamKit inventory on the read path alone
 
 ### REST constraint (validated tenant)
 
@@ -226,27 +235,16 @@ On tenant `S31564560` (`p07003.cp1.uem.blackberry.com`):
 
 > - `GET /devices/{guid}` is **not** available (**404**).
 > - `query=serialNumber=…` is **not** supported (**400** Unknown query field).
-> - Validated path: **`GET /devices` + match `serialNumber`** (and/or match cached guid when still present).
+> - Validated path: **`GET /devices` + match `serialNumber`** (exactly one).
 > - Do not assume detail-by-guid or serial query filters unless proven later on this tenant.
-
-Optional later optimization: if a working App Config variable for IMEI/UDID is proven, `query=imei=` / `query=udid=` may replace full-list match — that does **not** change the App Config serial bootstrap lock.
-
-### Audit events (normative minimum)
-
-```text
-fleet_credential_rotated
-# binding create / revoke / serial remap events as implemented
-```
-
-Pairing audit events (`pairing_issued` / `pairing_completed` / `pairing_revoked`) are **not** required for v1 fleet (pairing is not the v1 enrollment path).
 
 ### Mapping keys
 
 ```text
-APK / App Config bootstrap : roamkit.device_serial = %SerialNumber%
-Stored stable map key      : DeviceBinding.uem_serial_number
-Stored UEM correlation     : DeviceBinding.uem_device_guid (cache; refreshable)
-Current SIM lookup         : UEM ICCID → Esim.iccid on Organization.account
+APK / App Config     : roamkit.device_serial = %SerialNumber%
+Stored stable map key: DeviceBinding.uem_serial_number
+Stored UEM cache     : DeviceBinding.uem_device_guid (refreshable)
+Current SIM lookup   : UEM ICCID → Esim.iccid on binding organization.account
 ```
 
 ICCID must **not** be the DeviceBinding ↔ UEM device identity.
@@ -258,55 +256,58 @@ ICCID must **not** be the DeviceBinding ↔ UEM device identity.
 | A — PR18 only as long-term exclusive model | Superseded as **target**; retained as **fallback** |
 | B — Pure fleet + local ICCID | **Rejected** |
 | Local hybrid (fleet + local ICCID + binding gate) | **Rejected** |
-| C — Fleet + UEM ICCID + **pairing-only guid** | **Superseded** by C′ (serial bootstrap) |
-| C′ — Fleet + `%SerialNumber%` + UEM ICCID | **Accepted** (this amend) |
+| C — Fleet + UEM ICCID + pairing-only guid | **Superseded** |
+| C′ — Fleet credential + `%SerialNumber%` on status | **Superseded for v1 status** by C″ |
+| C″ — Serial + active binding + UEM ICCID (read-only) | **Accepted** (this amend) |
+| Serial with **no** DeviceBinding gate | **Rejected** |
+| Serial authorizing mutations | **Rejected** |
 
 ### Migration / compatibility
 
 - PR18 `device_external_id + credential` remains supported through migration and as rollback.
-- Rollback must not require re-enrolling every device into a new package solely due to fleet cutover mistakes.
-- Deprecate PR18 device credentials in UEM only after fleet + serial bootstrap is validated on fleet devices.
-- Transitional UEM-guid-on-PR18-binding proof may remain until fleet endpoints replace it; it must not be confused with the Accepted fleet App Configuration model (`fleet_*` + `%SerialNumber%`).
+- Existing `OrganizationFleetCredential` / fleet status auth shape (if already shipped) is **non-normative for v1** after this amend; do not require fleet keys in UEM App Config for status. Removal or deprecation of fleet status auth is a follow-up implementation PR, not this docs PR.
+- Deprecate PR18 device credentials in UEM only after serial status is validated on fleet devices.
 
-### Non-goals (this Accept amend)
+### Non-goals (this docs amend)
 
-- Implementing fleet/status/APK/web changes in this docs PR
-- Making `DeviceBinding.esim` nullable in the first implementation schema PR
-- BlackBerry UEM **write** sync / automated non-Dynamics app-config write
-- Free-form serial or GUID entry in the APK
-- Authorizing status from fleet credential alone or serial alone
-- Instant fleet-secret cutover with no grace window
-- Requiring pairing as v1 enrollment
+- Implementing API / APK / web changes in this docs PR
+- Making `DeviceBinding.esim` nullable
+- BlackBerry UEM write sync
+- Free-form serial entry in the APK
+- Pairing as v1 enrollment
 - Resurrecting local ICCID without a new spike proof
-- Assuming `query=serialNumber` works without tenant re-proof
+- Using serial-only status for any mutating API
 
 ## Consequences
 
-### Accepted Option C′
+### Accepted Option C″
 
-- Normative target: one UEM App Configuration per org with `fleet_external_id`, `fleet_credential`, and `device_serial=%SerialNumber%`; UEM list+match by serial; refreshable guid cache; UEM-sourced ICCID; distinct error codes; grace-period fleet rotation.
-- Pairing is **out of v1** fleet enrollment.
-- Implementation must follow this ADR in small PRs (schema ≠ status API ≠ APK).
-- First schema PR keeps `DeviceBinding.esim` non-null and introduces stable `uem_serial_number` (+ guid cache field as specified).
+- Normative v1 App Config for status: only `roamkit.device_serial=%SerialNumber%`.
+- Normative gate: active `DeviceBinding` for that serial; then UEM ICCID → team-Account `Esim` → read-only snapshot.
+- Explicit tradeoff: enrolled serial knowledge ⇒ read status/usage; never mutations.
+- Pairing out of v1. Fleet credentials out of v1 status App Config / status auth.
 - PR18 remains fallback until explicitly deprecated after validation.
+- Implementation continues in small PRs (docs ≠ API ≠ APK).
 
 ### Rejected paths
 
-- Local ICCID / hybrid remain closed by the Pixel negative proof.
-- ICCID-as-auth, serial-alone-as-auth, and guid-alone-as-auth remain forbidden.
-- Pairing-only guid enrollment is no longer the Accepted v1 path.
+- Local ICCID / hybrid remain closed.
+- ICCID-as-auth and guid-alone-as-auth remain forbidden.
+- Serial without binding gate remains forbidden.
+- Serial as mutation auth remains forbidden.
 
 ## Stop rule
 
-Now that this ADR is **Accepted** (as amended):
+Now that this ADR is **Accepted** (as amended for C″):
 
-- Implementation **must** follow Option C′ as specified here (or open a new ADR discussion first).
-- Do **not** silently widen blast radius (fleet credential without active DeviceBinding).
-- Do **not** treat UEM ICCID, UEM `guid`, or device serial alone as sufficient authorization.
+- Implementation **must** follow Option C″ for v1 managed-device status (or open a new ADR discussion first).
+- Do **not** require `fleet_*` App Config keys for v1 status.
+- Do **not** accept serial status without an active `DeviceBinding` for that serial.
+- Do **not** authorize any mutation from serial (or from this status endpoint family).
+- Do **not** treat UEM ICCID or UEM `guid` alone as sufficient authorization.
 - Do **not** treat `iccid=null` / `sims=[]` as proof of no eSIM or as a trigger to mutate inventory.
-- Do **not** mix nullable-`esim` cleanup into the first fleet schema PR.
 - Do **not** implement local-ICCID status paths without a new ADR.
-- Do **not** reintroduce pairing as a required v1 path without a new ADR discussion.
+- Do **not** reintroduce pairing or fleet-credential status auth as required v1 without a new ADR discussion.
 - Do **not** assume `query=serialNumber` on this tenant without re-validation.
 
 Changing this Accepted decision later requires a new ADR discussion — never a silent rewrite during implementation.
