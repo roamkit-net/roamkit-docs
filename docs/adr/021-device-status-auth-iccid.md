@@ -161,35 +161,73 @@ Field name `uem_device_guid` is indicative for design discussion; schema is **no
 
 ### Option C — UEM-sourced ICCID (preferred Proposed direction)
 
+Keep option C **narrow**. `device.guid` is only a **bridge** to the UEM device record from which RoamKit reads ICCID — not a new ownership model.
+
 ```text
-APK credential / device identity
+authenticated device
       ↓
-RoamKit authenticates DeviceBinding
+mapped UEM device.guid
       ↓
+UEM returns active / relevant ICCID
+      ↓
+RoamKit looks up Esim by ICCID within team Account
+      ↓
+found  → status
+miss   → no RoamKit data for this ICCID
+```
+
+Validated UEM read path (see REST constraint):
+
+```text
 DeviceBinding.uem_device_guid
       ↓
-GET /api/v1/devices   (validated path; see REST constraint)
+GET /api/v1/devices
       ↓
 match device.guid
       ↓
-resolve authoritative SIM / ICCID   (rule TBD — Accept gate)
-      ↓
-Esim found by ICCID AND Esim.account == Organization.team Account?
-      ↓
-active DeviceBinding allow / revoke gate
-      ↓
-return status
+resolve authoritative SIM / ICCID   (dual-SIM rule = Accept gate)
 ```
 
 ```text
-UEM device.guid        = DeviceBinding ↔ UEM device map
+UEM device.guid        = bridge to UEM device record (map only)
 UEM ICCID              = lookup only
 credential / device id = auth
 Esim.account           = ownership
 DeviceBinding          = association + audit + revoke
 ```
 
-Even a valid credential must not authorize arbitrary ICCIDs on the team Account without the agreed allow/revoke boundary.
+Even a valid credential must not authorize arbitrary ICCIDs on the team Account without the agreed allow/revoke boundary. Unauthenticated ICCID status remains forbidden.
+
+### ICCID miss semantics (normative for option C)
+
+When UEM returns a usable ICCID, but RoamKit has **no** matching `Esim` on the Organization team Account:
+
+```text
+UEM ICCID present
+      ↓
+no Esim with that ICCID on team Account
+      ↓
+read-only miss: not found / no RoamKit data for this ICCID
+      ↓
+NO side effects
+```
+
+**Must not** on miss:
+
+- create an `Esim`
+- transfer / reassign ownership
+- unbind / archive / revoke `DeviceBinding`
+- trigger provider refresh or any other write side-effect
+
+Miss is a **read outcome** only. Exact API error/body shape is left to the implementation PR after Accept.
+
+Distinguish from inventory stale:
+
+| Condition | Outcome |
+|-----------|---------|
+| `iccid=null` / `sims=[]` (UEM telephony missing) | `uem_inventory_unavailable` — no status; no inventory mutation |
+| ICCID present in UEM, no team-Account `Esim` | miss — no RoamKit data for this ICCID; no side effects |
+| ICCID present, `Esim` on team Account | status (subject to auth + binding allow gate) |
 
 ### UEM telephony inventory unavailable / stale (normative for option C)
 
@@ -296,6 +334,7 @@ Accepting **A only** (keep PR18 long-term) requires no UEM ICCID work.
 - No new ICCID-based or UEM-lookup status implementation in `roamkit-api`, `roamkit-device`, or `roamkit-web`
 - Mapping key preference is locked to UEM `device.guid`; option C remains **not** Accept-ready
 - Stale/empty UEM telephony inventory is documented as fail-closed (`uem_inventory_unavailable`) with no inventory mutation
+- ICCID present in UEM but no team-Account `Esim` is a read-only miss (no create/transfer/unbind/provider side effects)
 - Local ICCID spike UI may remain as negative-proof tooling; it does not unlock Accept of local hybrid
 
 ### If Accepted as A
