@@ -4,6 +4,7 @@
 |-------|-------|
 | Status | **Accepted** |
 | Date | 2026-08 |
+| Amended | **2026-08-14 (masked ICCID → full ICCID for display/copy)** |
 | Deciders | Solo operator |
 | Relates to | [ADR 021](./021-device-status-auth-iccid.md) (unchanged); [ADR 020](./020-organization-team-accounts.md) |
 
@@ -16,6 +17,22 @@ A second product is needed: a **standalone consumer app** that shows the same ki
 `Esim.matching_id` already exists (provider fulfill). There is no public lookup, no unique constraint on the normalized value, and `/api/v1/me/esims/{id}/usage/` requires JWT + ownership.
 
 This ADR locks a **new** public read-only capability path. It does **not** amend ADR 021.
+
+### Amendment 2026-08-14 — full ICCID for display/copy
+
+Original lock: `esim.iccid` on this path was **masked** (first 6 + last 4; shorter than 10 → `••••`). Never the full ICCID.
+
+**Change:** `esim.iccid` is the **full** ICCID, for display and copy on RoamKit Status (same consumer display as the managed-device home card). Still **no** `packages.iccid`.
+
+**Unchanged:**
+
+- ICCID is **not** a resolve or auth field. Public lookup by ICCID stays **Rejected**.
+- Request bodies, URLs, Sentry extras, and API/APK analytics or crash logs must **not** record a full ICCID (redact with `mask_iccid` or a `sha256` prefix).
+- Full `matching_id`, LPA, QR, and install URLs stay forbidden on the response.
+
+**Why:** a Matching ID is already a high-entropy read-only capability token. Hiding the ICCID after a successful resolve blocked support/copy UX without reducing who can read the snapshot.
+
+This amend does **not** change [ADR 021](./021-device-status-auth-iccid.md). Implementation is a **separate API PR** after this docs PR merges. Do not implement API or APK in this docs PR.
 
 ## Decision
 
@@ -257,7 +274,7 @@ Keys are always present. Missing data is JSON `null`, not an omitted key (except
 ```json
 {
   "esim": {
-    "iccid": "894450••••••1234",
+    "iccid": "89445012345678901234",
     "status": "in_use"
   },
   "usage": {
@@ -307,7 +324,7 @@ Keys are always present. Missing data is JSON `null`, not an omitted key (except
 | No plan metadata | `"plan": null` (200) |
 | Matching ID miss | 404 `matching_id_not_found` only |
 
-- Masked ICCID only on `esim.iccid`: first 6 + last 4; shorter than 10 → `••••`. Never the full ICCID. No `packages.iccid`.
+- Full ICCID on `esim.iccid` only (display/copy). No `packages.iccid`.
 - **Omit:** `device_external_id`, `binding_status`, `esim.id`.
 - **Forbidden:** `lpa`, `qrcode*`, install URLs, full `matching_id` in the response, wholesale prices, balances, payment instruments, auto-topup fields beyond `enabled`.
 
@@ -364,13 +381,14 @@ Allowed: redaction (`TN••••B1`) or a `sha256` prefix.
 
 ### Negative / accepted tradeoff
 
-- Anyone who knows a Matching ID can read the allow-listed snapshot. Accepted because the path is mutation-free and the token is high-entropy (Airalo activation code).
+- Anyone who knows a Matching ID can read the allow-listed snapshot, including the full ICCID (2026-08-14 amend). Accepted because the path is mutation-free and the token is high-entropy (Airalo activation code).
 - Package history may be `null` until the API PR audit succeeds.
 - Usage may be stale; `usage.synced_at` (or `usage: null`) makes that visible.
 
 ### Follow-up (not this PR)
 
-- API PR: normalize + unique `matching_id`, public endpoint, tests, type audit, package audit.
+- API PR: normalize + unique `matching_id`, public endpoint, tests, type audit, package audit (done).
+- API PR (this amend): return full `esim.iccid`; keep log redaction; allow-list regression.
 - APK PR: `roamkit-status-apk`, UX above, encrypted storage, UEM-strip grep, parser tests.
 
 ## Stop rule
@@ -386,7 +404,8 @@ Once **Accepted**:
 - Do not amend [ADR 021](./021-device-status-auth-iccid.md) to add Matching ID to the device family.
 - Do not authorize mutations from Matching ID.
 - Do not call the provider on this path.
-- Do not return a full ICCID, LPA, or Matching ID on this path.
+- Do not return a full LPA or Matching ID on this path.
+- Do not **log** a full ICCID, LPA, or Matching ID.
 - Do not treat a missing cache as `matching_id_not_found`.
 - Do not invent package statuses.
 - Do not persist or log raw QR / LPA.
