@@ -2,7 +2,7 @@
 
 | Field | Value |
 |-------|-------|
-| Status | **Proposed** |
+| Status | **Accepted** |
 | Date | 2026-08 |
 | Deciders | Solo operator |
 | Relates to | [ADR 021](./021-device-status-auth-iccid.md) (unchanged); [ADR 020](./020-organization-team-accounts.md) |
