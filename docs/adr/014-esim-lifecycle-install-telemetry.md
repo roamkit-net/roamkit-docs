@@ -4,6 +4,7 @@
 |-------|-------|
 | Status | Accepted |
 | Date | 2026-07 |
+| Amended | **2026-08-14 (reactivate `exhausted`/`expired` on explicit provider `ACTIVE`)** |
 | Deciders | Faza 5 Wave 1 design freeze |
 
 ## Context
@@ -34,12 +35,32 @@ purchased → installation_started → installed → activated → in_use
                                                       ↘ expired
 in_use → exhausted | expired
 exhausted → expired
+exhausted → activated | in_use   (reactivation; provider ACTIVE only)
+expired → activated | in_use     (reactivation; provider ACTIVE only)
 purchased → installed   (wizard may skip intermediate telemetry)
 ```
 
-Forbidden: any reverse transition (e.g. `expired → installed`, `in_use → purchased`).
+Forbidden: install-funnel reverse transitions (e.g. `expired → installed`, `expired → purchased`, `in_use → purchased`). Reactivation `exhausted|expired → activated|in_use` is **not** an install-funnel reverse.
 
-**Unknown non-downgrade:** if the provider reports `UNKNOWN`, never set local status to `unknown` when current status is already past `purchased`. Keep current status; optionally append `provider.usage_unknown`. `unknown` is reserved for cold/error bootstrap only.
+**Unknown non-downgrade:** if the provider reports `UNKNOWN`, never set local status to `unknown` when current status is already past `purchased`. Keep current status; optionally append `provider.usage_unknown`. `unknown` is reserved for cold/error bootstrap only. `UNKNOWN` never reactivates.
+
+### Reactivation after top-up (2026-08-14 amend)
+
+A fulfilled top-up (manual or auto) can restore provider data after `exhausted` or `expired`. Sticky terminal `Esim.status` must not hide an active provider plan.
+
+**Sole entry:** only `LifecycleService.apply_provider_usage()` may reactivate, and only when the **current** provider usage payload has `status` equal to `ACTIVE` (trim + case-normalize). Target is `in_use` when that same payload shows consumption, otherwise `activated`.
+
+**Must not** reactivate from:
+
+- cached `Esim.usage_status` / `usage_remaining_mb` / `usage_expired_at` / `usage_synced_at`
+- a `Topup` row (`fulfilled` or otherwise)
+- the assumption that a purchase or auto-top-up succeeded
+
+Provider `EXPIRED` or `FINISHED` must not reactivate. Repeated identical `ACTIVE` syncs are idempotent (no status change, no extra lifecycle event).
+
+This amend does **not** change [ADR 010](./010-polygon-usdt-prepaid-credits.md). Implementation must not touch billing, ledger, refund, or re-run top-up fulfillment. Reactivation runs on the next normal usage sync (`GET /me/esims/{id}/usage/` or beat). Post-fulfillment usage refresh is **out of scope** for the API PR that implements this amend.
+
+Implementation of this amend is a **separate API PR** after this docs PR merges. Do not implement API, web, or production smoke in this docs PR.
 
 **Sole mutator:** only `LifecycleService` may write `Esim.status`. Architecture test enforces this (same pattern as ADR 010 / `CreditService`).
 
@@ -48,7 +69,8 @@ Forbidden: any reverse transition (e.g. `expired → installed`, `in_use → pur
 | `purchased` | `LifecycleService.mark_purchased` on fulfillment |
 | `installation_started` / `installed` | Client-attested events → `LifecycleService` |
 | `activated` / `in_use` / `exhausted` / `expired` | Provider usage via `LifecycleService.apply_provider_usage` |
-| Provider `UNKNOWN` | Event only; no downgrade |
+| Reactivation `exhausted`/`expired` → `activated`/`in_use` | Same path; **only** explicit provider `ACTIVE` on that payload |
+| Provider `UNKNOWN` | Event only; no downgrade; no reactivation |
 
 ### Setup session fields on `Esim`
 
@@ -155,6 +177,7 @@ sequenceDiagram
   A->>A: UsageService updates usage cache
   A->>A: LifecycleService.apply_provider_usage
   Note over A: UNKNOWN never downgrades local status
+  Note over A: ACTIVE may reactivate exhausted or expired
 ```
 
 ## Consequences
@@ -169,10 +192,24 @@ sequenceDiagram
 
 - Client-attested `installed` can be wrong; support relies on event trail + provider usage.
 - Sole-consumer enum rename still requires coordinated web deploy.
+- Until the API PR ships, `Esim.status` can stay `expired`/`exhausted` while provider usage is already `ACTIVE` (cached remaining data and package expiry may look live).
+
+## Stop rule
+
+Now that this ADR is **Accepted** (as amended — reactivate on explicit provider `ACTIVE`):
+
+- Do **not** start the API implementation PR until this docs amend is merged.
+- Do **not** reactivate except via `LifecycleService.apply_provider_usage` on an explicit current-payload `ACTIVE`.
+- Do **not** treat cached usage fields, a fulfilled `Topup`, or a successful purchase as sufficient to change `Esim.status`.
+- Do **not** allow `expired → installed` or `expired → purchased`.
+- Do **not** amend or bypass [ADR 010](./010-polygon-usdt-prepaid-credits.md): no billing, ledger, refund, or fulfillment side effects in the lifecycle PR.
+- Do **not** couple this amend to a post-fulfillment usage refresh.
+
+Changing this Accepted decision later requires a new ADR discussion — never a silent rewrite during implementation.
 
 ## Related
 
 - [ADR 005](./005-domain-events.md)
-- [ADR 010](./010-polygon-usdt-prepaid-credits.md) — sole-mutator pattern
+- [ADR 010](./010-polygon-usdt-prepaid-credits.md) — sole-mutator pattern; **unchanged** by this amend
 - [RFC 002](../rfcs/002-post-purchase-onboarding.md)
 - [API versioning](../../standards/api-versioning.md)
