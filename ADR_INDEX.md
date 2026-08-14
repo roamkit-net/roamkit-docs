@@ -29,6 +29,8 @@ every **6 months** (Architecture Decision Review: still valid?).
 | [016](./docs/adr/016-web-design-tokens.md) | RoamKit web design tokens | Accepted | 2026-08 |
 | [017](./docs/adr/017-roamkit-wallet-platform.md) | RoamKit Wallet Platform (architecture adoption) | Accepted — Architecture Complete | 2026-08 |
 | [018](./docs/adr/018-wallet-product-activation-strategy.md) | Wallet Product Activation Strategy | **Accepted** | 2026-08 |
+| [019](./docs/adr/019-account-pricing-profiles.md) | Account pricing profiles | Accepted | 2026-08 |
+| [020](./docs/adr/020-organization-team-accounts.md) | Organization / Team accounts | **Accepted** | 2026-08 |
 
 ## Billing ADR hierarchy
 
@@ -39,6 +41,7 @@ every **6 months** (Architecture Decision Review: still valid?).
 | First extension | [011](./docs/adr/011-credit-vouchers-gift-codes.md) | Vouchers / gift codes (must satisfy 012) |
 | Wallet constitution | [017](./docs/adr/017-roamkit-wallet-platform.md) | Wallet Platform (RFC 003–006); intake cutover via [018](./docs/adr/018-wallet-product-activation-strategy.md) |
 | Wallet activation | [018](./docs/adr/018-wallet-product-activation-strategy.md) | Product activation / ADR 010 shared-wallet cutover (**Accepted**) |
+| Team collaboration | [020](./docs/adr/020-organization-team-accounts.md) | Organization / Membership; extends Account identity; **does not** replace 010 |
 
 ## Deploy ADR hierarchy
 
@@ -67,6 +70,8 @@ every **6 months** (Architecture Decision Review: still valid?).
 - [System overview](./docs/architecture/overview.md)
 - [Directory structure](./docs/architecture/directory-structure.md)
 - [Provider abstractions](./docs/architecture/provider-abstractions.md)
+- [eSIM Auto Top-up v1 — Design Lock](./docs/design/esim-auto-topup-v1-design-lock.md) — **Accepted** (shipped; ≠ Subscription; Available-topups-only; does **not** amend [ADR 010](./docs/adr/010-polygon-usdt-prepaid-credits.md) money invariants)
+- [eSIM Auto Top-up v2 — Design Lock](./docs/design/esim-auto-topup-v2-design-lock.md) — **Accepted** (shipped on staging; multi-condition OR triggers; supersedes v1 trigger shape only; does **not** amend ADR 010)
 - [RoamKit Wallet Platform — Architecture Vision](./docs/architecture/roamkit-wallet-platform-vision.md) — **Draft / Vision** (non-normative; does **not** amend [ADR 010](./docs/adr/010-polygon-usdt-prepaid-credits.md))
 - [Wallet Conversion Boundary](./docs/architecture/wallet-conversion-boundary.md) — why product spend stays on Credits after convert
 - [Wallet Sandbox](./docs/architecture/wallet-sandbox.md) — research framework (non-normative)

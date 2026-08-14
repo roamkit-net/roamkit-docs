@@ -13,6 +13,7 @@ ship safely — Launch Gates, cutover discipline, incidents, and maturity tracki
 | [Launch Gates](./launch-gates.md) | Gate A–D, entry/exit criteria, owners, time-boxes, freeze |
 | [Production readiness review](./production-readiness-review.md) | PR0.5 go/no-go scorecard |
 | [Go-live checklist](./production-go-live-checklist.md) | Faza 4 cutover checklist / must-haves |
+| [Promote parity checklist](./promote-parity-checklist.md) | Every `develop` → `main`: content diff + bake/flag matrix |
 | [Capability status / Maturity Matrix](./capability-status.md) | Design → Implemented → Production → Observed |
 | [Release Manifest](./release-manifest.md) | Per-release template; filled copies in [`releases/`](./releases/) |
 | [Evidence of Gate](./evidence-of-gate.md) | Audit pack per closed Gate (SHA, CI, GO, PRs) |
