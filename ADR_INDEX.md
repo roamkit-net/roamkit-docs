@@ -31,6 +31,8 @@ every **6 months** (Architecture Decision Review: still valid?).
 | [018](./docs/adr/018-wallet-product-activation-strategy.md) | Wallet Product Activation Strategy | **Accepted** | 2026-08 |
 | [019](./docs/adr/019-account-pricing-profiles.md) | Account pricing profiles | Accepted | 2026-08 |
 | [020](./docs/adr/020-organization-team-accounts.md) | Organization / Team accounts | **Accepted** | 2026-08 |
+| [021](./docs/adr/021-device-status-auth-iccid.md) | Device status auth (ICCID lookup vs credentials) | **Accepted** | 2026-08 |
+| [022](./docs/adr/022-public-matching-id-esim-status.md) | Public matching-id eSIM status | **Proposed** | 2026-08 |
 
 ## Billing ADR hierarchy
 
