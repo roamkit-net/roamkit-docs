@@ -4,7 +4,7 @@
 |-------|-------|
 | Status | **Accepted** |
 | Date | 2026-08 |
-| Amended | **2026-08-14 (masked ICCID → full ICCID for display/copy)** |
+| Amended | **2026-08-14** (full ICCID); **2026-08-14** (local encrypted eSIM list) |
 | Deciders | Solo operator |
 | Relates to | [ADR 021](./021-device-status-auth-iccid.md) (unchanged); [ADR 020](./020-organization-team-accounts.md) |
 
@@ -34,6 +34,23 @@ Original lock: `esim.iccid` on this path was **masked** (first 6 + last 4; short
 
 This amend does **not** change [ADR 021](./021-device-status-auth-iccid.md). Implementation is a **separate API PR** after this docs PR merges. Do not implement API or APK in this docs PR.
 
+### Amendment 2026-08-14 — local encrypted eSIM list
+
+Original lock: the APK stored **one** `matching_id`. **Change eSIM** replaced it (no server-side list).
+
+**Change:** RoamKit Status may keep **N** Matching IDs on the device, plus which one is **active**. Status AppBar swap-arrows **only open the saved-list screen**. They do not replace the active id, do not open Matching ID entry, and do not wipe storage.
+
+**Unchanged:**
+
+- Still **no** server-side consumer list. Each fetch is still `POST /api/v1/public/esim/status/` with **one** `matching_id`.
+- Public lookup by ICCID stays **Rejected**. Mutations authorized by Matching ID stay **Rejected**.
+- Never persist LPA, SM-DP+, confirmation code, or QR. Never show the full Matching ID on the list.
+- [ADR 021](./021-device-status-auth-iccid.md) and [ADR 010](./010-polygon-usdt-prepaid-credits.md) are **not** amended.
+
+**Why:** one stored id forced a wipe to view another eSIM. A local list is still a capability-token cache, not a server inventory.
+
+This amend does **not** change the public API. Implementation is a **separate APK PR** after this docs PR merges. Do not implement APK in this docs PR.
+
 ## Decision
 
 Introduce `POST /api/v1/public/esim/status/` authenticated only by a trimmed `matching_id` treated as a **read-only capability token**.
@@ -55,7 +72,7 @@ same validator → matching_id only
         ↓
 POST /api/v1/public/esim/status/
         ↓
-encrypted local active eSIM
+encrypted local eSIM list (atomic v1 blob) + active id
 ```
 
 v1 is **one** combined cache snapshot. Separate public `/packages/` and `/coverage/` siblings are **Rejected**. If they are needed later, open a new ADR.
@@ -83,7 +100,9 @@ Matching ID
 - A successful scan **fills only** the parsed `matching_id` into the same field. The user then taps **Nastavi**.
 - Manual and scanned values use the **same** validator and the **same** public endpoint.
 - If the camera is denied, manual entry still works.
-- **Change eSIM** replaces the stored id (no server-side list).
+- Status AppBar swap-arrows **only open the saved-list screen** (no replace, no entry, no wipe dialog).
+- The list has an **add icon** (no text) → empty Matching ID entry, and a **delete icon** (no text) on each row.
+- There is **no** server-side list.
 
 ### QR scan (v1 — local GSMA Activation Code parser)
 
@@ -122,6 +141,44 @@ Guardrails:
 - **Not** plain SharedPreferences.
 - **Not** included in Android backup.
 - **Not** present in analytics or crash logs.
+
+#### Atomic blob (2026-08-14 list amend)
+
+One versioned JSON under a **single** key. Do **not** store `esims` and `active_matching_id` as two independent records (they can diverge after a kill):
+
+```json
+{
+  "version": 1,
+  "active_matching_id": "...",
+  "esims": []
+}
+```
+
+Each `esims[]` row: `{ matching_id, iccid, plan_title }`. `matching_id` is the secret. `iccid` and `plan_title` are **display cache** written after a 200. List rows show ICCID + plan title (placeholder if cache empty) — **never** the full Matching ID.
+
+Migrate a legacy single `active_matching_id` key into this blob in one write, then delete the old key.
+
+#### Self-heal
+
+If the JSON is corrupt, the active id is missing from `esims`, or `esims` is empty: do **not** crash. Insert/migrate a valid orphan active id; otherwise select the first valid row; if none, persist an empty v1 blob and open the Matching ID entry screen.
+
+#### Stale 200
+
+A late `200` must not reactivate a deleted or no-longer-active eSIM. Persist only if the request still belongs to the current generation **and** that `matching_id` is still in `esims`.
+
+#### Cap and duplicates
+
+At most **20 unique** Matching IDs, compared after the same `trim` as the API request. A duplicate on a full list may **upsert**. Only a **21st unique** id is blocked.
+
+#### Partial 200 display cache
+
+Non-empty `esim.iccid` updates the cache; empty must not wipe last-good ICCID. Non-empty `plan.title` updates the cache; missing/null must not wipe last-good title.
+
+#### Delete last eSIM
+
+Confirm → atomically write an empty v1 blob → open an **empty** entry screen. Back must **not** return to status without an active id.
+
+Add persists **only after 200**. Not-found does not add a row.
 
 ### Standalone app — UEM strip (DoD)
 
@@ -345,7 +402,8 @@ Allowed: redaction (`TN••••B1`) or a `sha256` prefix.
 - API implementation, migration, OpenAPI, throttle rate numbers
 - Auditing usage/enum types (API PR)
 - Auditing `Order` + Topup → packages (API PR)
-- Creating `roamkit-status-apk` / `net.roamkit.status`
+- Creating `roamkit-status-apk` / `net.roamkit.status` (repo exists; list UX is a later APK PR)
+- Implementing the local eSIM list in the APK (this docs PR)
 - A page in `roamkit-web`
 - Live Airalo refresh
 - Any change to `roamkit-bbuem-apk` or to [ADR 021](./021-device-status-auth-iccid.md)
@@ -367,6 +425,8 @@ Allowed: redaction (`TN••••B1`) or a `sha256` prefix.
 | UEM config, serial, device credential, or login in RoamKit Status | **Rejected** |
 | Mutations authorized by Matching ID | **Rejected** |
 | Plain SharedPreferences / Android backup of `matching_id` | **Rejected** |
+| Two independent keys for the list and the active id | **Rejected** (must be one atomic v1 blob) |
+| Showing the full Matching ID on the saved list | **Rejected** |
 
 **QR scan is part of the v1 APK; it only extracts `matching_id` locally.**
 
@@ -389,7 +449,8 @@ Allowed: redaction (`TN••••B1`) or a `sha256` prefix.
 
 - API PR: normalize + unique `matching_id`, public endpoint, tests, type audit, package audit (done).
 - API PR (this amend): return full `esim.iccid`; keep log redaction; allow-list regression.
-- APK PR: `roamkit-status-apk`, UX above, encrypted storage, UEM-strip grep, parser tests.
+- APK PR: `roamkit-status-apk`, UX above, encrypted storage, UEM-strip grep, parser tests (done).
+- APK PR (this list amend): atomic v1 blob, saved-list screen, self-heal, stale-200, last-delete, cap/upsert tests. Do not start until this docs PR is squash-merged.
 
 ## Stop rule
 
