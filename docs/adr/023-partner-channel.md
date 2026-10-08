@@ -4,6 +4,7 @@
 |-------|-------|
 | Status | Accepted |
 | Date | 2026-10 |
+| Amended | 2026-10-08 (user-id snapshots use the same scalar type as `User.id`) |
 | Deciders | Solo operator (architecture lock before schema / API) |
 | Relates to | [ADR 010](./010-polygon-usdt-prepaid-credits.md), [ADR 012](./012-billing-extensibility-rules.md), [ADR 019](./019-account-pricing-profiles.md) (unchanged), [ADR 020](./020-organization-team-accounts.md) (narrow amendment only) |
 
@@ -104,11 +105,13 @@ The channel is never physically deleted, even with no children. No admin delete,
 
 ### User deletion
 
-No `CASCADE` from `User` onto accrual, grant, ledger, or `CustomerAttributionHistory`. Those FKs are `SET_NULL` plus a UUID snapshot and no email:
+No `CASCADE` from `User` onto accrual, grant, ledger, or `CustomerAttributionHistory`. Those FKs are `SET_NULL` plus a user-id snapshot and no email:
 
 - accrual and grant: `customer_user_id_snapshot`
 - grant: `granted_by_user_id_snapshot`
 - history: `changed_by_user_id_snapshot`
+
+User identity snapshots use the same scalar type as `User.id` (currently bigint), not UUID. They store only the immutable user identifier snapshot, never email or PII.
 
 `granted_by` becomes `NULL` only when the User is deleted, not when Membership is revoked. `CustomerAttribution.user` stays `PROTECT`. This ADR does not add an anonymization product.
 
@@ -411,7 +414,7 @@ Every portal and grant error body is exactly `{"code":"..."}`. No `detail`, fiel
 400 invalid_query          customers only, q longer than 254 after trim
 ```
 
-`customer_not_found` must not reveal that the UUID exists at another partner. `customer_attribution_changed` means the customer was transferred off this channel under the attribution lock. A valid page past the end is not an error: return `count`, the requested `page`, `page_size`, and `results: []`.
+`customer_not_found` must not reveal that the user id exists at another partner. `customer_attribution_changed` means the customer was transferred off this channel under the attribution lock. A valid page past the end is not an error: return `count`, the requested `page`, `page_size`, and `results: []`.
 
 `401` on the team host is the auth cleanup above, not a portal error screen. `403`, `404 partner_channel_disabled`, and `409 partner_context_ambiguous` replace the page with the portal screen (access denied, feature unavailable, or contact support with no org list). Network and `5xx` stay on that block with retry.
 
@@ -431,11 +434,11 @@ Every portal and grant error body is exactly `{"code":"..."}`. No `detail`, fiel
 
 Amounts are 6dp strings, not JSON numbers. A missing source type is `0`. `available_balance` is `max(0, balance)`. Negative balance stays in the database and is visible in Django admin only.
 
-`GET /api/v1/orgs/partner/customers` is current attributions only. Aggregates are annotated in one query. Parameters: `page`, `page_size` default 50 max 100, `sort` `attributed_at` | `total_partner_earned` | `accrual_count`, `order` `asc` | `desc`. Default `sort=total_partner_earned&order=desc`. The backend always adds `customer_id ASC`. The client does not send it. `q` is trimmed. Empty `q` is no filter. A UUID is an exact `customer_id` inside this channel. Otherwise `email__iexact` inside this channel. No `icontains`, no prefix, no search outside the channel. A miss is an empty page. The full email is never returned. Zero earnings is `"0.000000"` and `accrual_count` 0.
+`GET /api/v1/orgs/partner/customers` is current attributions only. Aggregates are annotated in one query. Parameters: `page`, `page_size` default 50 max 100, `sort` `attributed_at` | `total_partner_earned` | `accrual_count`, `order` `asc` | `desc`. Default `sort=total_partner_earned&order=desc`. The backend always adds `customer_id ASC`. The client does not send it. `q` is trimmed. Empty `q` is no filter. A decimal `User.id` is an exact `customer_id` inside this channel. Otherwise `email__iexact` inside this channel. No `icontains`, no prefix, no search outside the channel. A miss is an empty page. The full email is never returned. Zero earnings is `"0.000000"` and `accrual_count` 0.
 
 Customer object: `customer_id`, masked email (first local character + `***` + domain), `attributed_at`, `total_partner_earned`, `accrual_count`. No `display_name`. Full email stays in Django admin. Grant selects `customer_id` from that row.
 
-`GET /api/v1/orgs/partner/grants` reads `PartnerCreditGrant` for the resolved channel. Sort `created_at` | `amount`, default `created_at desc`, tie-break `grant_id ASC`. No `q`. Fields: `grant_id`, `customer_id`, masked `email` or `null`, `amount`, `granted_by` `{user_id, email}` or `null`, `created_at`. Do not expose the snapshot UUID, ledger ids, or team account id.
+`GET /api/v1/orgs/partner/grants` reads `PartnerCreditGrant` for the resolved channel. Sort `created_at` | `amount`, default `created_at desc`, tie-break `grant_id ASC`. No `q`. Fields: `grant_id`, `customer_id`, masked `email` or `null`, `amount`, `granted_by` `{user_id, email}` or `null`, `created_at`. Do not expose the user-id snapshot, ledger ids, or team account id.
 
 `GET /api/v1/orgs/partner/invite-link` returns `url`, `is_active`, `created_at`, `regenerated_at` (`null` until regenerated). No separate token field. An inactive link is 200 with `is_active` false. Viewer, admin, and owner may read.
 
