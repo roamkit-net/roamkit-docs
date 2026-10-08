@@ -4,7 +4,7 @@
 |-------|-------|
 | Status | Accepted |
 | Date | 2026-10 |
-| Amended | 2026-10-08 (user-id snapshots use the same scalar type as `User.id`; `source_id` uses each model's canonical primary key; grant body fallback is `400 invalid_request`; partner reads may send `X-Partner-Role` as a presentation hint) |
+| Amended | 2026-10-08 (user-id snapshots use the same scalar type as `User.id`; `source_id` uses each model's canonical primary key; grant body fallback is `400 invalid_request`; partner reads may send `X-Partner-Role` as a presentation hint; partner `email` is the full address and reads include `display_name`) |
 | Deciders | Solo operator (architecture lock before schema / API) |
 | Relates to | [ADR 010](./010-polygon-usdt-prepaid-credits.md), [ADR 012](./012-billing-extensibility-rules.md), [ADR 019](./019-account-pricing-profiles.md) (unchanged), [ADR 020](./020-organization-team-accounts.md) (narrow amendment only) |
 
@@ -75,7 +75,7 @@ Added in the schema migration, before any writer exists:
 | 7 | `PartnerChannel.is_active` controls only new accruals. `PartnerInviteLink.is_active` controls only new attributions. They do not change each other. |
 | 8 | A missing team Account is a system error `partner_channel.team_account_missing`, not a business skip and not `insufficient_funds`. |
 | 9 | `PARTNER_CHANNEL_ENABLED` defaults off. The server checks it on portal reads, portal writes, and the margin path. Hiding UI is not the check. |
-| 10 | Public partner responses do not include `net_price`, `margin`, `revenue_share_percent`, `team_account_id`, or a full email. |
+| 10 | Public partner responses do not include `net_price`, `margin`, `revenue_share_percent`, or `team_account_id`. Partner `email` is the full address. `display_name` is present and may be empty. |
 
 `revenue_share_percent` is `Decimal(5,2)` with `CHECK 0 <= revenue_share_percent <= 100`. Money fields on the accrual are `Decimal(20,6)`. Arithmetic is `Decimal`, never `float`. The portal does not compute `partner_share`.
 
@@ -439,11 +439,11 @@ A successful partner read (`summary`, `customers`, `grants`, `invite-link`) may 
 
 Amounts are 6dp strings, not JSON numbers. A missing source type is `0`. `available_balance` is `max(0, balance)`. Negative balance stays in the database and is visible in Django admin only.
 
-`GET /api/v1/orgs/partner/customers` is current attributions only. Aggregates are annotated in one query. Parameters: `page`, `page_size` default 50 max 100, `sort` `attributed_at` | `total_partner_earned` | `accrual_count`, `order` `asc` | `desc`. Default `sort=total_partner_earned&order=desc`. The backend always adds `customer_id ASC`. The client does not send it. `q` is trimmed. Empty `q` is no filter. A decimal `User.id` is an exact `customer_id` inside this channel. Otherwise `email__iexact` inside this channel. No `icontains`, no prefix, no search outside the channel. A miss is an empty page. The full email is never returned. Zero earnings is `"0.000000"` and `accrual_count` 0.
+`GET /api/v1/orgs/partner/customers` is current attributions only. Aggregates are annotated in one query. Parameters: `page`, `page_size` default 50 max 100, `sort` `attributed_at` | `total_partner_earned` | `accrual_count`, `order` `asc` | `desc`. Default `sort=total_partner_earned&order=desc`. The backend always adds `customer_id ASC`. The client does not send it. `q` is trimmed. Empty `q` is no filter. A decimal `User.id` is an exact `customer_id` inside this channel. Otherwise exact `email` or exact `display_name` inside this channel. No `icontains`, no prefix, no search outside the channel. A miss is an empty page. Zero earnings is `"0.000000"` and `accrual_count` 0.
 
-Customer object: `customer_id`, masked email (first local character + `***` + domain), `attributed_at`, `total_partner_earned`, `accrual_count`. No `display_name`. Full email stays in Django admin. Grant selects `customer_id` from that row.
+Customer object: `customer_id`, full `email`, `display_name` (`""` when unset), `attributed_at`, `total_partner_earned`, `accrual_count`. The portal shows trimmed `display_name` when it is non-empty, otherwise `email`. Grant selects `customer_id` from that row.
 
-`GET /api/v1/orgs/partner/grants` reads `PartnerCreditGrant` for the resolved channel. Sort `created_at` | `amount`, default `created_at desc`, tie-break `grant_id ASC`. No `q`. Fields: `grant_id`, `customer_id`, masked `email` or `null`, `amount`, `granted_by` `{user_id, email}` or `null`, `created_at`. Do not expose the user-id snapshot, ledger ids, or team account id.
+`GET /api/v1/orgs/partner/grants` reads `PartnerCreditGrant` for the resolved channel. Sort `created_at` | `amount`, default `created_at desc`, tie-break `grant_id ASC`. No `q`. Fields: `grant_id`, `customer_id`, full `email` or `null`, `display_name` (`""` when unset), `amount`, `granted_by` `{user_id, email, display_name}` or `null`, `created_at`. Do not expose the user-id snapshot, ledger ids, or team account id. The same display rule applies: trimmed `display_name`, otherwise `email`.
 
 `GET /api/v1/orgs/partner/invite-link` returns `url`, `is_active`, `created_at`, `regenerated_at` (`null` until regenerated). No separate token field. An inactive link is 200 with `is_active` false. Viewer, admin, and owner may read.
 
@@ -455,11 +455,11 @@ The invite card shows the URL from GET. Copy is available to viewer, admin, and 
 
 Summary and invite-link load independently. Each waits on its own skeleton. `0` is not a pre-response state and not an error substitute. One block’s network or `5xx` failure does not clear the other. No local summary math.
 
-Give credit exists only on `/customers`, owner and admin, for that row’s `customer_id`. The modal shows masked email and `available_balance` as display only. The client rejects `amount <= 0` and amount above the displayed balance. Confirm is the confirmation before POST. `idempotency_key` is minted for that attempt, reused on network retry, and minted again when the amount changes. Success closes the modal and refetches summary and grants. `409 insufficient_funds` refreshes balance. `409 customer_attribution_changed` closes the modal and reloads customers.
+Give credit exists only on `/customers`, owner and admin, for that row’s `customer_id`. The modal shows the customer label (`display_name` or full email) and `available_balance` as display only. The client rejects `amount <= 0` and amount above the displayed balance. Confirm is the confirmation before POST. `idempotency_key` is minted for that attempt, reused on network retry, and minted again when the amount changes. Success closes the modal and refetches summary and grants. `409 insufficient_funds` refreshes balance. `409 customer_attribution_changed` closes the modal and reloads customers.
 
 `/grants` is read-only. Null email or null `granted_by` displays as an em dash. Navigation for viewer, admin, and owner is Dashboard, Customers, Grants, on that team host only. No Settings, Team, Billing, Reports, Earnings, or consumer links.
 
-Portal screens render API data as text. Masked email and the invite URL are not placed in `innerHTML`. Bearer tokens are not logged. Team routes `/`, `/customers`, and `/grants` load no third-party scripts. `/login` may load only Google GIS and Cloudflare Turnstile.
+Portal screens render API data as text. The customer label and the invite URL are not placed in `innerHTML`. Bearer tokens are not logged. Team routes `/`, `/customers`, and `/grants` load no third-party scripts. `/login` may load only Google GIS and Cloudflare Turnstile.
 
 ### CORS and hosts
 
@@ -482,7 +482,9 @@ POST /api/v1/orgs/partner/invite-link/deactivate
 POST /api/v1/billing/partner-grants/
 ```
 
-`GET /join/<token>` and the internal consume endpoint are not in this schema. CI fails if a partner response grows a property outside the locked set, including `net_price`, `margin`, `revenue_share_percent`, `team_account_id`, and a full email. The allowed `email` property is the mask.
+`GET /join/<token>` and the internal consume endpoint are not in this schema. CI fails if a partner response grows a property outside the locked set, including `net_price`, `margin`, `revenue_share_percent`, and `team_account_id`. The allowed `email` property is the full address. `display_name` is allowed and is `""` when the user has not set one.
+
+`User.display_name` is a label, not an identity. Empty means callers show `email`. It does not replace login, password reset, or invite delivery. `google_name` is not a fallback.
 
 ### Rate limit
 
