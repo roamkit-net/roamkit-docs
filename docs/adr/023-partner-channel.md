@@ -4,7 +4,7 @@
 |-------|-------|
 | Status | Accepted |
 | Date | 2026-10 |
-| Amended | 2026-10-08 (user-id snapshots use the same scalar type as `User.id`; `source_id` uses each model's canonical primary key) |
+| Amended | 2026-10-08 (user-id snapshots use the same scalar type as `User.id`; `source_id` uses each model's canonical primary key; grant body fallback is `400 invalid_request`) |
 | Deciders | Solo operator (architecture lock before schema / API) |
 | Relates to | [ADR 010](./010-polygon-usdt-prepaid-credits.md), [ADR 012](./012-billing-extensibility-rules.md), [ADR 019](./019-account-pricing-profiles.md) (unchanged), [ADR 020](./020-organization-team-accounts.md) (narrow amendment only) |
 
@@ -409,10 +409,13 @@ Every portal and grant error body is exactly `{"code":"..."}`. No `detail`, fiel
 409 insufficient_funds
 409 idempotency_key_conflict
 429 rate_limited
+400 invalid_request        grant body that is malformed or semantically invalid and is not exclusively invalid_amount
 400 invalid_amount
 400 invalid_page | invalid_page_size | invalid_sort | invalid_order
 400 invalid_query          customers only, q longer than 254 after trim
 ```
+
+`invalid_amount` stays the narrower grant case: the body is otherwise valid and only `amount` is not. Any other malformed or semantically invalid grant body, including a bad `amount` together with another body problem, is `invalid_request`.
 
 `customer_not_found` must not reveal that the user id exists at another partner. `customer_attribution_changed` means the customer was transferred off this channel under the attribution lock. A valid page past the end is not an error: return `count`, the requested `page`, `page_size`, and `results: []`.
 
