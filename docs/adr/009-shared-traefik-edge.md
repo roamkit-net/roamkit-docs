@@ -4,6 +4,7 @@
 |-------|-------|
 | Status | Accepted |
 | Date | 2026-07 |
+| Amended | 2026-10-08 (staging API host is the single label `api-staging.roamkit.net`) |
 | Deciders | Architecture Freeze (revision) |
 | Supersedes | Per-stack nginx + certbot in staging compose (Faza -1a draft) |
 
@@ -32,12 +33,14 @@ Cloudflare connects via **orange cloud proxy** to origin IP `65.108.196.92:443`.
 labels:
   - traefik.enable=true
   - traefik.docker.network=proxy
-  - traefik.http.routers.roamkit-api.rule=Host(`api.staging.roamkit.net`)
+  - traefik.http.routers.roamkit-api.rule=Host(`api-staging.roamkit.net`)
   - traefik.http.routers.roamkit-api.entrypoints=websecure
   - traefik.http.routers.roamkit-api.tls=true
   - traefik.http.routers.roamkit-api.tls.certresolver=cloudflare
   - traefik.http.services.roamkit-api.loadbalancer.server.port=8000
 ```
+
+Public hostnames are one label under `roamkit.net`. Cloudflare Universal SSL covers the apex and `*.roamkit.net` only, so a name such as `api.staging.roamkit.net` is not a staging host. The staging API host is `api-staging.roamkit.net`. The staging web host stays `staging.roamkit.net`.
 
 3. **Internal services** use **shared** host PostGIS (`/opt/stacks/data`, network `postgis`) and Redis (`/opt/stacks/redis`, container `infra-redis`, network `hetzner_net`, DB index **4**). No per-stack DB/Redis containers.
 4. **`api` / `celery`** join `postgis`, `hetzner_net`, and `proxy` (api only for Traefik); **`web`** joins `proxy` only
