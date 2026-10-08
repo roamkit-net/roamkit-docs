@@ -4,6 +4,7 @@
 |-------|-------|
 | Status | Accepted |
 | Date | 2026-08 |
+| Amended | 2026-10-08 (partner-channel non-goal narrowed by [ADR 023](./023-partner-channel.md)) |
 | Deciders | Solo operator (architecture lock before schema / API) |
 
 ## Context
@@ -107,6 +108,8 @@ current account context
 4. Spend and inventory mutations execute only against the resolved, authorized Account.
 5. Suspended / revoked members have **no** access to the team Account.
 
+[ADR 023](./023-partner-channel.md) does not replace this context for organization spend and inventory. Its partner grant is a separate `CreditService` movement from the Organization’s existing team Account to an attributed customer’s personal Account. It still does not authorize spend from a client-supplied account id.
+
 ### Membership invariants
 
 Roles: `owner` | `admin` | `member` | `viewer`.
@@ -118,6 +121,8 @@ Roles: `owner` | `admin` | `member` | `viewer`.
 | Owner removal | Owner cannot be removed without a prior ownership transfer |
 | Last owner | Sole / last owner cannot be deactivated or removed |
 | Revoked access | Suspended / revoked members cannot use team Account APIs |
+
+[ADR 023](./023-partner-channel.md) does not change this table. It does not remove the last-owner rule and does not promote another member to owner.
 
 #### Permission boundary (normative matrix)
 
@@ -133,11 +138,13 @@ Roles: `owner` | `admin` | `member` | `viewer`.
 | Assign eSIM assignee (presentation) | yes | yes | yes | no |
 | Device bind (when introduced) | yes | yes | no | no |
 
-Exact API shapes are implementation detail; this matrix is the Accept lock for v1.
+Exact API shapes are implementation detail; this matrix is the Accept lock for organization spend, inventory, and membership. Partner-channel actions are not rows in this matrix. They are specified only in [ADR 023](./023-partner-channel.md) and do not add or remove rows here.
 
 ### Invite security
 
-Invites create Membership only after accept. Normative rules:
+These rules are `OrganizationInvite` only. `PartnerInviteLink` is not this invite; it is defined in [ADR 023](./023-partner-channel.md) and does not create Membership.
+
+`OrganizationInvite` creates Membership only after accept. Normative rules:
 
 - Token is **single-use** and has an **expiry**.
 - Revoked or expired invites **cannot** be accepted.
@@ -222,12 +229,30 @@ Reserved for later PRs after inventory ownership ships:
 
 Device status auth / UEM ICCID lookup for managed fleets is **Accepted** (amended) in [ADR 021](./021-device-status-auth-iccid.md) (Option C″: `%SerialNumber%` + active DeviceBinding + UEM-sourced ICCID, read-only status; PR18 fallback; fleet credentials not required for v1 status). That ADR does **not** change Organization / Account ownership rules in this document.
 
+### Amendment — partner channel (ADR 023, 2026-10)
+
+[ADR 023](./023-partner-channel.md) narrows the former non-goal “B2B reseller portal”. A white-label B2B store and a reseller catalog stay out of scope. The only allowed addition is the partner channel specified there.
+
+Unchanged:
+
+- Organization is not a money owner, holds no balance or ledger rows, and is not a spend or credit target.
+- Exactly one team `billing.Account` per Organization. The partner channel does not add an Account FK.
+- Owner cardinality in this ADR, including the last-owner rule and no auto-promotion.
+- The permission matrix in this ADR.
+- `OrganizationInvite`: single-use, expiry, Membership only after accept.
+- Active Account context for organization spend and inventory.
+
+Added beside those rules, without replacing them:
+
+- `CustomerAttribution` is not Membership. `PartnerInviteLink` is not `OrganizationInvite`.
+- Partner margin and partner grant move money only through `CreditService` on `billing.Account`: a credit to the existing team Account, and a grant that may also credit the attributed customer’s personal Account.
+
 ### Non-goals
 
 - Org-scoped Labels (after inventory ownership)
 - Flutter widget implementation
 - BlackBerry UEM admin sync
-- B2B reseller portal
+- White-label B2B store. A partner channel (customer attribution, margin credit onto the existing team Account, portal on `team.roamkit.net`) is [ADR 023](./023-partner-channel.md), not a reseller catalog.
 - Google OAuth `hd` allowlists ([ADR 015](./015-google-oauth-gis.md) remains unchanged)
 - Treating Organization as a balance or inventory owner
 - Permanent Organization hard-delete
@@ -268,6 +293,7 @@ Normative ordering (one responsibility per PR; no schema before Accept):
 - `Esim.user` → `Esim.account` migration touches inventory authorization across API/web.
 - Active Account context adds API/session complexity versus today’s implicit personal Account.
 - Soft org lifecycle means operational cleanup processes are needed later for true purge.
+- [ADR 023](./023-partner-channel.md) narrows “B2B reseller portal” to a white-label store. Organization remains not the money owner.
 
 ### Binding after Accept
 
@@ -284,4 +310,5 @@ Once Status is **Accepted**:
 - [ADR 013](./013-production-launch.md) — Business / Team not built at launch matrix
 - [ADR 014](./014-esim-lifecycle-install-telemetry.md) — eSIM lifecycle (unchanged by org collaboration)
 - [ADR 019](./019-account-pricing-profiles.md) — per-Account pricing; team Accounts may share profiles later
+- [ADR 023](./023-partner-channel.md) — partner channel on the existing team Account; does not make Organization the money owner
 - [ADR index](../../ADR_INDEX.md)
