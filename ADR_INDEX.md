@@ -45,7 +45,7 @@ every **6 months** (Architecture Decision Review: still valid?).
 | Wallet constitution | [017](./docs/adr/017-roamkit-wallet-platform.md) | Wallet Platform (RFC 003–006); intake cutover via [018](./docs/adr/018-wallet-product-activation-strategy.md) |
 | Wallet activation | [018](./docs/adr/018-wallet-product-activation-strategy.md) | Product activation / ADR 010 shared-wallet cutover (**Accepted**) |
 | Team collaboration | [020](./docs/adr/020-organization-team-accounts.md) | Organization / Membership; extends Account identity; **does not** replace 010 |
-| Partner channel | [023](./docs/adr/023-partner-channel.md) | Customer attribution and margin credit onto the existing team Account; **does not** amend 010 or 019 |
+| Partner channel | [023](./docs/adr/023-partner-channel.md) | Customer attribution, invite visits, and margin credit onto the existing team Account. Adds `partner_invite_bonus` to [010](./docs/adr/010-polygon-usdt-prepaid-credits.md). Does not change 010 money invariants or amend 019. |
 
 ## Deploy ADR hierarchy
 
