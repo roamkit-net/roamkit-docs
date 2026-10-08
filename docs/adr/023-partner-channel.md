@@ -4,7 +4,7 @@
 |-------|-------|
 | Status | Accepted |
 | Date | 2026-10 |
-| Amended | 2026-10-08 (user-id snapshots use the same scalar type as `User.id`) |
+| Amended | 2026-10-08 (user-id snapshots use the same scalar type as `User.id`; `source_id` uses each model's canonical primary key) |
 | Deciders | Solo operator (architecture lock before schema / API) |
 | Relates to | [ADR 010](./010-polygon-usdt-prepaid-credits.md), [ADR 012](./012-billing-extensibility-rules.md), [ADR 019](./019-account-pricing-profiles.md) (unchanged), [ADR 020](./020-organization-team-accounts.md) (narrow amendment only) |
 
@@ -234,12 +234,12 @@ ledger_entry
 created_at
 ```
 
-`source_id` is built by one helper. UUID is lowercase canonical. Date is `YYYY-MM-DD`.
+`source_id` is built by one helper. The helper writes the canonical string of that model's actual primary-key type. It does not assume every primary key is a UUID. Date is `YYYY-MM-DD`.
 
 ```text
-order        → <order UUID>
-topup        → <internal Topup UUID>     not external_order_id
-subscription → <subscription UUID>:<billing_date>
+order        → canonical Order.id
+topup        → canonical internal Topup.id     not external_order_id
+subscription → canonical Subscription.id:<billing_date>
 ```
 
 `billing_date` is the cycle date read before `next_billing_date` moves. Idempotency key is only `partner-margin:{source_type}:{source_id}`. `source_id` is immutable after insert.
