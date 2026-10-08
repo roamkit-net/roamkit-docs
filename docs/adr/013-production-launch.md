@@ -4,6 +4,7 @@
 |-------|-------|
 | Status | Accepted |
 | Date | 2026-07 |
+| Amended | 2026-10-08 (staging API URL is `https://api-staging.roamkit.net`) |
 | Deciders | Faza 4 gate opener |
 
 ## Context
@@ -29,9 +30,11 @@ Promotion path: `feature/*` → `develop` (staging) → PR `develop` → `main` 
 | Environment | Web | API |
 |-------------|-----|-----|
 | **Production** | `https://roamkit.net`, `https://www.roamkit.net` | `https://api.roamkit.net` |
-| **Staging** (after cutover) | `https://staging.roamkit.net` | `https://api.staging.roamkit.net` |
+| **Staging** (after cutover) | `https://staging.roamkit.net` | `https://api-staging.roamkit.net` |
 
-**Pre-cutover note:** Today `roamkit.net` / `www` may still route to the **staging** web service (marketing-on-staging). Cutover moves those hosts to the production web service; staging retains `staging.*` only. Do not drop staging Host rules for apex/www until cutover day.
+Staging hostnames are one label under `roamkit.net`. The staging API is `https://api-staging.roamkit.net`, not `https://api.staging.roamkit.net`.
+
+**Pre-cutover note:** Today `roamkit.net` / `www` may still route to the **staging** web service (marketing-on-staging). Cutover moves those hosts to the production web service; staging retains `staging.roamkit.net` and `api-staging.roamkit.net` only. Do not drop staging Host rules for apex/www until cutover day.
 
 ### Stack isolation
 

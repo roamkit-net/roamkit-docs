@@ -4,7 +4,7 @@
 |-------|-------|
 | Status | Accepted |
 | Date | 2026-10 |
-| Amended | 2026-10-08 (user-id snapshots use the same scalar type as `User.id`; `source_id` uses each model's canonical primary key; grant body fallback is `400 invalid_request`; partner reads may send `X-Partner-Role` as a presentation hint) |
+| Amended | 2026-10-08 (user-id snapshots use the same scalar type as `User.id`; `source_id` uses each model's canonical primary key; grant body fallback is `400 invalid_request`; partner reads may send `X-Partner-Role` as a presentation hint; staging team host is `team-staging.roamkit.net` and staging API host is `api-staging.roamkit.net`) |
 | Deciders | Solo operator (architecture lock before schema / API) |
 | Relates to | [ADR 010](./010-polygon-usdt-prepaid-credits.md), [ADR 012](./012-billing-extensibility-rules.md), [ADR 019](./019-account-pricing-profiles.md) (unchanged), [ADR 020](./020-organization-team-accounts.md) (narrow amendment only) |
 
@@ -351,7 +351,7 @@ Register of an inactive user still writes `PendingPartnerAttribution`. `activate
 
 `localStorage` is per origin. The token on `roamkit.net` is not the token on `team.roamkit.net`. No copy and no `postMessage`.
 
-Login starts and ends on the same team host. Google stays GIS `ux_mode: "popup"`. The callback is the in-page callback, then `POST /api/v1/auth/google/`. No redirect mode and no OAuth redirect to `roamkit.net`. Authorized JavaScript origins gain exactly `https://team.roamkit.net` and `https://team.staging.roamkit.net`. No wildcard.
+Login starts and ends on the same team host. Google stays GIS `ux_mode: "popup"`. The callback is the in-page callback, then `POST /api/v1/auth/google/`. No redirect mode and no OAuth redirect to `roamkit.net`. Authorized JavaScript origins gain exactly `https://team.roamkit.net` and `https://team-staging.roamkit.net`. No wildcard.
 
 `next` on the team host may be only `/`, `/customers`, or `/grants`. Anything else, including `/me/esims` and absolute URLs, falls back to `/`.
 
@@ -365,7 +365,7 @@ The shell is the existing Next.js app. Middleware reads `Host` before HTML.
 
 ```text
 roamkit.net | www.roamkit.net | staging.roamkit.net → consumer web
-team.roamkit.net | team.staging.roamkit.net         → partner shell
+team.roamkit.net | team-staging.roamkit.net         → partner shell
 ```
 
 No public `roamkit.net/team` and no query flag. v1 team routes are `/`, `/customers`, and `/grants`. `/` is the dashboard: `total_earned`, `available_balance`, `accrual_counts`, and one invite card. Unauthenticated users go to `/login` on that same host.
@@ -463,9 +463,9 @@ Portal screens render API data as text. Masked email and the invite URL are not 
 
 ### CORS and hosts
 
-Production allowlist contains `https://team.roamkit.net` for `https://api.roamkit.net`. Staging allowlist contains only `https://team.staging.roamkit.net` for `https://api.staging.roamkit.net`. No `CORS_ALLOW_ALL_ORIGINS`, no `*.roamkit.net`, no origin regex. `/join` does not depend on this CORS.
+Production allowlist contains `https://team.roamkit.net` for `https://api.roamkit.net`. Staging allowlist contains only `https://team-staging.roamkit.net` for `https://api-staging.roamkit.net`. No `CORS_ALLOW_ALL_ORIGINS`, no `*.roamkit.net`, no origin regex. `/join` does not depend on this CORS.
 
-`team.roamkit.net` resolves through production DNS and production Traefik to the existing `roamkit-web-production` service, adding `Host(team.roamkit.net)` beside `roamkit.net` and `www.roamkit.net`. `team.staging.roamkit.net` adds `Host(team.staging.roamkit.net)` on the existing staging `roamkit-web` service beside `staging.roamkit.net`. No new container. Production must not list the staging team host, and the reverse. After deploy, `GET /` on each team host returns the partner shell. The same container with a consumer Host still returns the consumer page.
+`team.roamkit.net` resolves through production DNS and production Traefik to the existing `roamkit-web-production` service, adding `Host(team.roamkit.net)` beside `roamkit.net` and `www.roamkit.net`. `team-staging.roamkit.net` adds `Host(team-staging.roamkit.net)` on the existing staging `roamkit-web` service beside `staging.roamkit.net`. No new container. Production must not list the staging team host, and the reverse. After deploy, `GET /` on each team host returns the partner shell. The same container with a consumer Host still returns the consumer page.
 
 ### OpenAPI
 
