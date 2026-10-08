@@ -4,6 +4,7 @@
 |-------|-------|
 | Status | Accepted |
 | Date | 2026-07 |
+| Amended | 2026-10-08 (`LedgerReferenceType.PARTNER_INVITE_BONUS` only; money invariants unchanged) |
 | Deciders | Faza 3 design lock |
 
 ## Context
@@ -74,6 +75,8 @@ REFERENCE_MODELS = {
 ```
 
 Admin uses `REFERENCE_MODELS` to deep-link related objects when resolvable.
+
+`LedgerReferenceType.PARTNER_INVITE_BONUS` (`partner_invite_bonus`) is a later credit source. `reference_id` is `CustomerAttribution.id`. The idempotency key is `invite-registration-bonus:<user_id>`. `REFERENCE_MODELS` points that type at `CustomerAttribution`. The registration bonus is posted only through the existing `CreditService`, in the same database transaction as the attribution insert. When that bonus is written, and when `NULL` or `0.000000` writes nothing, is defined in [ADR 023](./023-partner-channel.md). This amendment does not change the invariants below: the ledger stays the source of truth, the ledger stays append-only, only `CreditService` changes `Account.balance`, money mutations stay in one database transaction, idempotency still returns the original row, and money stays `Decimal(20,6)`.
 
 ### Money path
 

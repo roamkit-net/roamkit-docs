@@ -4,7 +4,7 @@
 |-------|-------|
 | Status | Accepted |
 | Date | 2026-10 |
-| Amended | 2026-10-08 (user-id snapshots use the same scalar type as `User.id`; `source_id` uses each model's canonical primary key; grant body fallback is `400 invalid_request`; partner reads may send `X-Partner-Role` as a presentation hint) |
+| Amended | 2026-10-08 (user-id snapshots use the same scalar type as `User.id`; `source_id` uses each model's canonical primary key; grant body fallback is `400 invalid_request`; partner reads may send `X-Partner-Role` as a presentation hint). 2026-10-08 invite amendment: many links per channel, `InviteVisit`, registration-bonus eligibility, and the consumer landing `/register?from=invite`. Money invariants in [ADR 010](./010-polygon-usdt-prepaid-credits.md) are unchanged; that ADR only gains `partner_invite_bonus`. |
 | Deciders | Solo operator (architecture lock before schema / API) |
 | Relates to | [ADR 010](./010-polygon-usdt-prepaid-credits.md), [ADR 012](./012-billing-extensibility-rules.md), [ADR 019](./019-account-pricing-profiles.md) (unchanged), [ADR 020](./020-organization-team-accounts.md) (narrow amendment only) |
 
@@ -20,7 +20,7 @@ No user id is hardcoded. Binding a specific operator and that operator’s exist
 
 ## Decision
 
-Add a **Partner Channel** credit source that satisfies [ADR 012](./012-billing-extensibility-rules.md) and does not revise [ADR 010](./010-polygon-usdt-prepaid-credits.md) or [ADR 019](./019-account-pricing-profiles.md).
+Add a **Partner Channel** credit source that satisfies [ADR 012](./012-billing-extensibility-rules.md) and does not revise [ADR 019](./019-account-pricing-profiles.md). It does not change the money invariants in [ADR 010](./010-polygon-usdt-prepaid-credits.md). The only ADR 010 addition is the ledger type `partner_invite_bonus`, posted through the existing `CreditService`. Invite campaign rules in this ADR are the source of truth for visit attribution and registration-bonus eligibility.
 
 ```text
 PartnerInviteLink
@@ -59,8 +59,11 @@ Added in the schema migration, before any writer exists:
 | `partner_margin` | `PartnerMarginAccrual` id | `PartnerMarginAccrual` |
 | `partner_grant_out` | `PartnerCreditGrant` id | `PartnerCreditGrant` |
 | `partner_grant_in` | `PartnerCreditGrant` id | `PartnerCreditGrant` |
+| `partner_invite_bonus` | `CustomerAttribution` id | `CustomerAttribution` |
 
-`LedgerReferenceType` stays a `CharField` (`max_length` 32). Reverse of that migration must not delete ledger rows. If reverse would narrow allowed values, it stops when any row uses one of these three types.
+`partner_invite_bonus` is the platform-funded registration bonus. Idempotency key is `invite-registration-bonus:<user_id>`. Marketing rules for when that row is written are below, not in ADR 010.
+
+`LedgerReferenceType` stays a `CharField` (`max_length` 32). Reverse of that migration must not delete ledger rows. If reverse would narrow allowed values, it stops when any row uses one of these types.
 
 ## Invariants
 
@@ -91,7 +94,19 @@ Added in the schema migration, before any writer exists:
 5. commit
 ```
 
-Token is URL-safe, not sequential, does not encode `organization_id`, at least 128 bits (`secrets.token_urlsafe(24)` or equivalent). `UNIQUE(token)` collision retries a new token inside the same transaction. A channel without a link does not commit. After commit every channel has exactly one link.
+Token is URL-safe, not sequential, does not encode `organization_id`, at least 128 bits (`secrets.token_urlsafe(24)` or equivalent). `UNIQUE(token)` is global. Collision retries a new token inside the same transaction. A channel without a link does not commit.
+
+That first link is the canonical portal link. Its classification is empty and its bonus is zero:
+
+```text
+name = ""
+bonus_amount = 0.000000
+source = ""
+campaign = ""
+content = ""
+```
+
+A channel may later have more links. The canonical link is the one with the smallest `(created_at, id)`. The portal still shows only that link. Additional campaign links are created in Django admin, not in the portal.
 
 The channel is never physically deleted, even with no children. No admin delete, no delete service, the model refuses delete. Shutdown is `is_active=False` only. An Organization that has a channel cannot be deleted. Formal archival is out of v1.
 
@@ -101,7 +116,7 @@ The channel is never physically deleted, even with no children. No admin delete,
 
 ### Feature flag off
 
-`PARTNER_CHANNEL_ENABLED=false` creates no new pending row, no new attribution, no new accrual, and no team credit. Portal and grant return `404` with `{"code":"partner_channel_disabled"}`. Public `GET /join/<token>` stays a generic 404 with no JSON and no cookie. Fulfillment still succeeds. The margin path logs info `partner_margin.flag_disabled`. Existing rows and balances are unchanged. Django admin still shows them.
+`PARTNER_CHANNEL_ENABLED=false` creates no new `InviteVisit`, no new pending row, no new attribution, no new accrual, and no team credit. Portal and grant return `404` with `{"code":"partner_channel_disabled"}`. Public `GET /join/<token>` stays a generic 404 with no JSON and no cookie. Fulfillment still succeeds. The margin path logs info `partner_margin.flag_disabled`. Existing rows and balances are unchanged. Django admin still shows them.
 
 ### User deletion
 
@@ -123,28 +138,68 @@ The channel does not require an active owner. [ADR 020](./020-organization-team-
 
 ## Attribution
 
-`CustomerAttribution`: `user` (unique, PROTECT), `partner_channel`, `source` (`invite_link` | `admin`), `invite_link` (nullable), `invite_token` snapshot (nullable), `attributed_at`, `created_at`.
+One `CustomerAttribution` per user (`user` unique, PROTECT). `invite_visit` is the converting click. That FK is not unique, so the visit is the click record rather than a one-user token. `invite_token` is the token copied at insert. It is not the live link and it is not the authority for a later attribution.
 
-A link does not change an existing row. Channel deactivation does not delete it. Reactivation resumes commission for the same partner. The first admin bind is `source=admin` and writes no history row.
+Fields copied at insert and frozen afterwards:
+
+```text
+invite_token
+invite_name_snapshot
+invite_source_snapshot
+invite_campaign_snapshot
+invite_content_snapshot
+utm_source_snapshot
+utm_medium_snapshot
+utm_campaign_snapshot
+utm_content_snapshot
+registered_via_invite
+bonus_amount_snapshot
+invite_visit
+```
+
+`registered_via_invite = true` means the User row was inserted by an invite registration (email `CREATED` confirmed, or Google `CREATED`). `false` means an existing user was only attached, or an admin assigned the customer.
+
+`bonus_amount_snapshot`:
+
+```text
+NULL       not eligible for a registration bonus
+0.000000   new invite registration through a zero-bonus link
+> 0        new invite registration and the exact bonus for that row
+```
+
+`NULL` is not the same as zero. Zero is eligible and still writes no ledger row. A positive snapshot is the amount credited.
+
+A later visit does not change an existing row. Channel deactivation does not delete it. Reactivation resumes commission for the same partner. The first admin bind is `source=admin`, `registered_via_invite=false`, `bonus_amount_snapshot=NULL`, `invite_visit=NULL`, and empty invite snapshots. It writes no history row and no bonus.
 
 Django admin has no form that saves `CustomerAttribution` or edits `partner_channel`. Two service actions only:
 
 | Action | Rule |
 |--------|------|
 | Assign customer to partner | User + channel, `source=admin`, actor required. Rejected if an attribution exists. No history row. Actor stays in the Django admin log. |
-| Transfer customer to another partner | New channel and a required reason. Only `transfer_customer_attribution()`. Rejected if no attribution exists. |
+| Transfer customer to another partner | New channel. Only `transfer_customer_attribution()`. Rejected if no attribution exists. Changes only `partner_channel`. Writes no `CustomerAttributionHistory` row. |
 
-Transfer locks the attribution row, writes `CustomerAttributionHistory` (`from_partner_channel`, `to_partner_channel`, `changed_by`, `change_reason`, `changed_at`, previous `attributed_at`), then retargets. It does not move old accruals or team balance. Later purchases follow the new partner. History index is `(user, changed_at)`. Do not add `created_at` or `customer_user_snapshot` for that index.
+`transfer_customer_attribution` locks the attribution row. On that row it changes only `partner_channel`. It does not change `invite_visit`, `invite_token`, `source`, the invite or UTM snapshots, `registered_via_invite`, or `bonus_amount_snapshot`. It does not credit a second registration bonus and it does not call `CreditService`. It does not write a `CustomerAttributionHistory` row. This feature does not add that record. The same channel is a no-op. A missing attribution raises `CustomerAttribution.DoesNotExist` and does not insert a row. It does not move old accruals or team balance. Later purchases follow the new partner.
+
+Consume, email confirmation, and Google auth do not call `transfer_customer_attribution`. A click on another team's link does not move the customer.
 
 ### Pending row
 
-`PendingPartnerAttribution`: OneToOne `user`, `partner_channel`, `invite_token_snapshot`, `expires_at`, `created_at`. Index `(expires_at)`. Only for the inactive user created by register. One pending per user.
+`PendingPartnerAttribution`: OneToOne `user`, `partner_channel`, required `invite_token_snapshot`, nullable `invite_visit` (PROTECT), `expires_at`, `created_at`. Index `(expires_at)`. Only for the inactive user created by email register. One pending per user. New rows always store `invite_visit`. Snapshots and `bonus_amount_snapshot` are not written on this row.
 
-`expires_at` decides validity. `activate` checks `expires_at > now()` first and deletes only that expired row, even if the periodic job has not run. Expired, regenerated, or inactive link: activate creates no attribution and deletes that pending row. Successful attribution deletes it. If the user already has an attribution, the pending row is discarded. Auth does not bulk-clean other rows.
+Two clocks, not one:
 
-`cleanup_expired_partner_attributions` deletes only `PendingPartnerAttribution` where `expires_at <= now()`. It does not touch attribution, history, accruals, or ledger. A late job does not change activate’s outcome.
+```text
+30 days   click attribution window, from InviteVisit.created_at
+24 hours  PendingPartnerAttribution, from email submit
+```
 
-The link does not expire. Pending lasts at most 24 hours and also ends when the link is regenerated or deactivated. A user who opens a link today and registers two months later is not attributed from it.
+Email submit validates the visit with the 30-day window. A submit on day 29 still creates a pending row. Confirmation does not measure the click again. It accepts the pending row while `expires_at` is inside its 24 hours, even if the click has by then passed 30 days. A click that is already older than 30 days at submit creates the account and no pending row. Opening a link and registering two months later is not attributed from that click.
+
+`expires_at` is `now + 24 hours` at submit. It is not the cookie `issued_at` and it is not 30 days. `activate` checks `expires_at > now()` first and deletes only that expired row, even if the periodic job has not run. An inactive link, or `visit.created_at < invite_link.regenerated_at`, deletes the pending row and creates no attribution and no bonus. Successful attribution deletes the pending row in the same transaction. If the user already has an attribution, the pending row is discarded. Auth does not bulk-clean other rows.
+
+`cleanup_expired_partner_attributions` deletes only `PendingPartnerAttribution` where `expires_at <= now()`. It does not touch attribution, history, visits, accruals, or ledger. A late job does not change activate’s outcome. Expiry does not delete `InviteVisit`.
+
+A pending row that has no `invite_visit` is legacy. Confirmation of that row still compares `invite_token_snapshot` with the canonical link, writes no invite snapshots, and writes no bonus. New code does not create that shape. The converting click, not the canonical token, is the source of a current attribution.
 
 ## Margin and accrual
 
@@ -294,64 +349,184 @@ The grant row stores `partner_channel`, `customer_user`, `customer_attribution`,
 
 Identical replay returns the original grant even if the caller is rate-limited. The same key with a different customer or amount returns `409 idempotency_key_conflict` and does not return the old grant as success.
 
-## Invite and auth flow
+## Invite links, visits, and registration bonus
 
-One permanent reusable `PartnerInviteLink` per channel. Not campaign links, not email-bound, not single-use. No `expires_at`. No QR in v1.
+A channel has many reusable `PartnerInviteLink` rows. Links are not email-bound and not single-use. A link has no `expires_at`. It has no `utm_medium`, QR payload, click limit, campaign date range, currency, or `created_by`.
 
-Fields: `partner_channel` (unique), `token` (unique), `is_active`, `created_at`, `regenerated_at` (nullable). The link cannot be deleted. Token changes only via regenerate. `is_active` changes only via activate or deactivate. Channel shutdown does not flip `link.is_active`.
+```text
+id
+partner_channel          PROTECT, not unique
+token                    globally UNIQUE, editable only by regenerate
+name
+bonus_amount             Decimal(20,6), CHECK >= 0
+source
+campaign
+content
+is_active
+created_at
+updated_at
+regenerated_at           nullable
+```
 
-Public URL: `https://roamkit.net/join/<token>`. `utm_*` is ignored and does not create a link.
+`source`, `campaign`, and `content` are admin classification of the link. They are not copied from the request. Channel shutdown does not flip `link.is_active`. The link cannot be deleted. `InviteVisit` and `CustomerAttribution.invite_link` are PROTECT, so a link with history cannot be removed.
 
-`GET /join/<token>` for an unknown, inactive, or regenerated-away token returns the same generic 404. No cookie, no attribution, no ledger, no channel state. Logs must not contain the full token or join URL. Optional fingerprint: `sha256(token)[0:12]`. Proxy access logs may still see the path. Redacting them is out of v1. The route does not embed the token in HTML or JS. It validates the token and stores a signed cookie. `Cache-Control: no-store`.
+After the first `InviteVisit`, `save` and `QuerySet.update` reject changes to `partner_channel`, `source`, `campaign`, and `content`. Still writable: `name`, `bonus_amount`, `is_active`. Token changes only through regenerate.
 
-Combinations:
+Django admin creates the extra campaign links and may edit `name`, `bonus_amount`, and `is_active`. `token` is readonly. After the first visit the frozen fields are readonly in that form as well. A bonus change made through Django admin stays in the Django admin log. There is no portal editor for bonus, classification, or campaign links.
+
+The portal invite card and `GET /api/v1/orgs/partner/invite-link/` still return only the canonical link: `url`, `is_active`, `created_at`, `regenerated_at`. Owner regenerate, activate, and deactivate lock that canonical row. They do not list or edit campaign links.
+
+### InviteVisit
+
+One append-only row per valid `GET /join/<token>`. It stays after the attribution window expires. Deleting it is refused.
+
+```text
+id              UUID
+invite_link     FK PROTECT
+utm_source
+utm_medium
+utm_campaign
+utm_content
+created_at
+```
+
+Index `(invite_link, created_at)`, name `bill_invite_visit_link_at`.
+
+UTM is the request, not the link classification. Web reads `searchParams.getAll(name)[0]`.
+
+```text
+missing or empty     → ""
+longer than 128      → truncate
+duplicate parameter  → first value
+no lowercase, trim, or campaign cleanup
+```
+
+Not stored: IP, User-Agent, Referer, language, country, user id. The visit has no user FK. Do not infer `source` from Referer.
+
+Join and regenerate both `SELECT … FOR UPDATE` the `PartnerInviteLink` row they act on, so a join of a token and a regenerate of that same link serialize. Regenerate, in that transaction, sets a new token and `regenerated_at`. The old token is then a generic 404. Visits are not deleted. `CustomerAttribution` is not updated. Pending rows that stored the old token are deleted. A visit with `visit.created_at < invite_link.regenerated_at` cannot create a new attribution. An existing attribution is not revalidated against that visit.
+
+`GET /join/<token>` for an unknown, inactive, or regenerated-away token returns the same generic 404. No cookie, no visit, no attribution, no ledger. Logs must not contain the full token or join URL. Optional fingerprint: `sha256(token)[0:12]`. Proxy access logs may still see the path. Redacting them is out of scope. The route does not embed the token in HTML or JS. `Cache-Control: no-store`.
 
 | Channel | Link | Result |
 |---------|------|--------|
-| Off | On | New customers can still bind. Purchases earn nothing until the channel is active. |
-| On | Off | No new link attributions. Existing attributed customers still earn. |
+| Off | On | New customers can still bind through an active link. Purchases earn nothing until the channel is active. |
+| On | Off | That link creates no visit and no new attribution. Existing attributed customers still earn. |
 
 ### Cookie
 
-`partner_pending` is host-only on the consumer host (`roamkit.net`, and the same on `staging.roamkit.net`): `HttpOnly`, `Secure`, `SameSite=Lax`, `Path=/`, `Max-Age=86400`, no `Domain=.roamkit.net`. `api.roamkit.net` and `team.roamkit.net` do not receive it. The value is a server-signed payload, not the raw token. JS cannot read it.
+`partner_pending` is host-only on the consumer host (`roamkit.net`, and the same on `staging.roamkit.net`): `HttpOnly`, `Secure` when the public origin is `https`, `SameSite=Lax`, `Path=/`, `Max-Age` 30 days, no `Domain=.roamkit.net`. `api.roamkit.net` and `team.roamkit.net` do not receive it. JavaScript cannot read it. The web app does not parse `visit_id`.
 
-It is join context until consume. It is not part of general login or logout. An ordinary consumer logout does not delete it. Login, register, and Google do not delete it. The browser drops it at `Max-Age`. Before auth, the last valid `/join/<token>` replaces it. An invalid join does not clear an existing cookie. After a server pending row or a `CustomerAttribution` exists, a later link does not overwrite that context.
+The signed payload is only:
 
-### `/join/complete`
+```text
+visit_id
+issued_at
+```
 
-`GET /join/<token>` cannot see the Bearer in `localStorage` and does not attribute, even if the user is logged in. A valid link sets the cookie and redirects to `/join/complete` on the consumer host. No Bearer → `/login?next=/join/complete`. After email or Google, return there. Login and Google do not themselves attribute.
+Signer salt is `roamkit.partner-pending`. Signature max age is 30 days from `issued_at`. That clock is not the business window. The business window is 30 days from `InviteVisit.created_at`. An expired cookie or an expired window does not delete the visit.
 
-If a Bearer exists, the browser calls only:
+The last valid `/join/<token>` replaces the cookie. An invalid join does not clear an existing cookie. UTM is stored on the visit at that request. The redirect does not carry the token or `utm_*`.
+
+```text
+GET /join/<token>?utm_source=tiktok
+→ InviteVisit
+→ signed partner_pending
+→ redirect /register?from=invite
+```
+
+`from=invite` is a UX label. It is not proof that a visit exists. The cookie, the visit, and the backend are the authority.
+
+Email submit does not clear the cookie. Clearing it there would distinguish a new address from an existing one. Ordinary consumer logout does not clear it. A failed Google sign-in does not clear it.
+
+The cookie may be cleared after a terminal success: a successful Google auth response that had a cookie, or a successful authenticated consume (`created`, `noop`, or `ignored`). An invalid or expired cookie may be cleared on that same terminal path. `401` and `5xx` on consume leave the cookie.
+
+### Email registration
+
+The browser posts to the same-origin web route `POST /api/auth/register`. That route reads `partner_pending` and, when present, forwards it as `X-Partner-Pending`. It does not put `visit_id` in the body and it does not clear the cookie.
+
+`register_user` returns `CREATED` only when that call inserted the User, otherwise `EXISTING`. The public response is the same either way. A pending row is created only for `CREATED` plus a visit that passes the 30-day check. An invalid invite still creates the account and creates no pending row. It does not fail registration.
+
+Confirmation reads the pending row, not the cookie. It does not re-check the 30-day click window. It does check that the link is active and that the visit is not older than `regenerated_at`. Attribution, snapshots, and `bonus_amount_snapshot` are written then, from the visit's link as it is at confirmation, and the pending row is deleted in that same transaction. The campaign link on the visit is used. The canonical link is not substituted.
+
+`bonus_amount` may change while the pending row is open. Confirmation reads the current amount. An attribution that already exists keeps the snapshot it was inserted with.
+
+### Google
+
+Google stays a GIS popup. The credential is not an OAuth redirect and the Google URL does not carry the invite. The browser posts the credential to the same-origin web route:
+
+```text
+POST /api/auth/google
+```
+
+The web route reads `partner_pending` on the server and forwards the credential to the API. When the cookie is present it sends `X-Partner-Pending`. The body stays `{credential}`. This browser call does not depend on CORS to `api.roamkit.net`. An invalid, expired, inactive, or regenerated invite does not fail Google auth. The web app does not decide whether the invite is valid, and it does not decide `CREATED`, `EXISTING`, or `LINKED` in order to grant a bonus.
+
+```text
+CREATED + valid visit  → registration attribution, eligible for the bonus
+EXISTING / LINKED      → consume, not eligible for the registration bonus
+```
+
+If an active user already has `PendingPartnerAttribution`, consume does not insert an attribution and does not delete that pending row. Email confirmation keeps priority. An inactive email user is still activated through the pending row before consume.
+
+After a successful Google auth the browser goes to its normal next page. It does not also open `/join/complete`. The API already attributed or consumed while the header was present. A second consume would be a no-op, not a second attribution, and the client does not start one.
+
+### Already signed-in visitor
+
+`GET /join/<token>` cannot see the Bearer in `localStorage` and does not attribute. A valid join still redirects to `/register?from=invite`.
+
+An authenticated visitor who then opens `/register?from=invite` is sent to `/join/complete`. A normal `/register` without that label still sends an authenticated visitor to `/me/esims`.
+
+`/join/complete` is the consume page for that already signed-in visitor. Without a Bearer it asks the visitor to sign in again. With a Bearer the browser calls only:
 
 ```text
 POST https://roamkit.net/join/complete/consume
 Authorization: Bearer <user-token>
 ```
 
-The same route exists on `staging.roamkit.net`. It is not on the team host. The browser does not send `partner_channel_id`, the invite token, or an organization id, and never sees the cookie body.
+The same route exists on `staging.roamkit.net`. It is not on the team host. The browser does not send `partner_channel_id`, the invite token, `visit_id`, or an organization id, and never sees the cookie body.
 
-Next.js is not the authority for user id or partner id. It forwards the same Bearer and the signed pending payload. The signature must be verifiable by the API. A local Next.js check is not enough. The API does not accept a plain `user_id` or `partner_channel_id` as proof. This endpoint is not a public partner route and is not in the public partner OpenAPI schema.
+Next.js is not the authority for user id or partner id. It forwards the Bearer and the signed cookie to the API. The API verifies the signature. A local Next.js check is not enough. The API does not accept a plain `user_id` or `partner_channel_id` as proof. This endpoint is not a public partner route and is not in the public partner OpenAPI schema.
 
-The API sets `request.user` from the Bearer. From the signed payload it reads the channel, token snapshot, and `expires_at`, and verifies the signature itself.
-
-If that user already has a `CustomerAttribution`, stop. Return `{"status":"noop"}` with 200, whether the pending partner is the same or another. Do not change the row. Two parallel first consumes: one inserts, the other sees the row and returns `noop`, not an integrity error.
-
-Only when no attribution exists does the API, under lock, re-check the flag, `PartnerInviteLink.is_active`, snapshot token equals the current token, pending not expired, and still no attribution. Then it creates the row and returns `{"status":"created"}`. Otherwise `{"status":"ignored"}` with 200. `ignored` covers an invalid, expired, or old pending, an inactive link, and the flag off, and does not say which. A system error stays 5xx. An invalid Bearer stays 401 and is not one of the three statuses.
+The API sets `request.user` from the Bearer and reads `visit_id` from the signed payload.
 
 ```text
-created / noop / ignored → Next.js deletes partner_pending → consumer page
-401 / 5xx                → cookie stays; 5xx shows a local retry
+no attribution, no pending, valid visit
+→ CustomerAttribution
+→ registered_via_invite = false
+→ bonus_amount_snapshot = NULL
+→ {"status":"created"}
+
+attribution already exists
+→ no-op, row unchanged, no transfer
+→ {"status":"noop"}
+
+pending row exists, or visit invalid / inactive / pre-regeneration / flag off
+→ no new attribution
+→ {"status":"ignored"}
 ```
+
+`ignored` does not say which of those cases it was, and it does not delete an email pending row. Two parallel first consumes: one inserts, the other returns `noop`, not an integrity error. HTTP 200 with any of the three statuses is a finished consume. The page then goes to `/me/esims`. It does not stay on an error because the cookie is stale, the user is already attributed, or the visit was ignored. `401` stays a sign-in message and keeps the cookie. `5xx` keeps the cookie and shows a retry.
 
 The body on 200 is exactly `{"status":"created"|"noop"|"ignored"}`. No partner id, token, organization id, or reason.
 
-Register of an inactive user still writes `PendingPartnerAttribution`. `activate` still reads that row, not the cookie. If the cookie later names partner B, activate still uses partner A from the pending row, and only while that snapshot still matches the current active link.
+### Registration bonus
+
+The platform pays the bonus through `CreditService` onto the new user's personal Account. The team Account balance does not change. There is no `CreditGranted` event for this credit.
+
+A ledger row is inserted only when `registered_via_invite` is true and `bonus_amount_snapshot > 0`. `NULL` and `0.000000` do not call `CreditService` and do not insert a ledger row.
+
+```text
+reference_type   = partner_invite_bonus
+reference_id     = CustomerAttribution.id
+idempotency_key  = invite-registration-bonus:<user_id>
+```
+
+One user receives this bonus at most once. The amount is `bonus_amount` on the visit's link at attribution insert, not the amount at the click. The credit runs in the same database transaction as that insert. If `CreditService` fails, the attribution insert rolls back with it: email activation stays uncommitted, and a Google `CREATED` user row is not kept. Consume, `EXISTING`, `LINKED`, admin assign, legacy pending confirmation, and transfer never credit this bonus.
 
 ### Team host auth
 
 `localStorage` is per origin. The token on `roamkit.net` is not the token on `team.roamkit.net`. No copy and no `postMessage`.
 
-Login starts and ends on the same team host. Google stays GIS `ux_mode: "popup"`. The callback is the in-page callback, then `POST /api/v1/auth/google/`. No redirect mode and no OAuth redirect to `roamkit.net`. Authorized JavaScript origins gain exactly `https://team.roamkit.net` and `https://team.staging.roamkit.net`. No wildcard.
+Login starts and ends on the same team host. Google stays GIS `ux_mode: "popup"`. The in-page callback posts the credential to the same-origin web route `POST /api/auth/google`, which forwards it to the API. No redirect mode and no OAuth redirect to `roamkit.net`. The team host does not hold `partner_pending`. Authorized JavaScript origins gain exactly `https://team.roamkit.net` and `https://team.staging.roamkit.net`. No wildcard.
 
 `next` on the team host may be only `/`, `/customers`, or `/grants`. Anything else, including `/me/esims` and absolute URLs, falls back to `/`.
 
@@ -368,7 +543,7 @@ roamkit.net | www.roamkit.net | staging.roamkit.net → consumer web
 team.roamkit.net | team.staging.roamkit.net         → partner shell
 ```
 
-No public `roamkit.net/team` and no query flag. v1 team routes are `/`, `/customers`, and `/grants`. `/` is the dashboard: `total_earned`, `available_balance`, `accrual_counts`, and one invite card. Unauthenticated users go to `/login` on that same host.
+No public `roamkit.net/team`. No query flag selects the team shell. `from=invite` on the consumer register page is only the invite label defined above. v1 team routes are `/`, `/customers`, and `/grants`. `/` is the dashboard: `total_earned`, `available_balance`, `accrual_counts`, and one invite card. Unauthenticated users go to `/login` on that same host.
 
 Portal roles are the active ADR 020 Membership. The backend loads the role.
 
@@ -449,7 +624,7 @@ Customer object: `customer_id`, masked email (first local character + `***` + do
 
 `POST …/invite-link/regenerate` has no body, owner only, not idempotent. `SELECT … FOR UPDATE` the link. The old token dies in that transaction. Logs must not contain the new URL or token. Viewer and admin get `403 partner_invite_forbidden`.
 
-`POST …/invite-link/activate` and `…/deactivate` have no body, owner only, lock the link, do not rotate the token. Already-active activate and already-inactive deactivate return the current state and write no audit event. After deactivate, public join is the generic 404. Pending with that token cannot be consumed until activate turns the same token back on.
+`POST …/invite-link/activate` and `…/deactivate` have no body, owner only, lock the canonical link, and do not rotate the token. Already-active activate and already-inactive deactivate return the current state and write no audit event. After deactivate, public join of that token is the generic 404. Confirmation of a pending row for that link creates no attribution while the link stays inactive. Activate turns the same token back on. These portal writes do not apply to campaign links.
 
 The invite card shows the URL from GET. Copy is available to viewer, admin, and owner. Activate or Deactivate, and Regenerate, are owner only, with confirmation. After POST, refetch GET. Do not assume the new URL or `is_active`.
 
@@ -519,7 +694,9 @@ Grant idempotency scope is the resolved channel plus the key.
 
 ## Operations and reconcile
 
-Django admin for `PartnerChannel` shows, read-only, in one place: organization, `is_active`, `revenue_share_percent`, live team `Account.balance` (including negative), invite-link `is_active`, count of current attributions, `SUM(partner_share)` for that channel, and the count of grants. The token and the full join URL are not shown. A missing team Account is shown as missing, not as zero. The only channel writes remain activate, deactivate, and the percent service. Assign and transfer stay on attribution admin.
+Django admin for `PartnerChannel` shows, read-only, in one place: organization, `is_active`, `revenue_share_percent`, live team `Account.balance` (including negative), the canonical link’s `is_active`, count of current attributions, `SUM(partner_share)` for that channel, and the count of grants. The token and the full join URL are not shown on that screen. A missing team Account is shown as missing, not as zero. The only channel writes remain activate, deactivate, and the percent service. Assign and transfer stay on attribution admin.
+
+`PartnerInviteLink` admin is where campaign links are created. It may change `name`, `bonus_amount`, and `is_active`. `token` stays readonly. Regenerate is the separate service, not an edit of the token field. After the first visit, `partner_channel`, `source`, `campaign`, and `content` are readonly. A bonus change is recorded in the Django admin log.
 
 `PartnerMarginAccrual` and `PartnerCreditGrant` are audit-only, filtered by channel, customer, and date. No edit and no delete. `list_price`, `net_price`, and `margin` stay visible there and not in the portal. The renewal-cycle row is read-only. `CustomerAttributionHistory` is view-only.
 
@@ -530,7 +707,7 @@ Django admin for `PartnerChannel` shows, read-only, in one place: organization, 
 - The absolute amounts of those two rows match each other and match `PartnerCreditGrant.amount`.
 - `partner_grant_out` is on that channel’s team Account. `partner_grant_in` is on the customer’s personal Account.
 - `partner_share` equals the positive delta of its `partner_margin` ledger row.
-- Every `PartnerChannel` has exactly one `PartnerInviteLink`.
+- Every `PartnerChannel` has at least one `PartnerInviteLink`. A channel with none is drift. Extra campaign links are not drift.
 
 A clean run reports no drift. Drift is reported and not repaired.
 
@@ -540,7 +717,7 @@ Schema and code stay compatible with today’s consumer flow while the flag is o
 
 ```text
 1. This ADR Accepted, plus the narrow ADR 020 amendment
-2. Schema migrations and the three ledger reference types
+2. Schema migrations and the partner ledger reference types, including `partner_invite_bonus`
 3. Deploy API with PARTNER_CHANNEL_ENABLED=false
 4. Margin, grant, and API code and tests, flag still false
 5. Web portal, CORS, and infra
@@ -557,7 +734,7 @@ PRs after Accept stay separate. Deploy follows the list above.
 2. **Margin service.** Tests for the formula, idempotency, skips, flag, inactive channel, transfer versus fulfillment, and percent or `is_active` races. The refund path is not changed.
 3. **Grant service.** Tests for role, foreign customer, transferred customer, negative or insufficient balance, replay, and payload conflict.
 4. **API.** Portal routes, internal consume (`created` / `noop` / `ignored`), activate from `PendingPartnerAttribution`. Cookie and `GET /join/<token>` are not this PR.
-5. **Web.** Host shell, team login and Google, logout and `401` cleanup, `GET /join/<token>`, `POST /join/complete/consume`, portal pages. `created` / `noop` / `ignored` delete the cookie. `401` / `5xx` do not. Ordinary consumer logout does not.
+5. **Web.** Host shell, team login and Google, logout and `401` cleanup, `GET /join/<token>` redirecting to `/register?from=invite`, same-origin auth proxies, `POST /join/complete/consume` for an already signed-in visitor, portal pages. Email submit does not delete the cookie. A successful Google auth that had a cookie, and a consume `created` / `noop` / `ignored`, may delete it. `401` / `5xx` on consume do not. Ordinary consumer logout does not.
 6. **Infra.** DNS and Traefik only, plus the explicit CORS origins. No new service.
 
 ### Database constraints
@@ -568,15 +745,22 @@ PartnerChannel
   CHECK 0 <= revenue_share_percent <= 100
 
 PartnerInviteLink
-  UNIQUE partner_channel
   UNIQUE token
+  CHECK bonus_amount >= 0
+  partner_channel is not unique
+
+InviteVisit
+  invite_link PROTECT
+  INDEX (invite_link, created_at)  name bill_invite_visit_link_at
 
 CustomerAttribution
   UNIQUE user
+  invite_visit PROTECT, nullable, not unique
   INDEX (partner_channel, attributed_at)
 
 PendingPartnerAttribution
   UNIQUE user
+  invite_visit PROTECT, nullable
   INDEX (expires_at)
 
 PartnerMarginAccrual
@@ -606,8 +790,8 @@ CustomerAttributionHistory
 Not application code and not raw SQL. Do not hardcode a user id.
 
 1. The operator’s Organization exists and has a team Account. If not, `create_organization()`. Do not convert the personal Account.
-2. Create `PartnerChannel` at `revenue_share_percent = 50`. That same step creates the invite link.
-3. Bind existing customers with Assign (`source=admin`). If they already have a partner, Transfer with history.
+2. Create `PartnerChannel` at `revenue_share_percent = 50`. That same step creates the canonical invite link with empty classification and `bonus_amount = 0.000000`.
+3. Bind existing customers with Assign (`source=admin`). If they already have a partner, call `transfer_customer_attribution()`. That changes only `partner_channel` and writes no `CustomerAttributionHistory` row.
 4. Only then set `PARTNER_CHANNEL_ENABLED=true`.
 
 No retroactive accruals. Commission starts on a new `fulfilled` or `renewed` after attribution, an active channel, and the flag. An optional `admin_adjust` on the team Account may happen before the first earning. The operator’s own pricing profile stays on the personal Account. Those personal purchases do not earn partner share.
@@ -620,8 +804,21 @@ No retroactive accruals. Commission starts on a new `fulfilled` or `renewed` aft
 - Changing `OrganizationInvite` or the ADR 020 membership permission matrix.
 - Cash-out, team-to-team transfer, granting an arbitrary user, or spending the team wallet as the customer’s payment method.
 - Automatic reversal of partner margin on refund. Refunds stay on the existing support path.
-- A public accrual list, campaign links, or QR.
-- Hard delete of a channel, invite link, accrual, grant, history row, or renewal cycle.
+- A public accrual list or a QR code.
+- Hard delete of a channel, invite link, invite visit, accrual, grant, history row, or renewal cycle.
+
+Not part of this feature:
+
+- A partner-portal list of campaign links.
+- An analytics or report UI.
+- A UTM builder.
+- A QR generator.
+- Link-level expiration.
+- Click limits.
+- Location or device fingerprinting.
+- Inferring `source` from Referer.
+- Self-service bonus edit.
+- Self-service attribution transfer.
 - A repair mode for `partner_channel_reconcile`.
 - Rate-limit numbers, proxy log redaction, and a later anonymization product.
 - Implementing schema or API in the Accept step of this ADR.
@@ -650,22 +847,22 @@ Do not add a partner discount, a public accrual API, a channel delete, or an aut
 
 | Rule | Status |
 |------|--------|
-| CreditService only | ✅ Margin credit and both grant legs call `CreditService` only. |
+| CreditService only | ✅ Margin credit, both grant legs, and the registration bonus call `CreditService` only. |
 | Ledger SoT | ✅ Balance stays a cache. The portal does not recompute it. |
 | Append-only ledger | ✅ No update or delete of ledger rows. No `partner_margin_reversal` in v1. |
 | Account owner | ✅ Credits and debits target `billing.Account`. `PartnerChannel` has no Account FK. |
-| Idempotent | ✅ `partner-margin:{source_type}:{source_id}` and unique `(partner_channel, idempotency_key)`. |
-| Single DB transaction + lock | ✅ Fulfillment and grant lock orders are normative above. |
+| Idempotent | ✅ `partner-margin:{source_type}:{source_id}`, unique `(partner_channel, idempotency_key)`, and `invite-registration-bonus:<user_id>`. |
+| Single DB transaction + lock | ✅ Fulfillment and grant lock orders are normative above. The registration bonus is in the same transaction as the attribution insert. |
 | Snapshot event | ✅ The accrual and renewal-cycle rows are the price snapshots. v1 adds no new bus event; the locked structured logs are the operational record. |
 | `/api/v1/billing/` only | ✅ The money write is `POST /api/v1/billing/partner-grants/`. Portal reads live under `/api/v1/orgs/partner/`, the ADR 020 org family, and are not a second money API. |
 | Feature flag / gate | ✅ `PARTNER_CHANNEL_ENABLED` default off. |
 | Architecture tests | ✅ Required in the margin, grant, and API PRs: wholesale fields stay out of partner responses; OpenAPI property set; backend matrix in this ADR. |
 | Does not revise ADR 010 invariants | ✅ |
-| Decimal(20,6) | ✅ Accrual money fields and grant amount. `revenue_share_percent` is `Decimal(5,2)` by the CHECK above. |
+| Decimal(20,6) | ✅ Accrual money fields, grant amount, `bonus_amount`, and `bonus_amount_snapshot`. `revenue_share_percent` is `Decimal(5,2)` by the CHECK above. |
 
 ## Related
 
-- [ADR 010](./010-polygon-usdt-prepaid-credits.md) — money path; unchanged
+- [ADR 010](./010-polygon-usdt-prepaid-credits.md) — money path; gains `partner_invite_bonus` only. Invariants unchanged.
 - [ADR 012](./012-billing-extensibility-rules.md) — credit-source constitution
 - [ADR 019](./019-account-pricing-profiles.md) — customer pricing; unchanged
 - [ADR 020](./020-organization-team-accounts.md) — Organization and team Account; non-goal narrowed
