@@ -4,7 +4,7 @@
 |-------|-------|
 | Status | Accepted |
 | Date | 2026-10 |
-| Amended | 2026-10-08 (user-id snapshots use the same scalar type as `User.id`; `source_id` uses each model's canonical primary key; grant body fallback is `400 invalid_request`) |
+| Amended | 2026-10-08 (user-id snapshots use the same scalar type as `User.id`; `source_id` uses each model's canonical primary key; grant body fallback is `400 invalid_request`; partner reads may send `X-Partner-Role` as a presentation hint) |
 | Deciders | Solo operator (architecture lock before schema / API) |
 | Relates to | [ADR 010](./010-polygon-usdt-prepaid-credits.md), [ADR 012](./012-billing-extensibility-rules.md), [ADR 019](./019-account-pricing-profiles.md) (unchanged), [ADR 020](./020-organization-team-accounts.md) (narrow amendment only) |
 
@@ -424,6 +424,8 @@ Every portal and grant error body is exactly `{"code":"..."}`. No `detail`, fiel
 ### Read contracts
 
 `Cache-Control: no-store` on the whole Partner Channel HTTP surface, including errors and `POST /join/complete/consume`.
+
+A successful partner read (`summary`, `customers`, `grants`, `invite-link`) may include `X-Partner-Role` with only `owner`, `admin`, or `viewer` as a presentation hint for the portal. It is not authorization, it does not affect tenant resolution, and it is absent from errors, writes, and consumer endpoints. Team origins expose it with `Access-Control-Expose-Headers: X-Partner-Role`. Backend role checks stay authoritative for every write.
 
 `GET /api/v1/orgs/partner/summary` is the only dashboard numbers endpoint:
 
