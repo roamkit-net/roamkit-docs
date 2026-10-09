@@ -4,7 +4,7 @@
 |-------|-------|
 | Status | Accepted |
 | Date | 2026-10 |
-| Amended | 2026-10-08 (user-id snapshots use the same scalar type as `User.id`; `source_id` uses each model's canonical primary key; grant body fallback is `400 invalid_request`; partner reads may send `X-Partner-Role` as a presentation hint; partner `email` is the full address and reads include `display_name`). 2026-10-08 invite amendment: many links per channel, `InviteVisit`, registration-bonus eligibility, and the consumer landing `/register?from=invite`. Money invariants in [ADR 010](./010-polygon-usdt-prepaid-credits.md) are unchanged; that ADR only gains `partner_invite_bonus`. |
+| Amended | 2026-10-08 (user-id snapshots use the same scalar type as `User.id`; `source_id` uses each model's canonical primary key; grant body fallback is `400 invalid_request`; partner reads may send `X-Partner-Role` as a presentation hint; partner `email` is the full address and reads include `display_name`). 2026-10-08 invite amendment: many links per channel, `InviteVisit`, registration-bonus eligibility, and the consumer landing `/register?from=invite`. 2026-10-09: a verified invite may return `409 account_exists` for an active existing account; a raw, invalid, expired, or forged `X-Partner-Pending` may not. Money invariants in [ADR 010](./010-polygon-usdt-prepaid-credits.md) are unchanged; that ADR only gains `partner_invite_bonus`. |
 | Deciders | Solo operator (architecture lock before schema / API) |
 | Relates to | [ADR 010](./010-polygon-usdt-prepaid-credits.md), [ADR 012](./012-billing-extensibility-rules.md), [ADR 019](./019-account-pricing-profiles.md) (unchanged), [ADR 020](./020-organization-team-accounts.md) (narrow amendment only) |
 
@@ -444,7 +444,15 @@ The cookie may be cleared after a terminal success: a successful Google auth res
 
 The browser posts to the same-origin web route `POST /api/auth/register`. That route reads `partner_pending` and, when present, forwards it as `X-Partner-Pending`. It does not put `visit_id` in the body and it does not clear the cookie.
 
-`register_user` returns `CREATED` only when that call inserted the User, otherwise `EXISTING`. The public response is the same either way. A pending row is created only for `CREATED` plus a visit that passes the 30-day check. An invalid invite still creates the account and creates no pending row. It does not fail registration.
+`register_user` returns `CREATED` only when that call inserted the User. Public registration stays anti-enumeration: without a verified invite context the response is the same for a new email and an existing email. A verified context is `unsign_partner_pending` plus `validate_invite_visit` with the 30-day window. It is not the presence of `X-Partner-Pending`, and `from=invite` does not decide it. A raw, invalid, expired, or forged value is not that context. It keeps the public response, including the password-reset email for an active existing account, and that mail must not change the HTTP body. A pending row is created only for `CREATED` plus a visit that passes the 30-day check. An invalid invite still creates the account and creates no pending row. It does not fail registration.
+
+When the context is verified and the email already belongs to an active user, registration sends neither a reset nor an activation email. The service result is `ACCOUNT_EXISTS_FOR_INVITE`. The HTTP response is only:
+
+```json
+{"code": "account_exists", "detail": "An account with this email already exists."}
+```
+
+The status is `409`. The cookie is not cleared. After sign-in, `/join/complete` consumes that same pending invite. The existing account is attached with `registered_via_invite = false` and does not receive the registration bonus. `notice=account-exists` on the login page is presentation only. A verified invite with a new email still sends activation. A verified invite with an inactive user still resends activation. Neither of those is `account_exists`.
 
 Confirmation reads the pending row, not the cookie. It does not re-check the 30-day click window. It does check that the link is active and that the visit is not older than `regenerated_at`. Attribution, snapshots, and `bonus_amount_snapshot` are written then, from the visit's link as it is at confirmation, and the pending row is deleted in that same transaction. The campaign link on the visit is used. The canonical link is not substituted.
 
