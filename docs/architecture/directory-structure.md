@@ -5,14 +5,16 @@ Canonical layout for RoamKit repos. Deviations require an ADR update or a new AD
 ## Workspace (WSL)
 
 ```
-~/projects/roamkit-net/
+/opt/stacks/roamkit-net/
 ├── roamkit-docs/      # This repo
 ├── roamkit-infra/     # Bootstrap, compose, CI, deploy
 ├── roamkit-api/       # Django API (Faza 0+)
 └── roamkit-web/       # Next.js (Faza 0+)
 ```
 
-Code lives under `~/projects/`, not `/mnt/c/`. See workspace README.
+Code lives under `/opt/stacks/roamkit-net/` on the WSL laptop, not `/mnt/c/`. See workspace README.
+
+**Hetzner staging** still uses `/opt/stacks/roamkit-net/` as the runtime stack (compose, `.env`, volumes) — same path, different machine.
 
 ## roamkit-infra
 
