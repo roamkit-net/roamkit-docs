@@ -246,6 +246,7 @@ Added beside those rules, without replacing them:
 
 - `CustomerAttribution` is not Membership. `PartnerInviteLink` is not `OrganizationInvite`.
 - Partner margin and partner grant move money only through `CreditService` on `billing.Account`: a credit to the existing team Account, and a grant that may also credit the attributed customer’s personal Account.
+- [ADR 024](./024-individual-and-team-partner-channels.md) adds an INDIVIDUAL channel that does not use Organization or Membership. TEAM channels stay on the rules in this amendment. ADR 024 does not convert `Account.kind`.
 
 ### Non-goals
 

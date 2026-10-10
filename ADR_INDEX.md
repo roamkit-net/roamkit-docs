@@ -34,6 +34,7 @@ every **6 months** (Architecture Decision Review: still valid?).
 | [021](./docs/adr/021-device-status-auth-iccid.md) | Device status auth (ICCID lookup vs credentials) | **Accepted** | 2026-08 |
 | [022](./docs/adr/022-public-matching-id-esim-status.md) | Public matching-id eSIM status | **Accepted** | 2026-08 |
 | [023](./docs/adr/023-partner-channel.md) | Partner Channel | **Accepted** | 2026-10 |
+| [024](./docs/adr/024-individual-and-team-partner-channels.md) | Individual and Team Partner Channels | **Accepted** | 2026-10-09 |
 
 ## Billing ADR hierarchy
 
@@ -45,7 +46,8 @@ every **6 months** (Architecture Decision Review: still valid?).
 | Wallet constitution | [017](./docs/adr/017-roamkit-wallet-platform.md) | Wallet Platform (RFC 003–006); intake cutover via [018](./docs/adr/018-wallet-product-activation-strategy.md) |
 | Wallet activation | [018](./docs/adr/018-wallet-product-activation-strategy.md) | Product activation / ADR 010 shared-wallet cutover (**Accepted**) |
 | Team collaboration | [020](./docs/adr/020-organization-team-accounts.md) | Organization / Membership; extends Account identity; **does not** replace 010 |
-| Partner channel | [023](./docs/adr/023-partner-channel.md) | Customer attribution, invite visits, and margin credit onto the existing team Account. Adds `partner_invite_bonus` to [010](./docs/adr/010-polygon-usdt-prepaid-credits.md). Does not change 010 money invariants or amend 019. |
+| Partner channel | [023](./docs/adr/023-partner-channel.md) | Historical TEAM channel: attribution, invite visits, and margin credit onto the Organization Account. Adds `partner_invite_bonus` to [010](./docs/adr/010-polygon-usdt-prepaid-credits.md). Does not change 010 money invariants or amend 019. |
+| Individual and team partners | [024](./docs/adr/024-individual-and-team-partner-channels.md) | Amends 023 ownership, access, context selection, settlement, and self-attribution. INDIVIDUAL uses the existing Personal Account. TEAM stays on 020 and 023. Does not change 010. |
 
 ## Deploy ADR hierarchy
 
