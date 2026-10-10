@@ -6,7 +6,8 @@
 | Date | 2026-10 |
 | Amended | 2026-10-08 (user-id snapshots use the same scalar type as `User.id`; `source_id` uses each model's canonical primary key; grant body fallback is `400 invalid_request`; partner reads may send `X-Partner-Role` as a presentation hint; partner `email` is the full address and reads include `display_name`). 2026-10-08 invite amendment: many links per channel, `InviteVisit`, registration-bonus eligibility, and the consumer landing `/register?from=invite`. 2026-10-09: a verified invite may return `409 account_exists` for an active existing account; a raw, invalid, expired, or forged `X-Partner-Pending` may not. Money invariants in [ADR 010](./010-polygon-usdt-prepaid-credits.md) are unchanged; that ADR only gains `partner_invite_bonus`. |
 | Deciders | Solo operator (architecture lock before schema / API) |
-| Relates to | [ADR 010](./010-polygon-usdt-prepaid-credits.md), [ADR 012](./012-billing-extensibility-rules.md), [ADR 019](./019-account-pricing-profiles.md) (unchanged), [ADR 020](./020-organization-team-accounts.md) (narrow amendment only) |
+| Relates to | [ADR 010](./010-polygon-usdt-prepaid-credits.md), [ADR 012](./012-billing-extensibility-rules.md), [ADR 019](./019-account-pricing-profiles.md) (unchanged), [ADR 020](./020-organization-team-accounts.md) (narrow amendment only), [ADR 024](./024-individual-and-team-partner-channels.md) |
+| Amended by | [ADR 024](./024-individual-and-team-partner-channels.md) amends ownership, membership-only access, the single-context rule, settlement-account resolution, INDIVIDUAL grant and attribution rules, and TEAM self-attribution. This document stays the historical TEAM decision. Where they conflict, ADR 024 wins. |
 
 ## Context
 
