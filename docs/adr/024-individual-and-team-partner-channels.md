@@ -4,6 +4,7 @@
 |-------|-------|
 | Status | Accepted |
 | Date | 2026-10-09 |
+| Amended | 2026-10-10 (owner and admin may read a channel-scoped customer plans summary; archived eSIMs stay private; usage is the local cache) |
 | Deciders | Solo operator (architecture lock before schema / API) |
 | Relates to | [ADR 010](./010-polygon-usdt-prepaid-credits.md) (unchanged), [ADR 012](./012-billing-extensibility-rules.md), [ADR 019](./019-account-pricing-profiles.md) (unchanged), [ADR 020](./020-organization-team-accounts.md), [ADR 023](./023-partner-channel.md) |
 | Supersedes in part | The listed parts of [ADR 023](./023-partner-channel.md) only. ADR 023 remains the historical decision for the TEAM channel that is already built. |
@@ -288,6 +289,49 @@ Nothing automatically moves Personal Account balance, eSIM ownership, or ledger 
 17. The existing-channel migration moves no money and changes no `Account.kind`.
 18. INDIVIDUAL and TEAM are not an Account or channel-ownership conversion of each other.
 
+## Customer plans
+
+`GET /api/v1/partner/channels/{channel_id}/customers/{customer_id}/plans/` is a read of the attributed customer's personal-account eSIMs. The path id is identification only. The server re-resolves that channel on every request and does not fall back to another channel.
+
+Allowed effective roles are `owner` and `admin`. An INDIVIDUAL channel owner is `owner`. `member`, `viewer`, suspended, and revoked are denied, as are a missing channel and a foreign channel. Those denials are the existing `403 {"code":"partner_access_denied"}`. There is no separate plans error code. The feature flag off remains `404 {"code":"partner_channel_disabled"}`, checked before channel authorization.
+
+This role set is not the customers-list set and it is not grant permission. `can_view_customer_plans` on the context list is a role predicate only, true for `owner` and `admin`. `can_grant` stays Give credit.
+
+After the channel and role succeed, the user must be the current `CustomerAttribution` of that channel. Otherwise `404 {"code":"customer_not_found"}`. A missing user and a user attributed to another channel are the same response.
+
+The body is only:
+
+```json
+{
+  "active": [
+    {
+      "location_title": "Croatia",
+      "package_title": "Croatia 5 GB - 30 Days",
+      "data_allowance": "5 GB",
+      "validity_days": 30,
+      "status": "in_use",
+      "usage_remaining_mb": 4123,
+      "usage_total_mb": 5120,
+      "usage_is_unlimited": false,
+      "usage_expired_at": "2026-11-08T12:00:00Z",
+      "usage_synced_at": "2026-10-10T17:42:00Z",
+      "created_at": "2026-10-01T08:10:00Z"
+    }
+  ],
+  "expired": []
+}
+```
+
+`location_title`, `package_title`, and `data_allowance` are required strings. They are the order snapshot. An empty snapshot stays `""` and is not JSON `null`. `status` and `created_at` are always present. JSON `null` is allowed only for `validity_days`, `usage_remaining_mb`, `usage_total_mb`, `usage_expired_at`, and `usage_synced_at`. `usage_is_unlimited` is the stored cache: `true`, `false`, or `null`. A missing cache is not coerced to `false`.
+
+Grouping matches the consumer My eSIMs rule. An eSIM with `archived_at` set is omitted. Otherwise `status == "expired"` is `expired` and every other status is `active`. `usage_expired_at` does not change the group. There is no count, pagination, eSIM id, customer id, account id, order id, or archived metadata. The response does not reveal that an archived eSIM exists.
+
+Active order is `created_at` descending, then the internal primary key descending. Expired order is `usage_expired_at` descending with nulls last, then `created_at` descending, then that same internal key. The key is not in the response.
+
+The read uses the local eSIM row and the order snapshot. It does not call the provider, refresh usage, create an Account, or write. No personal Account means `{ "active": [], "expired": [] }`.
+
+Legacy `/api/v1/orgs/partner/` is not extended.
+
 ## Non-goals
 
 - Changing ADR 010 invariants or adding a ledger type.
@@ -297,7 +341,7 @@ Nothing automatically moves Personal Account balance, eSIM ownership, or ledger 
 - Cash-out, team-to-team transfer, or spending the settlement Account as the customer's payment method.
 - Automatic customer migration between an INDIVIDUAL channel and a TEAM channel.
 - Automatic removal, transfer, or repair of an attribution that conflicts with TEAM membership.
-- Implementing schema, API, portal, admin, or production changes in this ADR.
+- Implementing schema, API, portal, admin, or production changes in this ADR, other than the customer plans read amended above.
 
 ## Consequences
 
@@ -309,7 +353,7 @@ The cost is a second owner shape on `PartnerChannel` and a request-scoped contex
 
 These notes record the local implementation. They do not replace the decisions above. ADR 023 remains the historical TEAM record, including its `partner_channel.team_account_missing` token.
 
-- Portal routes are path-scoped under `/api/v1/partner/channels/{channel_id}/`. `GET /api/v1/partner/contexts/` lists authorized contexts. The path id is identification only. Every request calls `resolve_authorized_partner_context`.
+- Portal routes are path-scoped under `/api/v1/partner/channels/{channel_id}/`. `GET /api/v1/partner/contexts/` lists authorized contexts. The path id is identification only. Summary, grants, and invite call `resolve_authorized_partner_context`. The customers list uses the wider customers role set. Customer plans use `resolve_authorized_plans_context` (`owner` and `admin` only).
 - Settlement is `resolve_partner_settlement_account`. INDIVIDUAL uses the owner's existing Personal Account. TEAM uses the Organization Account. The resolver does not create an Account or change `Account.kind`.
 - An INDIVIDUAL grant may spend the full available Personal Account balance. There is no separate commission wallet. `CreditService` remains the only balance mutator.
 - Current attribution and TEAM membership activation share one lock order: the User row, then PartnerChannel rows in primary-key order. Either write raises `partner_self_referral` and leaves the other relationship in place. Suspended and revoked membership is not that conflict.
