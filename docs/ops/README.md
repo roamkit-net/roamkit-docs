@@ -28,6 +28,9 @@ ship safely — Launch Gates, cutover discipline, incidents, and maturity tracki
 | [SLO targets](./slo.md) | Lightweight availability / billing targets |
 | [Production retrospective](./production-retrospective.md) | Post-hypercare lessons learned template |
 | [Billing dashboard](./billing-dashboard.md) | Operator metrics after cutover |
+| [Partner channel rollout](./partner-channel-rollout.md) | ADR 024 API-before-web order, migration preflight, rollback limits |
+| [Partner 024 release note](./partner-024-release-note.md) | Operator summary of individual channels and the new portal |
+| [Partner legacy retirement](./partner-legacy-retirement.md) | Legacy partner URLs kept until usage evidence exists |
 | [Disaster Day](./disaster-day.md) | Annual failure simulation |
 | [Rollback candidate qualification](./rollback-candidate-qualification.md) | N/N−1 must share migration **and** smoke/health contract |
 | [Gate C exit](./gate-c-exit.md) | Engineering tracker for C* before GO |
