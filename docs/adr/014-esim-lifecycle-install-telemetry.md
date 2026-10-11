@@ -4,7 +4,7 @@
 |-------|-------|
 | Status | Accepted |
 | Date | 2026-07 |
-| Amended | **2026-08-14 (reactivate `exhausted`/`expired` on explicit provider `ACTIVE`)**; **2026-10-11 (overwrite `Esim.status` from the current usage payload)** |
+| Amended | **2026-08-14 (reactivate `exhausted`/`expired` on explicit provider `ACTIVE`)**; **2026-10-11 (overwrite `Esim.status` from the current usage payload; add admin and periodic refresh entry points)** |
 | Deciders | Faza 5 Wave 1 design freeze |
 
 ## Context
@@ -76,7 +76,21 @@ Implementation of each amend is a **separate API PR** after the docs amend merge
 
 ### Usage status overwrite (2026-10-11 amend)
 
-On every successful usage fetch, `UsageService.get_usage` refreshes the usage cache and then `LifecycleService.apply_provider_usage` overwrites `Esim.status` from that payload. Callers are `GET /me/esims/{id}/usage/` and the auto-topup usage refresh. Opening admin does not call the provider.
+On every successful usage fetch, `UsageService.get_usage` refreshes the usage cache and then `LifecycleService.apply_provider_usage` overwrites `Esim.status` from that payload. All callers must use that service; they must not write usage cache fields or `Esim.status` directly.
+
+Allowed live-sync entry points are:
+
+- `GET /me/esims/{id}/usage/`
+- auto-topup usage refresh
+- a CSRF-protected admin POST for one eSIM, requiring `esims.change_esim`
+- a Celery beat every 300 seconds for stale eSIMs whose local status is
+  `in_use`, `purchased`, or `unknown`
+
+Opening an admin change page remains read-only and does not call the provider.
+The periodic task skips rows refreshed within the previous 300 seconds, processes
+eligible eSIMs sequentially, and isolates provider failures per eSIM. A disabled
+Airalo integration performs no periodic provider calls. `archived_at` is not a
+filter: local presentation metadata must not gate usage refresh.
 
 Compare provider `status` after trim and case-normalize:
 
