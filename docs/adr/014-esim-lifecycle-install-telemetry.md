@@ -4,7 +4,7 @@
 |-------|-------|
 | Status | Accepted |
 | Date | 2026-07 |
-| Amended | **2026-08-14 (reactivate `exhausted`/`expired` on explicit provider `ACTIVE`)** |
+| Amended | **2026-08-14 (reactivate `exhausted`/`expired` on explicit provider `ACTIVE`)**; **2026-10-11 (overwrite `Esim.status` from the current usage payload)** |
 | Deciders | Faza 5 Wave 1 design freeze |
 
 ## Context
@@ -35,20 +35,20 @@ purchased → installation_started → installed → activated → in_use
                                                       ↘ expired
 in_use → exhausted | expired
 exhausted → expired
-exhausted → activated | in_use   (reactivation; provider ACTIVE only)
-expired → activated | in_use     (reactivation; provider ACTIVE only)
+exhausted → activated | in_use
+expired → activated | in_use
 purchased → installed   (wizard may skip intermediate telemetry)
 ```
 
-Forbidden: install-funnel reverse transitions (e.g. `expired → installed`, `expired → purchased`, `in_use → purchased`). Reactivation `exhausted|expired → activated|in_use` is **not** an install-funnel reverse.
+`transition()` forbids install-funnel reverse transitions (e.g. `expired → installed`, `expired → purchased`, `in_use → purchased`). Those reverses are not client-event edges.
 
-**Unknown non-downgrade:** if the provider reports `UNKNOWN`, never set local status to `unknown` when current status is already past `purchased`. Keep current status; optionally append `provider.usage_unknown`. `unknown` is reserved for cold/error bootstrap only. `UNKNOWN` never reactivates.
+Provider usage does not walk this graph. The 2026-10-11 amend overwrites `Esim.status` from the current usage payload, including moves back to `purchased` or `unknown`. That overwrite is not a `transition()` edge.
 
 ### Reactivation after top-up (2026-08-14 amend)
 
 A fulfilled top-up (manual or auto) can restore provider data after `exhausted` or `expired`. Sticky terminal `Esim.status` must not hide an active provider plan.
 
-**Sole entry:** only `LifecycleService.apply_provider_usage()` may reactivate, and only when the **current** provider usage payload has `status` equal to `ACTIVE` (trim + case-normalize). Target is `in_use` when that same payload shows consumption, otherwise `activated`.
+**Sole entry:** only `LifecycleService.apply_provider_usage()` may reactivate, and only when the **current** provider usage payload has `status` equal to `ACTIVE` (trim + case-normalize). As of the 2026-10-11 amend the target is always `in_use`. The earlier split (consumption → `in_use`, otherwise `activated`) is retired.
 
 **Must not** reactivate from:
 
@@ -60,17 +60,39 @@ Provider `EXPIRED` or `FINISHED` must not reactivate. Repeated identical `ACTIVE
 
 This amend does **not** change [ADR 010](./010-polygon-usdt-prepaid-credits.md). Implementation must not touch billing, ledger, refund, or re-run top-up fulfillment. Reactivation runs on the next normal usage sync (`GET /me/esims/{id}/usage/` or beat). Post-fulfillment usage refresh is **out of scope** for the API PR that implements this amend.
 
-Implementation of this amend is a **separate API PR** after this docs PR merges. Do not implement API, web, or production smoke in this docs PR.
+Implementation of each amend is a **separate API PR** after the docs amend merges. Do not implement API, web, or production smoke in the docs PR.
 
 **Sole mutator:** only `LifecycleService` may write `Esim.status`. Architecture test enforces this (same pattern as ADR 010 / `CreditService`).
 
 | Status | Who drives |
 |--------|------------|
-| `purchased` | `LifecycleService.mark_purchased` on fulfillment |
+| `purchased` | Fulfillment (`create_purchased`), or a usage pull whose provider status is `NOT_ACTIVE`, blank, or null |
 | `installation_started` / `installed` | Client-attested events → `LifecycleService` |
-| `activated` / `in_use` / `exhausted` / `expired` | Provider usage via `LifecycleService.apply_provider_usage` |
-| Reactivation `exhausted`/`expired` → `activated`/`in_use` | Same path; **only** explicit provider `ACTIVE` on that payload |
-| Provider `UNKNOWN` | Event only; no downgrade; no reactivation |
+| `activated` | Client/provider path only via `transition()`; usage pulls no longer target `activated` |
+| `in_use` | Usage pull with provider `ACTIVE` |
+| `exhausted` | Usage pull with provider `FINISHED` |
+| `expired` | Usage pull with provider `EXPIRED` |
+| `unknown` | Usage pull with provider `UNKNOWN` |
+
+### Usage status overwrite (2026-10-11 amend)
+
+On every successful usage fetch, `UsageService.get_usage` refreshes the usage cache and then `LifecycleService.apply_provider_usage` overwrites `Esim.status` from that payload. Callers are `GET /me/esims/{id}/usage/` and the auto-topup usage refresh. Opening admin does not call the provider.
+
+Compare provider `status` after trim and case-normalize:
+
+- `ACTIVE` → `in_use` (including zero consumption)
+- `FINISHED` → `exhausted`
+- `EXPIRED` → `expired`
+- `NOT_ACTIVE` → `purchased`
+- `UNKNOWN` → `unknown`
+- empty string or null → `purchased`, and `Esim.usage_status` stays blank
+- any other string → store it on `Esim.usage_status`; do not change `Esim.status`
+
+If the mapped target equals the current status, write nothing and append no lifecycle event.
+
+The overwrite may move backwards (`in_use` → `purchased`, any status → `unknown`). `transition()` still rejects those edges. Client install events stay forward-only. A later `NOT_ACTIVE` or blank usage pull can reset install progress to `purchased`.
+
+Do not change `Esim.status` from cached `usage_*` fields, a `Topup` row, or the assumption that a purchase or top-up succeeded. Billing, ledger, refund, and fulfillment stay out of this path.
 
 ### Setup session fields on `Esim`
 
@@ -160,7 +182,7 @@ sequenceDiagram
   U->>A: GET usage or later poll
   A->>P: get_usage
   P-->>A: status ACTIVE
-  A->>A: LifecycleService activated
+  A->>A: LifecycleService in_use
 ```
 
 ### Usage sync flow
@@ -176,8 +198,9 @@ sequenceDiagram
   P-->>A: remaining total status expired_at
   A->>A: UsageService updates usage cache
   A->>A: LifecycleService.apply_provider_usage
-  Note over A: UNKNOWN never downgrades local status
-  Note over A: ACTIVE may reactivate exhausted or expired
+  Note over A: ACTIVE sets in_use
+  Note over A: NOT_ACTIVE or blank sets purchased
+  Note over A: UNKNOWN sets unknown
 ```
 
 ## Consequences
@@ -192,18 +215,18 @@ sequenceDiagram
 
 - Client-attested `installed` can be wrong; support relies on event trail + provider usage.
 - Sole-consumer enum rename still requires coordinated web deploy.
-- Until the API PR ships, `Esim.status` can stay `expired`/`exhausted` while provider usage is already `ACTIVE` (cached remaining data and package expiry may look live).
+- A later `NOT_ACTIVE` or blank usage pull resets `Esim.status` to `purchased`, including after install events.
 
 ## Stop rule
 
-Now that this ADR is **Accepted** (as amended — reactivate on explicit provider `ACTIVE`):
+Now that this ADR is **Accepted** (as amended — overwrite `Esim.status` from the current usage payload):
 
-- Do **not** start the API implementation PR until this docs amend is merged.
-- Do **not** reactivate except via `LifecycleService.apply_provider_usage` on an explicit current-payload `ACTIVE`.
+- Do **not** walk a usage pull through the forward-only graph. `apply_provider_usage` overwrites from the 2026-10-11 table.
+- Do **not** keep the previous status when the provider reports `UNKNOWN`.
+- Do **not** map zero-consumption `ACTIVE` to `activated`.
+- Do **not** open install-funnel reverses on `transition()` (`expired → installed`, `expired → purchased`, `in_use → purchased`).
 - Do **not** treat cached usage fields, a fulfilled `Topup`, or a successful purchase as sufficient to change `Esim.status`.
-- Do **not** allow `expired → installed` or `expired → purchased`.
 - Do **not** amend or bypass [ADR 010](./010-polygon-usdt-prepaid-credits.md): no billing, ledger, refund, or fulfillment side effects in the lifecycle PR.
-- Do **not** couple this amend to a post-fulfillment usage refresh.
 
 Changing this Accepted decision later requires a new ADR discussion — never a silent rewrite during implementation.
 
