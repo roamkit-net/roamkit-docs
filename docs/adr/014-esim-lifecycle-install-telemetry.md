@@ -4,7 +4,7 @@
 |-------|-------|
 | Status | Accepted |
 | Date | 2026-07 |
-| Amended | **2026-08-14 (reactivate `exhausted`/`expired` on explicit provider `ACTIVE`)**; **2026-10-11 (overwrite `Esim.status` from the current usage payload; add admin and periodic refresh entry points)** |
+| Amended | **2026-08-14 (reactivate `exhausted`/`expired` on explicit provider `ACTIVE`)**; **2026-10-11 (overwrite `Esim.status` from the current usage payload; add admin and periodic refresh entry points)**; **2026-10-12 (store the applied-package snapshot from the admin POST and the periodic beat)** |
 | Deciders | Faza 5 Wave 1 design freeze |
 
 ## Context
@@ -91,6 +91,15 @@ The periodic task skips rows refreshed within the previous 300 seconds, processe
 eligible eSIMs sequentially, and isolates provider failures per eSIM. A disabled
 Airalo integration performs no periodic provider calls. `archived_at` is not a
 filter: local presentation metadata must not gate usage refresh.
+
+The admin POST and the periodic beat, after a successful usage fetch, also
+replace the stored applied-package snapshot for that eSIM and copy each row's
+Airalo package status onto the linked `Topup`. Sequence `0` is the initial
+credit. Later top-ups of the same eSIM are `1`, `2`, `3`, …. A package-snapshot
+failure keeps the previous snapshot and does not roll back the usage cache.
+`GET /me/esims/{id}/usage/` and auto-topup usage refresh do not write that
+snapshot. The snapshot is not a billing write: `Topup.amount`, `net_price_usd`,
+and the ledger stay unchanged.
 
 Compare provider `status` after trim and case-normalize:
 
